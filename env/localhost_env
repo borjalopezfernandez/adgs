@@ -1,0 +1,15 @@
+VBOA_PORT=5000
+SERVICE_LABEL=localhost
+PATH_TO_BOA_DDBB=/data/adgs/adgs_monitoring/boa_ddbb
+PATH_TO_BOA_INPUTS=/data/adgs/adgs_monitoring/intray_boa
+PATH_TO_RBOA_ARCHIVE=/data/adgs/adgs_monitoring/rboa_archive
+PATH_TO_MINARC_ARCHIVE=/data/adgs/adgs_monitoring/minarc_archive
+PATH_TO_LOG_FOLDER=/data/adgs/adgs_monitoring/log
+PATH_TO_BOA_CERTIFICATES_AND_SECRET_KEY=/data/adgs/adgs_monitoring/boa_certificates_and_secret_key
+PATH_TO_GRAFANA_DATASOURCES=./grafana
+PATH_TO_PROMETHEUS_CONFIGURATION=./prometheus
+PATH_TO_PROMETHEUS_DDBB=/data/adgs/adgs_monitoring/prometheus_ddbb
+ADGS_USER_UID=2020
+ADGS_USER_GID=2020
+PROMETHEUS_PORT=9090
+GRAFANA_PORT=3000

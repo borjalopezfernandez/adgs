@@ -1,0 +1,139 @@
+
+volumes:
+   volume_adgs:
+      driver: local
+      driver_opts:
+         type: none
+         o: bind
+         device: /data
+
+services:
+
+   adgs_db:
+      image: postgres:11
+      container_name: adgs_db_${SERVICE_LABEL}
+      hostname: adgs_db
+      restart: always
+      environment:
+         POSTGRES_DB                : adgs_db
+         POSTGRES_USER              : adgs
+         POSTGRES_PASSWORD          : adg$
+         POSTGRES_HOST_AUTH_METHOD  : trust
+      volumes:
+         - /data/adgs/adgs_db:/var/lib/postgresql/data
+      networks:
+         - adgs_network
+
+   adgs_minarc:
+      depends_on:
+         - adgs_db
+      image          : app_adgs_minarc
+      container_name : adgs_minarc_${SERVICE_LABEL}
+      hostname       : adgs_minarc
+      environment    :
+         - MINARC_PLUGIN=ADGS
+         - TMPDIR=/tmp
+      restart        : always
+      volumes:
+         - /data:/data
+      networks:
+         - adgs_network
+
+   adgs_dec:
+      depends_on:
+         - adgs_db
+      image          : app_adgs_dec
+      container_name : adgs_dec_${SERVICE_LABEL}
+      hostname       : adgs_dec
+      restart: always
+      volumes:
+         - /data:/data
+      networks:
+         - adgs_network
+
+   adgs_monitoring_db:
+      image: mdillon/postgis
+      container_name: adgs_monitoring_db_${SERVICE_LABEL}
+      restart: always
+      shm_size: 512M
+      volumes:
+         - ${PATH_TO_BOA_DDBB}:/var/lib/postgresql/data
+      command: -c max_connections=5000 -c max_locks_per_transaction=5000
+      networks:
+         - adgs_network
+
+   adgs_boa:
+      image: boa
+      container_name: adgs_boa_${SERVICE_LABEL}
+      restart: always
+      shm_size: 512M
+      stdin_open: true 
+      tty: true
+      ports:
+         - ${VBOA_PORT}:5000
+      environment:
+         - EBOA_DDBB_HOST=adgs_monitoring_db_${SERVICE_LABEL}
+         - SBOA_DDBB_HOST=adgs_monitoring_db_${SERVICE_LABEL}
+         - UBOA_DDBB_HOST=adgs_monitoring_db_${SERVICE_LABEL}
+         - MINARC_DATABASE_HOST=adgs_monitoring_db_${SERVICE_LABEL}
+         - ORC_DATABASE_HOST=adgs_monitoring_db_${SERVICE_LABEL}
+      networks:
+         - adgs_network
+      volumes:
+         - ${PATH_TO_MINARC_ARCHIVE}:/minarc_root 
+         - ${PATH_TO_BOA_INPUTS}:/inputs 
+         - ${PATH_TO_RBOA_ARCHIVE}:/rboa_archive 
+         - ${PATH_TO_LOG_FOLDER}:/log
+      secrets:
+         - source: boa-certificate
+           target: /resources_path/boa_certificate.pem
+         - source: boa-key
+           target: /resources_path/boa_key.pem
+         - source: web-server-key
+           target: /resources_path/web_server_secret_key.txt
+
+   adgs_prometheus:
+      image: prom/prometheus
+      container_name: adgs_prometheus_${SERVICE_LABEL}
+      volumes:
+         - ${PATH_TO_PROMETHEUS_CONFIGURATION}:/etc/prometheus/
+         - ${PATH_TO_PROMETHEUS_DDBB}:/prometheus/
+      command:
+         - "--config.file=/etc/prometheus/prometheus.yml"
+         - "--storage.tsdb.path=/prometheus"
+      ports:
+         - ${PROMETHEUS_PORT}:9090
+      user: ${ADGS_USER_UID}:${ADGS_USER_GID}
+      networks:
+         - adgs_network
+   
+   adgs_grafana:
+      image: grafana/grafana
+      container_name: adgs_grafana_${SERVICE_LABEL}
+      ports:
+         - ${GRAFANA_PORT}:3000
+      networks:
+         - adgs_network
+      environment:
+         - GF_DEFAULT_MODE=development
+         - GF_LOG_LEVEL=debug
+         - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+         - GF_AUTH_ANONYMOUS_ENABLED=true
+         - GF_AUTH_BASIC_ENABLED=false
+         - GF_FEATURE_TOGGLES_ENABLE=alertingSimplifiedRouting
+      volumes:
+         - ${PATH_TO_GRAFANA_DATASOURCES}:/etc/grafana/provisioning/datasources
+      user: ${ADGS_USER_UID}:${ADGS_USER_GID}
+
+secrets:
+   boa-certificate:
+      file: ${PATH_TO_BOA_CERTIFICATES_AND_SECRET_KEY}/boa_certificate.pem
+   boa-key:
+      file: ${PATH_TO_BOA_CERTIFICATES_AND_SECRET_KEY}/boa_key.pem
+   web-server-key:
+      file: ${PATH_TO_BOA_CERTIFICATES_AND_SECRET_KEY}/web_server_secret_key.txt
+
+networks:
+   adgs_network:
+      name: adgs_network_${SERVICE_LABEL}
+
