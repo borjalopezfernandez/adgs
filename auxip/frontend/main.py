@@ -1,6 +1,7 @@
 # https://fastapi.tiangolo.com/tutorial/sql-databases/
 # https://stackoverflow.com/questions/59929028/python-fastapi-error-422-with-post-request-when-sending-json-data
 # https://fastapi-utils.davidmontague.xyz/user-guide/basics/guid-type/
+# https://fastapi.tiangolo.com/tutorial/cors/
 
 import uvicorn
 
@@ -8,7 +9,8 @@ from typing import Any, Annotated, Optional
 
 from fastapi.openapi.utils import get_openapi
 from fastapi import Depends, FastAPI, Request, HTTPException, status
-from fastapi.responses import FileResponse
+from fastapi.responses import JSONResponse, FileResponse
+from fastapi.middleware.cors import CORSMiddleware
 
 from sqlalchemy.orm import Session
 
@@ -43,9 +45,19 @@ tags_metadata = [
     },
 ]
 
+
+
 app = FastAPI(openapi_tags = tags_metadata)
 
+origins = ['*']
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins       = origins,
+    allow_credentials   = True,
+    allow_methods       = ["*"],
+    allow_headers       = ["*"],
+)
 
 # https://fastapi.tiangolo.com/how-to/extending-openapi/
 app.title           = "Auxiliary Data Gathering Service"
@@ -77,6 +89,21 @@ query_model     = create_model("Query", **query_params)
 
 
 # -------------------------------------------------------------------
+
+'''
+    TEST ROUTES
+'''
+@app.get("/")
+async def read_root():
+    return {"message": "Hello from FastAPI"} 
+
+@app.get("/test")
+def read_main(request: Request):
+    return {"message": "Hello World", "root_path": request.scope.get("root_path")}
+
+@app.get("/auxip")
+def read_main(request: Request):
+    return {"message": "Hello World", "root_path": request.scope.get("root_path")}
 
 
 # -------------------------------------------------------------------
@@ -117,16 +144,26 @@ async def update_subscription_status(subscription_status: schemas.SubscriptionSt
     
 # --------------------------------------------------------------------
 
-
 # --------------------------------------------------------------------
 
-# get ADGS Subscriptions
+# get ADGS Subscriptions by UUID
 
 @app.get("/odata/v1/Subscription", tags=["Subscriptions"], response_model = schemas.SubscriptionOutput)
 async def get_subcription(subscription_id: schemas.SubscriptionId):
+    headers = {"X-GET-LIST-SUBSCRIPTIONS": "TBD", "Content-Language": "en-US"}
     return list_subscription
 
 # --------------------------------------------------------------------
+
+# GET list of Subscriptions in memory
+
+@app.get("/odata/v1/Subscriptions", tags=["Subscriptions"])
+async def get_list_subcriptions():
+    headers = {"x-get-list-subscriptions": "To Be Defined", "Content-Language": "en-US"}
+    return JSONResponse(content=list_subscription, headers=headers)
+
+# --------------------------------------------------------------------
+
 
 
 class Product(BaseModel):

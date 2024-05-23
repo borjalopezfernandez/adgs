@@ -28,11 +28,21 @@ SQLALCHEMY_DATABASE_URL = 'postgresql://adgs:adg$#5432@127.0.0.1/adgs_db'
 
 ### Execute ###
 
-* execution command:
+* execution command to test without root-path to hit directly the microservice:
 ```
 uvicorn frontend.main:app --host 0.0.0.0 --reload
 
 ```
+
+
+* execution command to test with nginx proxy:
+```
+uvicorn frontend.main:app --host 0.0.0.0 --reload --root-path /auxip
+
+```
+
+
+
 
 * Swagger API front-end:
 ```
