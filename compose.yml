@@ -122,8 +122,35 @@ services:
          - GF_AUTH_BASIC_ENABLED=false
          - GF_FEATURE_TOGGLES_ENABLE=alertingSimplifiedRouting
       volumes:
-         - ${PATH_TO_GRAFANA_DATASOURCES}:/etc/grafana/provisioning/datasources
+         - ${PATH_TO_GRAFANA_PROVISIONING}:/etc/grafana/provisioning
       user: ${ADGS_USER_UID}:${ADGS_USER_GID}
+   
+   # monitoring linux host metrics
+   adgs_node_exporter:
+      image: prom/node-exporter:latest
+      container_name: adgs_node_exporter_${SERVICE_LABEL}
+      restart: always
+      ports:
+         - ${NODE_EXPORTER_PORT}:9100
+      networks:
+         - adgs_network
+
+   # monitoring metrics for the running containers
+   adgs_cadvisor:
+      image: gcr.io/cadvisor/cadvisor:latest
+      container_name: adgs_cadvisor_${SERVICE_LABEL}
+      restart: always
+      ports:
+      - ${CADVISOR_PORT}:8080
+      volumes:
+         - /etc/machine-id:/etc/machine-id:ro
+         - /:/rootfs:ro
+         - /var/run:/var/run:ro
+         - /sys:/sys:ro
+         - /var/lib/docker/:/var/lib/docker:ro
+         - /dev/disk/:/dev/disk:ro
+      networks:
+         - adgs_network
 
 secrets:
    boa-certificate:

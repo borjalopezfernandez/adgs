@@ -1,0 +1,9 @@
+apiVersion: 1
+
+providers:
+  - name: ADGS
+    folder: ADGS status
+    type: file
+    options:
+      path:
+        /etc/grafana/provisioning/dashboards/adgs_status
