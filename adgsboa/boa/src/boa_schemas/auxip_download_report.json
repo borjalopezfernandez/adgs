@@ -1,0 +1,15 @@
+{
+    "type": "object",
+    "required": ["username", "ip", "filename", "uuid", "content_length", "download_date", "download_elapsed_time", "access_date", "access_counter"],
+    "properties": {
+        "username" : {"type": "string"},
+        "ip" : {"type": "string"},
+        "filename" : {"type": "string"},
+        "uuid" : {"type": "string"},
+        "content_length" : {"type": "number"},
+        "download_date" : {"type": "string"},
+        "download_elapsed_time" : {"type": "number"},
+        "access_date" : {"type": "string"},        
+        "access_counter" : {"type": "number"}
+    }
+}

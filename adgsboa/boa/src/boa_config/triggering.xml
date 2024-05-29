@@ -1,0 +1,9 @@
+<triggering_rules>
+  <rule>
+    <source_mask>auxip_download_report_????????T??????\.???_.*\.json</source_mask>
+    <source_type>AUXIP_DOWNLOAD_REPORT</source_type>
+    <tool>
+      <command>eboa_ingestion.py -p adgsboa.ingestions.ingestion_auxip.ingestion_auxip_download_report -f </command>
+    </tool>
+  </rule>
+</triggering_rules>
