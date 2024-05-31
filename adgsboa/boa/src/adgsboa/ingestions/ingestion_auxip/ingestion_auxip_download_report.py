@@ -142,15 +142,15 @@ def process_file(file_path, engine, query, reception_time):
     # Day
     start_date = parser.parse(auxip_download_report_data["download_date"][0:10]).isoformat()
     stop_date = (parser.parse(auxip_download_report_data["download_date"][0:10]) + datetime.timedelta(days=1)).isoformat()
-    coverage_dates.append([start_date, stop_date])
+    coverage_dates.append([start_date, stop_date, "PER_DAY"])
     # Month
     start_date = parser.parse(auxip_download_report_data["download_date"][0:7] + "-01").isoformat()
     stop_date = (parser.parse(auxip_download_report_data["download_date"][0:7] + "-01") + relativedelta.relativedelta(months=1)).isoformat()
-    coverage_dates.append([start_date, stop_date])
+    coverage_dates.append([start_date, stop_date, "PER_MONTH"])
     # Year
     start_date = parser.parse(auxip_download_report_data["download_date"][0:4] + "-01-01").isoformat()
     stop_date = (parser.parse(auxip_download_report_data["download_date"][0:4] + "-01-01") + relativedelta.relativedelta(years=1)).isoformat()
-    coverage_dates.append([start_date, stop_date])
+    coverage_dates.append([start_date, stop_date, "PER_YEAR"])
 
     ##########################
     # Per mission and client #
@@ -158,12 +158,13 @@ def process_file(file_path, engine, query, reception_time):
     for dates in coverage_dates:
         start_date = dates[0]
         stop_date = dates[1]
+        suffix = dates[2]
 
         auxip_download_counters.append({
             "gauge": {
                 "insertion_type": "UPDATE_COUNTER",
-                "name": f"CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION_CLIENT_{start_date}_{stop_date}",
-                "system": f"{mission}_{client}"
+                "name": f"CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION_CLIENT_{suffix}_{start_date}_{stop_date}",
+                "system": f"{mission}#{client}"
             },
             "start": download_start_date,
             "stop": download_stop_date,
@@ -177,7 +178,7 @@ def process_file(file_path, engine, query, reception_time):
         "gauge": {
             "insertion_type": "UPDATE_COUNTER",
             "name": "CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION_CLIENT",
-            "system": f"{mission}_{client}"
+            "system": f"{mission}#{client}"
         },
         "start": download_start_date,
         "stop": download_stop_date,
@@ -192,11 +193,12 @@ def process_file(file_path, engine, query, reception_time):
     for dates in coverage_dates:
         start_date = dates[0]
         stop_date = dates[1]
+        suffix = dates[2]
 
         auxip_download_counters.append({
             "gauge": {
                 "insertion_type": "UPDATE_COUNTER",
-                "name": f"CUMULATIVE_DOWNLOADED_VOLUME_BY_CLIENT_{start_date}_{stop_date}",
+                "name": f"CUMULATIVE_DOWNLOADED_VOLUME_BY_CLIENT_{suffix}_{start_date}_{stop_date}",
                 "system": client
             },
             "start": download_start_date,
@@ -226,11 +228,12 @@ def process_file(file_path, engine, query, reception_time):
     for dates in coverage_dates:
         start_date = dates[0]
         stop_date = dates[1]
+        suffix = dates[2]
 
         auxip_download_counters.append({
             "gauge": {
                 "insertion_type": "UPDATE_COUNTER",
-                "name": f"CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION_{start_date}_{stop_date}",
+                "name": f"CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION_{suffix}_{start_date}_{stop_date}",
                 "system": mission
             },
             "start": download_start_date,
@@ -260,12 +263,13 @@ def process_file(file_path, engine, query, reception_time):
     for dates in coverage_dates:
         start_date = dates[0]
         stop_date = dates[1]
+        suffix = dates[2]
 
         auxip_download_counters.append({
             "gauge": {
                 "insertion_type": "UPDATE_COUNTER",
-                "name": f"CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION_PRODUCT_TYPE_{start_date}_{stop_date}",
-                "system": f"{mission}_{product_type}"
+                "name": f"CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION_PRODUCT_TYPE_{suffix}_{start_date}_{stop_date}",
+                "system": f"{mission}#{product_type}"
             },
             "start": download_start_date,
             "stop": download_stop_date,
@@ -279,7 +283,7 @@ def process_file(file_path, engine, query, reception_time):
         "gauge": {
             "insertion_type": "UPDATE_COUNTER",
             "name": "CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION_PRODUCT_TYPE",
-            "system": f"{mission}_{product_type}"
+            "system": f"{mission}#{product_type}"
         },
         "start": download_start_date,
         "stop": download_stop_date,
@@ -294,11 +298,12 @@ def process_file(file_path, engine, query, reception_time):
     for dates in coverage_dates:
         start_date = dates[0]
         stop_date = dates[1]
+        suffix = dates[2]
 
         auxip_download_counters.append({
             "gauge": {
                 "insertion_type": "UPDATE_COUNTER",
-                "name": f"CUMULATIVE_DOWNLOADED_VOLUME_BY_PRODUCT_TYPE_{start_date}_{stop_date}",
+                "name": f"CUMULATIVE_DOWNLOADED_VOLUME_BY_PRODUCT_TYPE_{suffix}_{start_date}_{stop_date}",
                 "system": product_type
             },
             "start": download_start_date,
@@ -322,12 +327,34 @@ def process_file(file_path, engine, query, reception_time):
                     "value": file_size}]
     })
 
+
+    ############################
+    # Without specific filters #
+    ############################
+    for dates in coverage_dates:
+        start_date = dates[0]
+        stop_date = dates[1]
+        suffix = dates[2]
+
+        auxip_download_counters.append({
+            "gauge": {
+                "insertion_type": "UPDATE_COUNTER",
+                "name": f"CUMULATIVE_DOWNLOADED_VOLUME_{suffix}_{start_date}_{stop_date}",
+                "system": "GLOBAL"
+            },
+            "start": download_start_date,
+            "stop": download_stop_date,
+            "values": [{"name": "value",
+                        "type": "double",
+                        "value": file_size}]
+        })
+    # end for
     # Total
     auxip_download_counters.append({
         "gauge": {
             "insertion_type": "UPDATE_COUNTER",
             "name": "CUMULATIVE_DOWNLOADED_VOLUME",
-            "system": "TOTAL"
+            "system": "GLOBAL"
         },
         "start": download_start_date,
         "stop": download_stop_date,

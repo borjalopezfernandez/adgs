@@ -1,9 +1,15 @@
 apiVersion: 1
 
 providers:
-  - name: ADGS
+  - name: ADGS status
     folder: ADGS status
     type: file
     options:
       path:
         /etc/grafana/provisioning/dashboards/adgs_status
+  - name: ADGS AUXIP
+    folder: ADGS AUXIP
+    type: file
+    options:
+      path:
+        /etc/grafana/provisioning/dashboards/adgs_auxip
