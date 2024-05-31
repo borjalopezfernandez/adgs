@@ -9,12 +9,26 @@ AUXIP Auxiliary Interface Point.
 
 ### Dependencies ###
 
-* Summary of set up
+* Summary of set up and requirements
 
 ```
 sudo service postgresql start
 pip install -r requirements.txt
 ```
+
+* Package software develoment & management with poetry
+
+```
+poetry add --group dev pytest pytest-cov black isort flake8 bandit safety
+```
+
+* Install fastapi packages
+
+```
+poetry add fastapi uvicorn httpx
+```
+
+
 
 * Configuration adgs/adg$
 * Dependencies
