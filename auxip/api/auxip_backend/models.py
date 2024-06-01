@@ -26,16 +26,16 @@ from .database import Base
 
 
 class Product(Base):
-    __tablename__ = "archived_files"
-    Name = Column(String(255), primary_key=True, unique=False)
-    ContentType = Column(String(63), unique=False)
-    ContentLength = Column(Integer, nullable=False)
+    __tablename__   = "archived_files"
+    Name            = Column(String(255), primary_key=True, unique=False)
+    ContentType     = Column(String(63), unique=False)
+    ContentLength   = Column(Integer, nullable=False)
 
 
 class EnumSubscriptionStatus(str, enum.Enum):
-    running = 0
-    paused = 1
-    cancelled = 2
+    running     = 0
+    paused      = 1
+    cancelled   = 2
 
 
 class Subscription(Base):

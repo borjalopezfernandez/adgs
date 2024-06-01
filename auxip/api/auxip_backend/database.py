@@ -2,6 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import sessionmaker
 
+
 # systemctl stop nginx
 # sudo service postgresql start
 
@@ -12,6 +13,30 @@ from sqlalchemy.orm import sessionmaker
 # psql -U postgres
 # alter user adgs WITH PASSWORD 'adg$';
 # postgres=# \connect adgs_db
+# adgs_db=# \dt
+#
+
+'''
+\connect adgs_db
+
+adgs_db=# \d subscriptions
+ Id                     | uuid                        |           | not null | 
+ Status                 | enumsubscriptionstatus      |           |          | 
+ FilterParam            | character varying(512)      |           |          | 
+ NotificationEndpoint   | character varying(255)      |           |          | 
+ NotificationEpUsername | character varying(63)       |           |          | 
+ NotificationEpPassword | character varying(255)      |           |          | 
+ LastNotificationDate   | timestamp without time zone |           |          | 
+ SubmissionDate         | timestamp without time zone |           |          | 
+
+ table subscriptions
+
+ select "Id" from subscriptions where "NotificationEpUsername"='perry';
+ select "Id" from subscriptions where "Id"='c9b6a93b-3843-485b-a8a7-1f8f79092eba';
+ c9b6a93b-3843-485b-a8a7-1f8f79092eba
+
+'''
+
 # postgres=# SHOW data_directory;
 # GRANT ALL PRIVILEGES ON DATABASE adgs_db  to postgres;
 # GRANT ALL PRIVILEGES ON DATABASE adgs_db  to adgs;
@@ -20,10 +45,8 @@ from sqlalchemy.orm import sessionmaker
 # did not work with localhost and need to use 127.0.0.1
 
 SQLALCHEMY_DATABASE_URL = "postgresql://adgs:adg$#5432@127.0.0.1/adgs_db"
-
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
-
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+engine                  = create_engine(SQLALCHEMY_DATABASE_URL)
+SessionLocal            = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 # inherit from this class to create each of the database models or classes (the ORM models)
 Base = declarative_base()

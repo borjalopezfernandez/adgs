@@ -33,11 +33,12 @@ else:
 
 logger.info("AUXIP backend init")
 
+# -------------------------------------
+# TO-DO:
 # create the db model
 # it should be done outside with alembic
-
-logger.debug("Creating database => models.Base.metadata.create_all(bind=engine)")
-models.Base.metadata.create_all(bind=engine)
+# logger.debug("Creating database => models.Base.metadata.create_all(bind=engine)")
+# models.Base.metadata.create_all(bind=engine)
 
 # -------------------------------------
 # create the fastapi application
@@ -116,8 +117,17 @@ async def create_subscription(subscription: schemas.Subscription, db: Session = 
     tags            = ["Subscriptions"],
     response_model  = schemas.SubscriptionOutput,
 )
-async def get_subcription(id: str, db: Session = Depends(get_db)):
-    logger.debug(f"/get subscription {id}")
+async def get_subcription(id: str, db: Session = Depends(get_db)) -> Any:
+    logger.debug(f"/get subscription {id}") 
+    subscription_id = schemas.SubscriptionId(Id=UUID(id))
+    subscription    = crud.get_subscription(db=db, subscription_id=subscription_id) 
+    return(subscription)
+    # return Response(content = subscription, status_code = status.HTTP_200_OK)
+
+    '''
+   
+    print("SATAN")
+
     for i in list_subscription:
         if i.Id == UUID(id):
             headers = {"x-get-subscription-notificationepusername": i.NotificationEpUsername,
@@ -125,6 +135,7 @@ async def get_subcription(id: str, db: Session = Depends(get_db)):
             return Response(status_code = status.HTTP_200_OK, headers = headers)
 
     return Response(status_code=status.HTTP_404_NOT_FOUND)
+    '''
 # response = crud.get_subscription(db=db, subscription_id=id) 
 # --------------------------------------------------------------------
 
