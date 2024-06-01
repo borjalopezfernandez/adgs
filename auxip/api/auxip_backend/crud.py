@@ -1,5 +1,6 @@
+import json
 # DB CRUD function
-
+from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 from uuid import UUID
 
@@ -49,8 +50,15 @@ def get_subscription(db: Session, subscription_id: schemas.SubscriptionId):
     print(f"get_subscription: Status                  => {result.Status}")
     print(f"get_subscription: NotificationEndpoint    => {result.NotificationEndpoint}")
     print(f"get_subscription: NotificationEpUsername  => {result.NotificationEpUsername}")
+    print(result)
     return result
 
+# -----------------------------------------------------------------------------
+
+def get_subscription_list_id(db: Session):
+    print("get_subscription_list_id")
+    return db.query(models.Subscription.Id).all()
+    
 # -----------------------------------------------------------------------------
 
 def update_subscription_status(db: Session, subscription_status: schemas.SubscriptionStatus):
@@ -64,7 +72,6 @@ def update_subscription_status(db: Session, subscription_status: schemas.Subscri
 # -----------------------------------------------------------------------------
 
 # -----------------------------------------------------------------------------
-
 
 def create_product(db: Session, product: schemas.ProductCreate):
     print("create_product: {}".format(product.Name))

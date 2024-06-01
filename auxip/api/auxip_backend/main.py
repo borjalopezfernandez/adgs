@@ -5,7 +5,9 @@ import logging
 
 from uuid import UUID
 from fastapi import FastAPI
-from fastapi import Depends, Response, status
+from fastapi import Depends, status
+from fastapi.responses import JSONResponse, Response
+from fastapi.encoders import jsonable_encoder
 
 from sqlalchemy.orm import Session
 
@@ -115,29 +117,46 @@ async def create_subscription(subscription: schemas.Subscription, db: Session = 
 
 @app.get("/odata/v1/Subscription/{id}",
     tags            = ["Subscriptions"],
+    status_code     = status.HTTP_200_OK,
     response_model  = schemas.SubscriptionOutput,
 )
-async def get_subcription(id: str, db: Session = Depends(get_db)) -> Any:
+async def get_subcription(id: str, db: Session = Depends(get_db)) -> schemas.Subscription:
     logger.debug(f"/get subscription {id}") 
-    subscription_id = schemas.SubscriptionId(Id=UUID(id))
-    subscription    = crud.get_subscription(db=db, subscription_id=subscription_id) 
-    return(subscription)
-    # return Response(content = subscription, status_code = status.HTTP_200_OK)
+    subscription_id     = schemas.SubscriptionId(Id=UUID(id))
+    db_subscription     = crud.get_subscription(db=db, subscription_id=subscription_id)
+    subscription        = schemas.Subscription( Id                      = db_subscription.Id,
+                                                Status                  = db_subscription.Status,
+                                                SubmissionDate          = db_subscription.SubmissionDate,
+                                                FilterParam             = db_subscription.FilterParam, 
+                                                LastNotificationDate    = db_subscription.LastNotificationDate,
+                                                NotificationEndpoint    = db_subscription.NotificationEndpoint,
+                                                NotificationEpUsername  = db_subscription.NotificationEpUsername,
+                                                NotificationEpPassword  = db_subscription.NotificationEpPassword
+                                                )
+    
+    headers             = {"x-get-subscription-notificationepusername": subscription.NotificationEpUsername,
+                            "Content-Language": "en-UK"}
+    return Response(content=subscription.model_dump_json(), media_type= "application/json", headers=headers)
 
-    '''
-   
-    print("SATAN")
-
-    for i in list_subscription:
-        if i.Id == UUID(id):
-            headers = {"x-get-subscription-notificationepusername": i.NotificationEpUsername,
-                       "Content-Language": "en-US"}
-            return Response(status_code = status.HTTP_200_OK, headers = headers)
-
-    return Response(status_code=status.HTTP_404_NOT_FOUND)
-    '''
-# response = crud.get_subscription(db=db, subscription_id=id) 
 # --------------------------------------------------------------------
+
+"""
+    AUXIP Get List of Subscription ID
+"""
+
+
+@app.get("/odata/v1/Subscriptions/Id",
+    tags            = ["Subscriptions"],
+    status_code     = status.HTTP_200_OK,
+)
+async def get_subcription_list_id(db: Session = Depends(get_db)):
+    logger.debug(f"/get subcription_list_id {id}")
+    db_list_id              = crud.get_subscription_list_id(db=db)
+    list_subscription_id    = []
+    # list of <class 'sqlalchemy.engine.row.Row'>
+    for row in db_list_id:
+        list_subscription_id.append( schemas.SubscriptionId( Id = str(row[0]) ) )
+    return(list_subscription_id)
 
 
 # --------------------------------------------------------------------
@@ -159,6 +178,6 @@ async def update_subscription_status(sub_status: schemas.SubscriptionStatus, db:
 # -------------------------------------
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True, debug=True)
+    uvicorn.run("main:app", host = "0.0.0.0", port = 8000, reload = True, debug = True)
 
 # -------------------------------------

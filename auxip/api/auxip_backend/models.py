@@ -40,11 +40,15 @@ class EnumSubscriptionStatus(str, enum.Enum):
 
 class Subscription(Base):
     __tablename__ = "subscriptions"
-    Id                              = Column(Uuid, primary_key = True, default=uuid.uuid4)
+    Id                              = Column(Uuid,          primary_key = True, default=uuid.uuid4)
     Status: EnumSubscriptionStatus  = Column(Enum(EnumSubscriptionStatus))
-    FilterParam                     = Column(String(512), unique = False)
-    NotificationEndpoint            = Column(String(255), unique = False)
-    NotificationEpUsername          = Column(String(63), unique = False)
-    NotificationEpPassword          = Column(String(255), unique = False)
-    LastNotificationDate            = Column(DateTime, nullable = True, default=null)
+    FilterParam                     = Column(String(512),   unique = False)
+    NotificationEndpoint            = Column(String(255),   unique = False)
+    NotificationEpUsername          = Column(String(63),    unique = False)
+    NotificationEpPassword          = Column(String(255),   unique = False)
+    LastNotificationDate            = Column(DateTime,      nullable = True, default=null)
     SubmissionDate                  = Column(DateTime)
+
+    def __repr__(self):
+        return f"Id:{self.Id} - Status:{self.Status}"
+

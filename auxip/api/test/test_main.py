@@ -6,9 +6,10 @@ from starlette.testclient import TestClient
 
 from auxip_backend.main import app
 
-# https://github.com/tiangolo/fastapi/issues/192
-# https://fastapi.tiangolo.com/tutorial/testing/#testing-extended-example
-# https://stackoverflow.com/questions/61383179/fastapi-passing-json-in-get-request-via-testclient
+
+# https://stackoverflow.com/questions/67255653/how-to-set-up-and-tear-down-a-database-between-tests-in-fastapi
+# https://github.com/tiangolo/fastapi/issues/4507
+
 
 @pytest.fixture
 def client():
@@ -161,3 +162,29 @@ def test_put_subscription_status(client, print_separator):
 
     print(f"END : {sys._getframe().f_code.co_name}")
    
+
+def test_get_subscription_lisf_id(client, print_separator):
+    """
+    GIVEN some subscription input
+    WHEN posting the subscription input
+    THEN response with status 200
+    """
+    print(f"START : {sys._getframe().f_code.co_name}")
+    
+    print("GET /odata/v1/Subscriptions/Id")
+    
+    response = client.get("/odata/v1/Subscriptions/Id")
+    assert response.status_code == 200
+    json_data = response.json()
+    print(json_data)
+    print(json_data[0])
+    print(json_data[0]['Id'])
+
+    for element in json_data:
+        id  = element['Id']
+        url = f"/odata/v1/Subscription/{id}"
+        print(f"GET {url}")
+        response = client.get(url)
+        assert response.status_code == 200
+        print(response.headers)
+        print("\n************")
