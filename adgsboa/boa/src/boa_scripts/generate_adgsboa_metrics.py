@@ -54,7 +54,10 @@ def execute_generator(begin, end, metrics_file_path):
     day_stop = (parser.parse(end[0:10]) + datetime.timedelta(days=1)).isoformat()
     month_start = parser.parse(end[0:7] + "-01").isoformat()
     month_stop = (parser.parse(end[0:7] + "-01") + relativedelta.relativedelta(months=1)).isoformat()
-    
+
+    #####################
+    # DOWNLOADED VOLUME #
+    #####################
     # CUMULATIVE_DOWNLOADED_VOLUME_PER_DAY
     cumulative_downloaded_volume_per_day_events = query.get_events(
         gauge_names = {"filter": f"CUMULATIVE_DOWNLOADED_VOLUME_PER_DAY_{day_start}_{day_stop}", "op": "=="},
@@ -165,6 +168,126 @@ f'''# HELP {metric_name} Cumulated downloaded volume from AUXIP globally.
             metric_name = "auxip_cumulative_downloaded_volume_by_client_globally"
             f.write(
 f'''# HELP {metric_name} Cumulated downloaded volume by client from AUXIP globally.
+# TYPE {metric_name} gauge
+{metric_name}{{client="{client}"}} {event.eventDoubles[0].value}
+''')
+            logger.info(f"Metric {metric_name} has been generated")
+        # end for
+    # end if
+
+    ##############################
+    # DOWNLOADED NUMBER OF FILES #
+    ##############################
+    # CUMULATIVE_DOWNLOADED_NUMBER_PER_DAY
+    cumulative_downloaded_number_per_day_events = query.get_events(
+        gauge_names = {"filter": f"CUMULATIVE_DOWNLOADED_NUMBER_PER_DAY_{day_start}_{day_stop}", "op": "=="},
+        gauge_systems = {"filter": "GLOBAL", "op": "=="}
+    )
+    if len(cumulative_downloaded_number_per_day_events) == 0:
+        adgsboa_up = 0
+        logger.error(f"There is not information about the cumulated downloaded number of files from AUXIP per day")
+    else:
+        event = cumulative_downloaded_number_per_day_events[0]
+        metric_name = "auxip_cumulative_downloaded_number_per_day"
+        f.write(
+f'''# HELP {metric_name} Cumulated downloaded number of files from AUXIP per day.
+# TYPE {metric_name} gauge
+{metric_name} {event.eventDoubles[0].value}
+''')
+        logger.info(f"Metric {metric_name} has been generated")
+    # end if
+    
+    # CUMULATIVE_DOWNLOADED_NUMBER_BY_CLIENT_PER_DAY
+    cumulative_downloaded_number_by_client_per_day_events = query.get_events(
+        gauge_names = {"filter": f"CUMULATIVE_DOWNLOADED_NUMBER_BY_CLIENT_PER_DAY_{day_start}_{day_stop}", "op": "=="}
+    )
+    if len(cumulative_downloaded_number_by_client_per_day_events) == 0:
+        adgsboa_up = 0
+        logger.error(f"There is not information about the cumulated downloaded number of files by client from AUXIP per day")
+    else:
+        for event in cumulative_downloaded_number_by_client_per_day_events:
+            client = event.gauge.system
+            metric_name = "auxip_cumulative_downloaded_number_by_client_per_day"
+            f.write(
+f'''# HELP {metric_name} Cumulated downloaded number of files by client from AUXIP per day.
+# TYPE {metric_name} gauge
+{metric_name}{{client="{client}"}} {event.eventDoubles[0].value}
+''')
+            logger.info(f"Metric {metric_name} has been generated")
+        # end for
+    # end if
+
+    # CUMULATIVE_DOWNLOADED_NUMBER_PER_MONTH
+    cumulative_downloaded_number_per_month_events = query.get_events(
+        gauge_names = {"filter": f"CUMULATIVE_DOWNLOADED_NUMBER_PER_MONTH_{month_start}_{month_stop}", "op": "=="},
+        gauge_systems = {"filter": "GLOBAL", "op": "=="}
+    )
+    if len(cumulative_downloaded_number_per_month_events) == 0:
+        adgsboa_up = 0
+        logger.error(f"There is not information about the cumulated downloaded number of files from AUXIP per month")
+    else:
+        event = cumulative_downloaded_number_per_month_events[0]
+        metric_name = "auxip_cumulative_downloaded_number_per_month"
+        f.write(
+f'''# HELP {metric_name} Cumulated downloaded number of files from AUXIP per month.
+# TYPE {metric_name} gauge
+{metric_name} {event.eventDoubles[0].value}
+''')
+        logger.info(f"Metric {metric_name} has been generated")
+    # end if
+    
+    # CUMULATIVE_DOWNLOADED_NUMBER_BY_CLIENT_PER_MONTH
+    cumulative_downloaded_number_by_client_per_month_events = query.get_events(
+        gauge_names = {"filter": f"CUMULATIVE_DOWNLOADED_NUMBER_BY_CLIENT_PER_MONTH_{month_start}_{month_stop}", "op": "=="}
+    )
+    if len(cumulative_downloaded_number_by_client_per_month_events) == 0:
+        adgsboa_up = 0
+        logger.error(f"There is not information about the cumulated downloaded number of files by client from AUXIP per month")
+    else:
+        for event in cumulative_downloaded_number_by_client_per_month_events:
+            client = event.gauge.system
+            metric_name = "auxip_cumulative_downloaded_number_by_client_per_month"
+            f.write(
+f'''# HELP {metric_name} Cumulated downloaded number of files by client from AUXIP per month.
+# TYPE {metric_name} gauge
+{metric_name}{{client="{client}"}} {event.eventDoubles[0].value}
+''')
+            logger.info(f"Metric {metric_name} has been generated")
+        # end for
+    # end if
+
+    # CUMULATIVE_DOWNLOADED_NUMBER
+    cumulative_downloaded_number_events = query.get_events(
+        gauge_names = {"filter": "CUMULATIVE_DOWNLOADED_NUMBER", "op": "=="},
+        gauge_systems = {"filter": "GLOBAL", "op": "=="}
+    )
+    if len(cumulative_downloaded_number_events) == 0:
+        adgsboa_up = 0
+        logger.error(f"There is not information about the cumulated downloaded number of files from AUXIP globally")
+    else:
+        event = cumulative_downloaded_number_events[0]
+        metric_name = "auxip_cumulative_downloaded_number_globally"
+        f.write(
+f'''# HELP {metric_name} Cumulated downloaded number of files from AUXIP globally.
+# TYPE {metric_name} gauge
+{metric_name} {event.eventDoubles[0].value}
+''')
+        logger.info(f"Metric {metric_name} has been generated")
+    # end if
+    
+    # CUMULATIVE_DOWNLOADED_NUMBER_BY_CLIENT
+    cumulative_downloaded_number_by_client_events = query.get_events(
+        gauge_names = {"filter": "CUMULATIVE_DOWNLOADED_NUMBER_BY_CLIENT", "op": "=="}
+    )
+    if len(cumulative_downloaded_number_by_client_events) == 0:
+        adgsboa_up = 0
+        logger.error(f"There is not information about the cumulated downloaded number of files by client from AUXIP globally")
+    else:
+        for event in cumulative_downloaded_number_by_client_events:
+            client = event.gauge.system
+            metric_name = "auxip_cumulative_downloaded_number_by_client_globally"
+            f.write(
+f'''# HELP {metric_name} Cumulated downloaded number of files by client from AUXIP globally.
 # TYPE {metric_name} gauge
 {metric_name}{{client="{client}"}} {event.eventDoubles[0].value}
 ''')
