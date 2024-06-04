@@ -25,6 +25,80 @@
         "type": "prometheus",
         "uid": "PBFA97CFB590B2093"
       },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "max": 10,
+          "min": 0,
+          "noValue": "0",
+          "thresholds": {
+            "mode": "percentage",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 0
+              },
+              {
+                "color": "green",
+                "value": 100
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 8,
+        "x": 0,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "minVizHeight": 75,
+        "minVizWidth": 75,
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "sizing": "auto"
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "count(last_over_time(adgs_minarc_up[5m]) == 1\n or \nlast_over_time(adgs_dec_up[5m]) == 1\n or \nlast_over_time(adgs_db_up[5m]) == 1\n or \nlast_over_time(adgs_monitoring_ddbb_up[5m]) == 1\n or \nlast_over_time(adgs_boa_up[5m]) == 1\n or \nlast_over_time(adgs_orc_boa_up[5m]) == 1\n or \nlast_over_time(adgs_minarc_boa_up[5m]) == 1\n or \nlast_over_time(adgs_grafana_up[5m]) == 1\n or \nlast_over_time(adgs_prometheus_up[5m]) == 1\n or \nlast_over_time(adgsboa_metrics_up[5m]) == 1)",
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Number of services running",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
       "description": "This table shows the status of every component of the ADGS",
       "fieldConfig": {
         "defaults": {
@@ -153,8 +227,8 @@
       },
       "gridPos": {
         "h": 12,
-        "w": 12,
-        "x": 0,
+        "w": 16,
+        "x": 8,
         "y": 0
       },
       "id": 1,
