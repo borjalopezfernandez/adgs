@@ -27,15 +27,15 @@ class SubscriptionId(BaseModel):
 
 
 class SubscriptionBase(BaseModel):
-    model_config                    = ConfigDict(from_attributes=True)
-    Id: UUID                        = Field(default_factory=uuid4)
-    SubmissionDate       : datetime = Field(default=datetime.now())
-    LastNotificationDate : datetime = Field(default=datetime.now())
-    Status               : EnumSubscriptionStatus
-    FilterParam          : str
-    NotificationEndpoint : str
-    NotificationEpUsername: str
-    NotificationEpPassword: str
+    model_config = ConfigDict(from_attributes=True)
+    Id                      : UUID = Field(default_factory=uuid4)
+    SubmissionDate          : datetime = Field(default=datetime.now())
+    LastNotificationDate    : datetime = Field(default=datetime.now())
+    Status                  : EnumSubscriptionStatus
+    FilterParam             : str
+    NotificationEndpoint    : str
+    NotificationEpUsername  : str
+    NotificationEpPassword  : str
     
     def __str__(self):
         return f"{self.Id} : {self.Status} => {self.NotificationEpUsername}"
@@ -70,6 +70,30 @@ class Subscription(SubscriptionBase):
                                     }
                                 }
                             )
+
+# -----------------------------------------------------------------------------
+
+class SubscriptionNotification(BaseModel):
+    model_config = ConfigDict(from_attributes =True ,
+                              json_schema_extra       = {
+                                  "example": {
+                                    "SubscriptionId"    : "fb7a2da4-50d0-4c8c-ab5c-12f3279f3f4b",
+                                    "ProductId"         : "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                                    "ProductName"       : "S2__OPER_AUX_UT1UTC_PDMC_20240513T000000_V20170101T000000_21000101T000000.7z",
+                                    "NotificationDate"  : "2024-05-13T00:15:00.000Z",
+                                    }
+                              }
+                            )
+    SubscriptionId          : UUID
+    ProductId               : UUID
+    ProductName             : str
+    NotificationDate        : datetime
+    
+
+class SubscriptionNotificationDB(SubscriptionNotification):
+    model_config = ConfigDict(from_attributes=True)
+    NotificationSuccess     : bool
+    NotificationInfo        : str
 
 # -----------------------------------------------------------------------------
 

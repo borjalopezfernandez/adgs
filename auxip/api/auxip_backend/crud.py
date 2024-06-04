@@ -27,14 +27,14 @@ def create_subscription(db: Session, subscription: schemas.SubscriptionCreate):
     print("create_subscription: LastNotificationDate    => {}".format(subscription.LastNotificationDate))
 
     db_subscription = models.Subscription(
-        Id=subscription.Id,
-        Status=subscription.Status,
-        FilterParam=subscription.FilterParam,
-        NotificationEndpoint=subscription.NotificationEndpoint,
-        NotificationEpUsername=subscription.NotificationEpUsername,
-        NotificationEpPassword=subscription.NotificationEpPassword,
-        SubmissionDate=subscription.SubmissionDate,
-        LastNotificationDate=subscription.LastNotificationDate,
+        Id                          = subscription.Id,
+        Status                      = subscription.Status,
+        FilterParam                 = subscription.FilterParam,
+        NotificationEndpoint        = subscription.NotificationEndpoint,
+        NotificationEpUsername      = subscription.NotificationEpUsername,
+        NotificationEpPassword      = subscription.NotificationEpPassword,
+        SubmissionDate              = subscription.SubmissionDate,
+        LastNotificationDate        = subscription.LastNotificationDate,
     )
     db.add(db_subscription)
     db.commit()
@@ -70,6 +70,31 @@ def update_subscription_status(db: Session, subscription_status: schemas.Subscri
     return db_subscription
 
 # -----------------------------------------------------------------------------
+
+def create_subscription_notification_product(db: Session, notification: schemas.SubscriptionNotificationDB):
+    print("create_subscription_notification_product: NotificationSuccess     => {}".format(notification.NotificationSuccess))
+    print("create_subscription_notification_product: NotificationInfo        => {}".format(notification.NotificationInfo))
+    print("create_subscription_notification_product: SubscriptionId          => {}".format(notification.SubscriptionId))
+    print("create_subscription_notification_product: ProductId               => {}".format(notification.ProductId))
+    print("create_subscription_notification_product: ProductName             => {}".format(notification.ProductName))
+    print("create_subscription_notification_product: NotificationDate        => {}".format(notification.NotificationDate))
+
+    db_subscription_notification = models.SubscriptionNotification(
+        NotificationDate        = notification.NotificationDate,
+        NotificationSuccess     = notification.NotificationSuccess,
+        NotificationInfo        = notification.NotificationInfo,
+        SubscriptionId          = notification.SubscriptionId,
+        ProductId               = notification.ProductId,
+        ProductName             = notification.ProductName,
+    )
+    
+    db.add(db_subscription_notification)
+    db.commit()
+    db.flush()
+    return db_subscription_notification
+
+# -----------------------------------------------------------------------------
+
 
 # -----------------------------------------------------------------------------
 

@@ -13,9 +13,10 @@ from sqlalchemy.orm import Session
 
 # -------------------------------------
 # application specific
+
 from .database import engine, get_db
 from . import crud, models, schemas
-
+from .routers import subscription_notification_endpoint
 # -------------------------------------
 
 
@@ -51,6 +52,10 @@ tags_metadata = [
         "description": "Operations with Subscriptions",
     },
     {
+        "name": "Notifications",
+        "description": "Simulator of Notification End-Points",
+    },
+    {
         "name": "Products",
         "description": "Products",
         "externalDocs": {
@@ -63,8 +68,11 @@ tags_metadata = [
 app             = FastAPI(openapi_tags=tags_metadata)
 app.title       = "Auxiliary Data Gathering Service"
 app.summary     = "AUXIP description"
-app.version     = "0.0.2"
+app.version     = "0.0.3"
 app.description = "Here's a longer description of the custom **ADGS** service"
+
+# this is is a simulated end-point for notification
+app.include_router(subscription_notification_endpoint.router)
 
 list_subscription = []
 
@@ -174,10 +182,7 @@ async def update_subscription_status(sub_status: schemas.SubscriptionStatus, db:
 
 # --------------------------------------------------------------------
 
-
 # -------------------------------------
-
 if __name__ == "__main__":
-    uvicorn.run("main:app", host = "0.0.0.0", port = 8000, reload = True, debug = True)
-
+    uvicorn.run("main:app", host = "0.0.0.0", port = 8000, reload = True, debug = True, proxy_headers = True)
 # -------------------------------------

@@ -4,12 +4,35 @@ import logging as logger
 import json
 from starlette.testclient import TestClient
 
+from auxip_backend import models, schemas, crud
+
+from sqlalchemy import create_engine
+from sqlalchemy.orm import Session
+
 from auxip_backend.main import app
 
-
 # https://stackoverflow.com/questions/67255653/how-to-set-up-and-tear-down-a-database-between-tests-in-fastapi
-# https://github.com/tiangolo/fastapi/issues/4507
 
+
+@pytest.fixture(scope = "function", autouse = True)
+def init_db():
+    print('init_db()')
+    SQLALCHEMY_DATABASE_URL = "postgresql://adgs:adg$#5432@127.0.0.1/adgs_db"
+    engine                  = create_engine(SQLALCHEMY_DATABASE_URL)
+    models.Base.metadata.create_all(bind=engine)
+    print('before_yield')
+    yield
+    print('after_yield')
+    models.Base.metadata.drop_all(bind=engine)    
+
+
+@pytest.fixture#(scope = "function", autouse = True)
+def init_preserve_db():
+    print('init_preserve_db()')
+    SQLALCHEMY_DATABASE_URL = "postgresql://adgs:adg$#5432@127.0.0.1/adgs_db"
+    engine                  = create_engine(SQLALCHEMY_DATABASE_URL)
+    models.Base.metadata.create_all(bind=engine)
+    
 
 @pytest.fixture
 def client():
@@ -171,6 +194,31 @@ def test_get_subscription_lisf_id(client, print_separator):
     """
     print(f"START : {sys._getframe().f_code.co_name}")
     
+    # first create subscription
+    print("POST /odata/v1/Subscription")
+    
+    # -----------------------
+    # Create the subscription
+    subs = {
+        "FilterParam": "contains(Name,'_AUX_ECMWFD_') and PublicationDate gt 2019-02-01T00:00:00.000Z and PublicationDate lt 2019-09-01T00:00:00.000Z",
+        "NotificationEndpoint": "http://myserver.org",
+        "NotificationEpPassword": "diLegno$",
+        "NotificationEpUsername": "perry",
+        "Status": "0"
+    }
+
+    response = client.post("/odata/v1/Subscription", json=subs)
+    assert response.status_code == 201
+    json_data = response.json()
+    print(f"Subscription {json_data['Id']} has status {json_data['Status']}")
+
+    # -----------------------
+    id = json_data['Id']
+    subs_update      = {'Id' : id, 'Status' : '1' }
+    print(subs_update)
+
+
+
     print("GET /odata/v1/Subscriptions/Id")
     
     response = client.get("/odata/v1/Subscriptions/Id")

@@ -1,5 +1,7 @@
 fastapi[all]
+alembic
 sqlalchemy
+psycopg2-binary
 psycopg2
 sqlalchemy_guid
 sqlmodel
