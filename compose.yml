@@ -33,6 +33,7 @@ services:
       environment    :
          - MINARC_PLUGIN=ADGS
          - TMPDIR=/tmp
+         - MINARC_DATABASE_HOST=adgs_db
       restart        : always
       volumes:
          - /data:/data
@@ -45,6 +46,8 @@ services:
       image          : app_adgs_dec
       container_name : adgs_dec_${SERVICE_LABEL}
       hostname       : adgs_dec
+      environment    :
+         - DEC_DATABASE_HOST=adgs_db
       restart: always
       volumes:
          - /data:/data
