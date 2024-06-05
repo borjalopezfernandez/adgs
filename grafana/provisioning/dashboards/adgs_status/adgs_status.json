@@ -84,7 +84,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "count(last_over_time(adgs_minarc_up[5m]) == 1\n or \nlast_over_time(adgs_dec_up[5m]) == 1\n or \nlast_over_time(adgs_db_up[5m]) == 1\n or \nlast_over_time(adgs_monitoring_ddbb_up[5m]) == 1\n or \nlast_over_time(adgs_boa_up[5m]) == 1\n or \nlast_over_time(adgs_orc_boa_up[5m]) == 1\n or \nlast_over_time(adgs_minarc_boa_up[5m]) == 1\n or \nlast_over_time(adgs_grafana_up[5m]) == 1\n or \nlast_over_time(adgs_prometheus_up[5m]) == 1\n or \nlast_over_time(adgsboa_metrics_up[5m]) == 1)",
+          "expr": "count(last_over_time(adgs_minarc_up[5m]) == 1\n or \nlast_over_time(adgs_dec_up[5m]) == 1\n or \nlast_over_time(adgs_db_up[5m]) == 1\n or \nlast_over_time(adgs_monitoring_db_up[5m]) == 1\n or \nlast_over_time(adgs_boa_up[5m]) == 1\n or \nlast_over_time(adgs_orc_boa_up[5m]) == 1\n or \nlast_over_time(adgs_minarc_boa_up[5m]) == 1\n or \nlast_over_time(adgs_grafana_up[5m]) == 1\n or \nlast_over_time(adgs_prometheus_up[5m]) == 1\n or \nlast_over_time(adgsboa_metrics_up[5m]) == 1)",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -254,7 +254,7 @@
           "disableTextWrap": false,
           "editorMode": "code",
           "exemplar": false,
-          "expr": "last_over_time(adgs_minarc_up[5m])\n or \nlast_over_time(adgs_dec_up[5m])\n or \nlast_over_time(adgs_db_up[5m])\n or \nlast_over_time(adgs_monitoring_ddbb_up[5m])\n or \nlast_over_time(adgs_boa_up[5m])\n or \nlast_over_time(adgs_orc_boa_up[5m])\n or \nlast_over_time(adgs_minarc_boa_up[5m])\n or \nlast_over_time(adgs_grafana_up[5m])\n or \nlast_over_time(adgs_prometheus_up[5m])\n or \nlast_over_time(adgsboa_metrics_up[5m])",
+          "expr": "last_over_time(adgs_minarc_up[5m])\n or \nlast_over_time(adgs_dec_up[5m])\n or \nlast_over_time(adgs_db_up[5m])\n or \nlast_over_time(adgs_monitoring_db_up[5m])\n or \nlast_over_time(adgs_boa_up[5m])\n or \nlast_over_time(adgs_orc_boa_up[5m])\n or \nlast_over_time(adgs_minarc_boa_up[5m])\n or \nlast_over_time(adgs_grafana_up[5m])\n or \nlast_over_time(adgs_prometheus_up[5m])\n or \nlast_over_time(adgsboa_metrics_up[5m])",
           "format": "table",
           "fullMetaSearch": false,
           "includeNullMetadata": true,

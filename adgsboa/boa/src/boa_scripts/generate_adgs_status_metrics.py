@@ -145,7 +145,7 @@ def execute_generator(metrics_file_path):
     ############
     # BOA DDBB #
     ############
-    service_name = "adgs_monitoring_ddbb"
+    service_name = "adgs_monitoring_db"
     services[service_name] = {
         "metric_name": f"{service_name}_up",
         "status": 1,
