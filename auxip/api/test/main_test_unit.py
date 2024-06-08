@@ -4,7 +4,7 @@ import logging as logger
 import json
 from starlette.testclient import TestClient
 
-from auxip_backend import models
+from auxip_backend.models import subscriptions
 from auxip_backend.config import Settings
 from auxip_backend.logger import logger
 
@@ -23,11 +23,11 @@ def init_db():
     print(Settings.database_url)
     SQLALCHEMY_DATABASE_URL = Settings.database_url
     engine                  = create_engine(SQLALCHEMY_DATABASE_URL)
-    models.Base.metadata.create_all(bind=engine)
+    subscriptions.Base.metadata.create_all(bind=engine)
     print('before_yield')
     yield
     print('after_yield')
-    models.Base.metadata.drop_all(bind=engine)    
+    subscriptions.Base.metadata.drop_all(bind=engine)
 
 
 @pytest.fixture#(scope = "function", autouse = True)
@@ -36,7 +36,7 @@ def init_preserve_db():
     print(Settings.database_url)
     SQLALCHEMY_DATABASE_URL = Settings.database_url
     engine                  = create_engine(SQLALCHEMY_DATABASE_URL)
-    models.Base.metadata.create_all(bind=engine)
+    subscriptions.Base.metadata.create_all(bind=engine)
     
 
 @pytest.fixture

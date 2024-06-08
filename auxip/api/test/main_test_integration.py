@@ -8,7 +8,8 @@ from uuid import UUID
 
 from starlette.testclient import TestClient
 
-from auxip_backend import database, models, schemas, crud
+from auxip_backend import database, schemas, crud
+from auxip_backend.models import subscriptions
 from auxip_backend.config import Settings
 
 from sqlalchemy import create_engine
@@ -32,8 +33,8 @@ db                      = SessionLocal()
 def init_db():
     print()
     print('init_db() start')
-    models.Base.metadata.drop_all(bind=engine)
-    models.Base.metadata.create_all(bind=engine)
+    subscriptions.Base.metadata.drop_all(bind=engine)
+    subscriptions.Base.metadata.create_all(bind=engine)
     print('init_db() end')
    
 

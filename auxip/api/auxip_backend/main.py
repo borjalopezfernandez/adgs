@@ -5,16 +5,16 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi import Depends, status
 
-from fastapi.encoders import jsonable_encoder
+
 
 from sqlalchemy.orm import Session
 
 # -------------------------------------
 # application specific
 
-from .database import engine, get_db
-from . import crud, models, schemas
+from .database import engine, get_db, Base
 from .logger import logger
+
 # -------------------------------------
 
 # -------------------------------------
@@ -25,7 +25,7 @@ from .routers import subscription_notification_endpoint
 # -------------------------------------
 
 # Ensure the tables model is created
-models.Base.metadata.create_all(bind=engine)
+Base.metadata.create_all(bind=engine)
 
 logger.info("AUXIP backend init")
 

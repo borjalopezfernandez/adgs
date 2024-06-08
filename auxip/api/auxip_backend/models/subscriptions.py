@@ -1,7 +1,3 @@
-# Create SQLAlchemy models
-
-# https://www.adamsmith.haus/python/docs/sqlalchemy.dialects.postgresql.ENUM
-
 import datetime
 import enum
 import uuid
@@ -21,7 +17,9 @@ from sqlalchemy.orm import declarative_base, relationship
 from sqlalchemy.types import Uuid
 from sqlalchemy_guid import GUID
 
-from .database import Base
+from .. import database
+from .. database import get_db
+from .. database import Base
 
 class EnumSubscriptionStatus(str, enum.Enum):
     running     = 0
