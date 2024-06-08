@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from uuid import UUID
 
 from . import models, schemas
+from .logger import logger
 
 
 def create_database():
@@ -19,12 +20,13 @@ def get_subscriptions(db: Session, skip: int = 0, limit: int = 100):
 # -----------------------------------------------------------------------------
 
 def create_subscription(db: Session, subscription: schemas.SubscriptionCreate):
-    print("create_subscription: Id                      => {}".format(subscription.Id))
-    print("create_subscription: Status                  => {}".format(subscription.Status))
-    print("create_subscription: NotificationEndpoint    => {}".format(subscription.NotificationEndpoint))
-    print("create_subscription: NotificationEpUsername  => {}".format(subscription.NotificationEpUsername))
-    print("create_subscription: NotificationEpPassword  => {}".format(subscription.NotificationEpPassword))
-    print("create_subscription: LastNotificationDate    => {}".format(subscription.LastNotificationDate))
+    logger.debug("create_subscription: Id                      => {}".format(subscription.Id))
+    logger.debug("create_subscription: Id                      => {}".format(subscription.Id))
+    logger.debug("create_subscription: Status                  => {}".format(subscription.Status))
+    logger.debug("create_subscription: NotificationEndpoint    => {}".format(subscription.NotificationEndpoint))
+    logger.debug("create_subscription: NotificationEpUsername  => {}".format(subscription.NotificationEpUsername))
+    logger.debug("create_subscription: NotificationEpPassword  => {}".format(subscription.NotificationEpPassword))
+    logger.debug("create_subscription: LastNotificationDate    => {}".format(subscription.LastNotificationDate))
 
     db_subscription = models.Subscription(
         Id                          = subscription.Id,
@@ -44,26 +46,26 @@ def create_subscription(db: Session, subscription: schemas.SubscriptionCreate):
 # -----------------------------------------------------------------------------
 
 def get_subscription(db: Session, subscription_id: schemas.SubscriptionId):
-    print("get_subscription: Id (input)              => {}".format(subscription_id.Id))
+    logger.debug("get_subscription: Id (input)              => {}".format(subscription_id.Id))
     result = db.query(models.Subscription).filter(models.Subscription.Id == subscription_id.Id).first()
-    print(f"get_subscription: Id                      => {result.Id}")
-    print(f"get_subscription: Status                  => {result.Status}")
-    print(f"get_subscription: NotificationEndpoint    => {result.NotificationEndpoint}")
-    print(f"get_subscription: NotificationEpUsername  => {result.NotificationEpUsername}")
-    print(result)
+    logger.debug(f"get_subscription: Id                      => {result.Id}")
+    logger.debug(f"get_subscription: Status                  => {result.Status}")
+    logger.debug(f"get_subscription: NotificationEndpoint    => {result.NotificationEndpoint}")
+    logger.debug(f"get_subscription: NotificationEpUsername  => {result.NotificationEpUsername}")
+    logger.debug(result)
     return result
 
 # -----------------------------------------------------------------------------
 
 def get_subscription_list_id(db: Session):
-    print("get_subscription_list_id")
+    logger.debug("get_subscription_list_id")
     return db.query(models.Subscription.Id).all()
     
 # -----------------------------------------------------------------------------
 
 def update_subscription_status(db: Session, subscription_status: schemas.SubscriptionStatus):
-    print("update_subscription: Id                     => {}".format(subscription_status.Id))
-    print("update_subscription: Status                 => {}".format(subscription_status.Status))
+    logger.debug("update_subscription: Id                     => {}".format(subscription_status.Id))
+    logger.debug("update_subscription: Status                 => {}".format(subscription_status.Status))
     db_subscription = db.query(models.Subscription).filter(models.Subscription.Id == subscription_status.Id).update({models.Subscription.Status: subscription_status.Status})
     db.commit()
     db.flush()
@@ -72,12 +74,12 @@ def update_subscription_status(db: Session, subscription_status: schemas.Subscri
 # -----------------------------------------------------------------------------
 
 def create_subscription_notification_product(db: Session, notification: schemas.SubscriptionNotificationDB):
-    print("create_subscription_notification_product: NotificationSuccess     => {}".format(notification.NotificationSuccess))
-    print("create_subscription_notification_product: NotificationInfo        => {}".format(notification.NotificationInfo))
-    print("create_subscription_notification_product: SubscriptionId          => {}".format(notification.SubscriptionId))
-    print("create_subscription_notification_product: ProductId               => {}".format(notification.ProductId))
-    print("create_subscription_notification_product: ProductName             => {}".format(notification.ProductName))
-    print("create_subscription_notification_product: NotificationDate        => {}".format(notification.NotificationDate))
+    logger.debug("create_subscription_notification_product: NotificationSuccess     => {}".format(notification.NotificationSuccess))
+    logger.debug("create_subscription_notification_product: NotificationInfo        => {}".format(notification.NotificationInfo))
+    logger.debug("create_subscription_notification_product: SubscriptionId          => {}".format(notification.SubscriptionId))
+    logger.debug("create_subscription_notification_product: ProductId               => {}".format(notification.ProductId))
+    logger.debug("create_subscription_notification_product: ProductName             => {}".format(notification.ProductName))
+    logger.debug("create_subscription_notification_product: NotificationDate        => {}".format(notification.NotificationDate))
 
     db_subscription_notification = models.SubscriptionNotification(
         NotificationDate        = notification.NotificationDate,
@@ -99,7 +101,7 @@ def create_subscription_notification_product(db: Session, notification: schemas.
 # -----------------------------------------------------------------------------
 
 def create_product(db: Session, product: schemas.ProductCreate):
-    print("create_product: {}".format(product.Name))
+    logger.debug("create_product: {}".format(product.Name))
     db_product = models.Product(
         Name=product.Name,
         ContentType=product.ContentType,

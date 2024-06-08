@@ -9,6 +9,7 @@ from uuid import UUID
 from starlette.testclient import TestClient
 
 from auxip_backend import database, models, schemas, crud
+from auxip_backend.config import Settings
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -21,7 +22,7 @@ notification_end_point      = "http://localhost:8000/test/EP/Notification/Produc
 notification_end_point_unav = "http://cannotreachme:1234/test/EP/Notification/ProductAvailability"
 
 
-SQLALCHEMY_DATABASE_URL = "postgresql://adgs:adg$#5432@127.0.0.1/adgs_db"
+SQLALCHEMY_DATABASE_URL = Settings.database_url
 engine                  = create_engine(SQLALCHEMY_DATABASE_URL)
 SessionLocal            = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 db                      = SessionLocal()

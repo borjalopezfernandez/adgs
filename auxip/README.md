@@ -1,20 +1,57 @@
 # README #
 AUXIP Auxiliary Interface Point.
 
-### What is this repository for? ###
+### Summary ###
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+* Dependencies
+* Development environment
+
 
 ### Dependencies ###
 
-* Summary of set up and requirements
-
+* Postgres start in the development environment:
 ```
 sudo service postgresql start
+```
+
+
+### Development environment ###
+
+## Management of the python with virtual environments ##
+
+* Creation
+```
+python -m venv venv
+python -m venv venv --system-site-packages
+
+```
+
+* Activation
+```
+source venv/bin/activate
+```
+
+* Deactivation
+```
+deactivate
+```
+
+## Package management ##
+
+* Install dependencies
+
+```
 pip install -r requirements.txt
 ```
+
+* Inspect installed package baseline
+```
+python -m pip list
+python -m pip freeze
+```
+
+
+## Poetry management ##
 
 * Package software develoment & management with poetry
 
@@ -26,41 +63,5 @@ poetry add --group dev pytest pytest-cov black isort flake8 bandit safety
 
 ```
 poetry add fastapi uvicorn httpx
-```
-
-
-
-* Configuration adgs/adg$
-* Dependencies
-* Database configuration:
-```
-SQLALCHEMY_DATABASE_URL = 'postgresql://adgs:adg$#5432@127.0.0.1/adgs_db'
-```
-* How to run tests
-* Deployment instructions
-
-
-### Execute ###
-
-* execution command to test without root-path to hit directly the microservice:
-```
-uvicorn frontend.main:app --host 0.0.0.0 --reload
-
-```
-
-
-* execution command to test with nginx proxy:
-```
-uvicorn frontend.main:app --host 0.0.0.0 --reload --root-path /auxip
-
-```
-
-
-
-
-* Swagger API front-end:
-```
-http://localhost:8000/docs
-http://localhost:8000/redoc
 ```
 

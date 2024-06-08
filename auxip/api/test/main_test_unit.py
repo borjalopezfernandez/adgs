@@ -4,7 +4,9 @@ import logging as logger
 import json
 from starlette.testclient import TestClient
 
-from auxip_backend import models, schemas, crud
+from auxip_backend import models
+from auxip_backend.config import Settings
+from auxip_backend.logger import logger
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
@@ -16,8 +18,10 @@ from auxip_backend.main import app
 
 @pytest.fixture(scope = "function", autouse = True)
 def init_db():
+    logger.info('----------------- init_db() -------------------')
     print('init_db()')
-    SQLALCHEMY_DATABASE_URL = "postgresql://adgs:adg$#5432@127.0.0.1/adgs_db"
+    print(Settings.database_url)
+    SQLALCHEMY_DATABASE_URL = Settings.database_url
     engine                  = create_engine(SQLALCHEMY_DATABASE_URL)
     models.Base.metadata.create_all(bind=engine)
     print('before_yield')
@@ -29,7 +33,8 @@ def init_db():
 @pytest.fixture#(scope = "function", autouse = True)
 def init_preserve_db():
     print('init_preserve_db()')
-    SQLALCHEMY_DATABASE_URL = "postgresql://adgs:adg$#5432@127.0.0.1/adgs_db"
+    print(Settings.database_url)
+    SQLALCHEMY_DATABASE_URL = Settings.database_url
     engine                  = create_engine(SQLALCHEMY_DATABASE_URL)
     models.Base.metadata.create_all(bind=engine)
     
