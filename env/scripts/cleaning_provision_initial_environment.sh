@@ -13,7 +13,8 @@ PROVISIONING_DIRECTORY="$(dirname "$(realpath "$0")")"
 source $PROVISIONING_DIRECTORY/configuration_provision_initial_environment.sh
 
 if [ `whoami` != 'root' ]; then
-    echo "ERROR: The provision of the initial environment for the ADGS needs to be performed with root privileges."
+    echo "ERROR: The cleaning of the provision of the initial environment for the ADGS needs to be performed with root privileges."
+    exit -1
 fi
 
 WELCOME_MESSAGE="\n
