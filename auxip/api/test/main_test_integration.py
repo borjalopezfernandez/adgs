@@ -8,9 +8,9 @@ from uuid import UUID
 
 from starlette.testclient import TestClient
 
-from auxip_backend import database, crud
 from auxip_backend.models import subscriptions
 import auxip_backend.schemas.subscriptions as schemas
+import auxip_backend.crud.crud_subscriptions as crud
 from auxip_backend.config import Settings
 
 from sqlalchemy import create_engine

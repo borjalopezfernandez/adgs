@@ -19,8 +19,9 @@ from .routers import test_api
 from .routers import subscription_notification_endpoint
 # -------------------------------------
 
-# Ensure the tables model is created
-Base.metadata.create_all(bind=engine)
+# Ensure the auxip table(s) model is created
+from .models import subscriptions as model_subscriptions
+model_subscriptions.Base.metadata.create_all(bind=engine)
 
 logger.info("AUXIP backend init")
 

@@ -5,6 +5,7 @@ import json
 from starlette.testclient import TestClient
 
 from auxip_backend.models import subscriptions
+# from auxip_backend.models import products
 from auxip_backend.config import Settings
 from auxip_backend.logger import logger
 
@@ -12,8 +13,6 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
 from auxip_backend.main import app
-
-# https://stackoverflow.com/questions/67255653/how-to-set-up-and-tear-down-a-database-between-tests-in-fastapi
 
 
 @pytest.fixture(scope = "function", autouse = True)
@@ -36,7 +35,7 @@ def init_preserve_db():
     print(Settings.database_url)
     SQLALCHEMY_DATABASE_URL = Settings.database_url
     engine                  = create_engine(SQLALCHEMY_DATABASE_URL)
-    subscriptions.Base.metadata.create_all(bind=engine)
+    subscriptions.Base.metadata.create_all(bind = engine, tables = ["subscription", "subscription_notification"])
     
 
 @pytest.fixture

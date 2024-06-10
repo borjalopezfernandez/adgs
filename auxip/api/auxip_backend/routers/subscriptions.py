@@ -5,7 +5,7 @@ from fastapi.responses import JSONResponse, Response
 
 from .. database import get_db
 from .. import logger as app_logger
-from .. import crud
+from .. crud import crud_subscriptions as crud
 from .. schemas import subscriptions
 
 from sqlalchemy.orm import Session
