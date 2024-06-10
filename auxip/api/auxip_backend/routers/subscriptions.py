@@ -5,8 +5,8 @@ from fastapi.responses import JSONResponse, Response
 
 from .. database import get_db
 from .. import logger as app_logger
-from .. import schemas
-from .. import crud
+from .. crud import crud_subscriptions as crud
+from .. schemas import subscriptions
 
 from sqlalchemy.orm import Session
 
@@ -26,9 +26,9 @@ router = APIRouter(
 
 @router.post("/odata/v1/Subscription",
    status_code     = status.HTTP_201_CREATED,
-   response_model  = schemas.SubscriptionOutput,
+   response_model  = subscriptions.SubscriptionOutput,
 )
-async def create_subscription(subscription: schemas.Subscription, db: Session = Depends(get_db)) -> Any:
+async def create_subscription(subscription: subscriptions.Subscription, db: Session = Depends(get_db)) -> Any:
     """
     Create a Subscription with the following parameters:
 
@@ -59,7 +59,7 @@ async def get_subcription_list_id(db: Session = Depends(get_db)):
    list_subscription_id    = []
    # list of <class 'sqlalchemy.engine.row.Row'>
    for row in db_list_id:
-      list_subscription_id.append( schemas.SubscriptionId( Id = str(row[0]) ) )
+      list_subscription_id.append( subscriptions.SubscriptionId( Id = str(row[0]) ) )
    return(list_subscription_id)
 
 
@@ -75,13 +75,13 @@ async def get_subcription_list_id(db: Session = Depends(get_db)):
 @router.get("/odata/v1/Subscription/{id}",
     tags            = ["Subscriptions"],
     status_code     = status.HTTP_200_OK,
-    response_model  = schemas.SubscriptionOutput,
+    response_model  = subscriptions.SubscriptionOutput,
 )
-async def get_subcription(id: str, db: Session = Depends(get_db)) -> schemas.Subscription:
+async def get_subcription(id: str, db: Session = Depends(get_db)) -> subscriptions.Subscription:
    app_logger.logger.debug(f"/get subscription {id}") 
-   subscription_id     = schemas.SubscriptionId(Id=UUID(id))
+   subscription_id     = subscriptions.SubscriptionId(Id=UUID(id))
    db_subscription     = crud.get_subscription(db=db,   subscription_id = subscription_id)
-   subscription        = schemas.Subscription(  Id                      = db_subscription.Id,
+   subscription        = subscriptions.Subscription(  Id                      = db_subscription.Id,
                                                 Status                  = db_subscription.Status,
                                                 SubmissionDate          = db_subscription.SubmissionDate,
                                                 FilterParam             = db_subscription.FilterParam, 
@@ -105,7 +105,7 @@ async def get_subcription(id: str, db: Session = Depends(get_db)) -> schemas.Sub
 
 
 @router.put("/odata/v1/Subscription/Status", tags=["Subscriptions"])
-async def update_subscription_status(sub_status: schemas.SubscriptionStatus, db: Session = Depends(get_db)) -> Any:
+async def update_subscription_status(sub_status: subscriptions.SubscriptionStatus, db: Session = Depends(get_db)) -> Any:
    app_logger.logger.debug("/put update subscription status")
    app_logger.logger.debug(sub_status)
    return crud.update_subscription_status(db = db, subscription_status = sub_status)

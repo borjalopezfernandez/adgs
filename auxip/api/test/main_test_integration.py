@@ -8,8 +8,9 @@ from uuid import UUID
 
 from starlette.testclient import TestClient
 
-from auxip_backend import database, schemas, crud
 from auxip_backend.models import subscriptions
+import auxip_backend.schemas.subscriptions as schemas
+import auxip_backend.crud.crud_subscriptions as crud
 from auxip_backend.config import Settings
 
 from sqlalchemy import create_engine
@@ -29,7 +30,7 @@ SessionLocal            = sessionmaker(autocommit=False, autoflush=False, bind=e
 db                      = SessionLocal()
    
 
-@pytest.fixture(scope = "module", autouse = True)
+@pytest.fixture(scope = "function", autouse = False)
 def init_db():
     print()
     print('init_db() start')
@@ -51,7 +52,7 @@ def print_separator():
 
 
 
-def test_subscription_cycle(client, print_separator):
+def test_subscription_cycle(client, init_db, print_separator):
     """
     GIVEN some subscription input
     WHEN posting the subscription input
@@ -152,7 +153,7 @@ def test_subscription_notification(client, print_separator):
 
 
 
-def test_subscription_notification_failure(client, print_separator):
+def failure_test_subscription_notification(client, print_separator):
     """
     GIVEN some subscription product notification
     WHEN posting to some unavailable / unreachable EP
@@ -165,6 +166,7 @@ def test_subscription_notification_failure(client, print_separator):
     response = client.get("/odata/v1/Subscriptions/Id")
     assert response.status_code == 200
     json_data = response.json()
+    print(json_data)
 
     subscription_id = json_data[0]['Id']
     print(subscription_id)

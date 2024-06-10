@@ -2,12 +2,12 @@ import datetime
 
 from fastapi import APIRouter
 
-from .. import schemas
+from .. schemas import subscriptions
 
 router = APIRouter()
 
 @router.post("/test/EP/Notification/ProductAvailability", tags=["Notifications"])
-async def handle_subscription_notification_product(product_notification: schemas.SubscriptionNotification):
+async def handle_subscription_notification_product(product_notification: subscriptions.SubscriptionNotification):
    """
    Create a Subscription with the following parameters:
 
