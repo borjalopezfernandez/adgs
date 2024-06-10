@@ -1,20 +1,15 @@
 from typing import Any
 import uvicorn
 
-
 from fastapi import FastAPI
 from fastapi import Depends, status
-
-
 
 from sqlalchemy.orm import Session
 
 # -------------------------------------
 # application specific
-
 from .database import engine, get_db, Base
 from .logger import logger
-
 # -------------------------------------
 
 # -------------------------------------

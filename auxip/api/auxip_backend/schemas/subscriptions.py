@@ -1,7 +1,3 @@
-# > Pydantic models
-# > Create an SubscriptionBase Pydantic models (or let's say "schemas") to have common attributes while creating or reading data
-# > Create an SubcriptionCreate that inherit from them (so they will have the same attributes), plus any additional data (attributes) needed for creation
-
 import enum
 import uuid
 from datetime import datetime
