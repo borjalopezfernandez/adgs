@@ -1,7 +1,7 @@
 from typing import Any
 from uuid import UUID
-from fastapi import APIRouter, Depends, status
-from fastapi.responses import JSONResponse, Response
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
+from fastapi.responses import JSONResponse, FileResponse, Response
 
 from .. database import get_db
 from .. import logger as app_logger
@@ -19,7 +19,11 @@ router = APIRouter(
 
 # -------------------------------------------------------------------
 
+def my_background_task(file : str):
+    app_logger.logger.info(f"my background task executed for {file}")
+
 # -------------------------------------------------------------------
+
 
 """
     AUXIP Get List of Products ID
@@ -57,8 +61,8 @@ async def get_product_list_id(db: Session = Depends(get_db)) -> Any:
 )
 async def get_product(id: str, db: Session = Depends(get_db)) -> Any:
     app_logger.logger.debug(f"/get product {id}") 
-    product_id      = products.ProductId(Id=UUID(id))
-    db_product      = crud.get_product(db=db,   product_id = product_id)
+    product_id      = products.ProductId(Id = UUID(id))
+    db_product      = crud.get_product(db = db, product_id = product_id)
     product         = products.ProductBase( Id                          = str(db_product.uuid),
                                             Name                        = db_product.name,
                                             ContentLength               = db_product.size,
@@ -68,6 +72,45 @@ async def get_product(id: str, db: Session = Depends(get_db)) -> Any:
                                            )
     headers         = {"x-get-product-metadata-custom": "test-value",
                             "Content-Language": "en-UK"}
-    return Response(content=product.model_dump_json(), media_type= "application/json", headers=headers)
+    return Response(content = product.model_dump_json(), media_type = "application/json", headers = headers)
 
 # --------------------------------------------------------------------
+
+
+# -------------------------------------------------------------------
+
+"""
+    AUXIP Download by Product Id
+
+    https://<service-root-uri>/odata/v1/Products(Id)/$value
+
+    curl -X 'GET' 'http://localhost:8000/odata/v1/Products(e5834d1b-a705-44ac-bb36-4f1715c755df)/$value' \ -H 'accept: application/json'
+
+"""
+
+# https://github.com/tiangolo/fastapi/discussions/8630
+
+@router.get("/odata/v1/Products({id})/$value", 
+    status_code     = status.HTTP_200_OK
+)
+async def product_download(id: str, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
+    """
+    - Product download over the OData API is initiated using the ‘Id’ for each product returned in the GET Products List Response
+    - The URI for the download of a single product is: https://<service-root-uri>/odata/v1/Products(Id)/$value
+    - Id is the UUID assigned per product.
+    - The download is considered in the OData protocol through the /$value URL
+    """
+    app_logger.logger.debug(f"/get product_download {id}")
+    product_id = products.ProductId(Id = UUID(id))
+    db_product = crud.get_product(db = db, product_id = product_id)
+    file_path  = f"{db_product.path}/{db_product.filename}"
+    app_logger.logger.debug(f"/get product_download {file_path}")
+    background_tasks.add_task(my_background_task, file_path)
+    try:
+        return FileResponse(file_path, filename = db_product.filename)
+    except Exception as e:
+        app_logger.logger.error(f"Failed get product_download: {e}")
+        raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="The service is unavailable due to a connection error.")
+
+
+# -------------------------------------------------------------------
