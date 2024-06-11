@@ -15,6 +15,7 @@ from .logger import logger
 # -------------------------------------
 # api routers:
 from .routers import subscriptions
+from .routers import products
 from .routers import test_api
 from .routers import subscription_notification_endpoint
 # -------------------------------------
@@ -56,6 +57,9 @@ app.description = "Here's a longer description of the custom **ADGS** service"
 
 # Router for subscriptions management
 app.include_router(subscriptions.router)
+
+# Router for products management
+app.include_router(products.router)
 
 # Router for a simulated end-point for subscription notification
 app.include_router(subscription_notification_endpoint.router)

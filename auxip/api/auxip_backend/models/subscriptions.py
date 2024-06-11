@@ -52,10 +52,3 @@ class SubscriptionNotification(Base):
     id                              = Column(Integer,       primary_key = True, autoincrement = True)
     NotificationSuccess             = Column(Boolean,       nullable = False)
     NotificationInfo                = Column(String(512),   unique = False)
-
-
-class Product(Base):
-    __tablename__   = "archived_files"
-    Name            = Column(String(255), primary_key=True, unique=False)
-    ContentType     = Column(String(63), unique=False)
-    ContentLength   = Column(Integer, nullable=False)
