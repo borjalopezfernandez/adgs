@@ -24,7 +24,7 @@ class SubscriptionId(BaseModel):
 
 class SubscriptionBase(BaseModel):
     model_config = ConfigDict(from_attributes=True)
-    Id                      : UUID = Field(default_factory=uuid4)
+    Id                      : UUID     = Field(default_factory=uuid4)
     SubmissionDate          : datetime = Field(default=datetime.now())
     LastNotificationDate    : datetime = Field(default=datetime.now())
     Status                  : EnumSubscriptionStatus
@@ -92,27 +92,3 @@ class SubscriptionNotificationDB(SubscriptionNotification):
     NotificationInfo        : str
 
 # -----------------------------------------------------------------------------
-
-
-class ProductBase(BaseModel):
-    # name: str  = Field(alias='Name')
-    Name: str
-    ContentType: str
-    ContentLength: int
-
-
-class ProductCreate(ProductBase):
-    pass
-
-
-class Product(ProductBase):
-    class ConfigProduct:
-        from_attributes = True
-
-        json_schema_extra = {
-            "example": {
-                "Name": "S2__OPER_AUX_ECMWFD_PDMC_20190216T120000_V20190217T090000_20190217T210000.TGZ",
-                "ContentType": "application/octet-stream",
-                "ContentLength": "8326253",
-            }
-        }
