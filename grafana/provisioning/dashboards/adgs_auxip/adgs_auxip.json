@@ -20,8 +20,166 @@
   "graphTooltip": 0,
   "id": 3,
   "links": [],
-  "panels": [
-    {
+  "panels": [    
+      {
+          "gridPos": {
+              "h": 1,
+              "w": 24,
+              "x": 0,
+              "y": 0
+          },
+          "id": 14,
+          "title": "AUXIP performance",
+          "type": "row"
+      },
+      {
+          "datasource": {
+              "type": "prometheus",
+              "uid": "PBFA97CFB590B2093"
+          },
+          "description": "",
+          "fieldConfig": {
+              "defaults": {
+                  "color": {
+                      "mode": "thresholds"
+                  },
+                  "decimals": 3,
+                  "mappings": [],
+                  "thresholds": {
+                      "mode": "absolute",
+                      "steps": [
+                          {
+                              "color": "green",
+                              "value": null
+                          }
+                      ]
+                  },
+                  "unit": "Bps"
+              },
+              "overrides": []
+          },
+          "gridPos": {
+              "h": 8,
+              "w": 12,
+              "x": 0,
+              "y": 1
+          },
+          "id": 15,
+          "options": {
+              "minVizHeight": 75,
+              "minVizWidth": 75,
+              "orientation": "auto",
+              "reduceOptions": {
+                  "calcs": [
+                      "lastNotNull"
+                  ],
+                  "fields": "",
+                  "values": false
+              },
+              "showThresholdLabels": false,
+              "showThresholdMarkers": true,
+              "sizing": "auto"
+          },
+          "pluginVersion": "11.0.0",
+          "targets": [
+              {
+                  "datasource": {
+                      "type": "prometheus",
+                      "uid": "PBFA97CFB590B2093"
+                  },
+                  "editorMode": "code",
+                  "exemplar": false,
+                  "expr": "auxip_average_speed_to_download_files_globally",
+                  "instant": true,
+                  "legendFormat": "__auto",
+                  "range": false,
+                  "refId": "A"
+              }
+          ],
+          "title": "Average download speed",
+          "type": "gauge"
+      },
+      {
+          "datasource": {
+              "type": "prometheus",
+              "uid": "PBFA97CFB590B2093"
+          },
+          "description": "",
+          "fieldConfig": {
+              "defaults": {
+                  "color": {
+                      "mode": "thresholds"
+                  },
+                  "decimals": 3,
+                  "mappings": [],
+                  "thresholds": {
+                      "mode": "absolute",
+                      "steps": [
+                          {
+                              "color": "green",
+                              "value": null
+                          }
+                      ]
+                  },
+                  "unit": "s"
+              },
+              "overrides": []
+          },
+          "gridPos": {
+              "h": 8,
+              "w": 12,
+              "x": 12,
+              "y": 1
+          },
+          "id": 15,
+          "options": {
+              "minVizHeight": 75,
+              "minVizWidth": 75,
+              "orientation": "auto",
+              "reduceOptions": {
+                  "calcs": [
+                      "lastNotNull"
+                  ],
+                  "fields": "",
+                  "values": false
+              },
+              "showThresholdLabels": false,
+              "showThresholdMarkers": true,
+              "sizing": "auto"
+          },
+          "pluginVersion": "11.0.0",
+          "targets": [
+              {
+                  "datasource": {
+                      "type": "prometheus",
+                      "uid": "PBFA97CFB590B2093"
+                  },
+                  "editorMode": "code",
+                  "exemplar": false,
+                  "expr": "auxip_average_time_to_download_files_globally",
+                  "instant": true,
+                  "legendFormat": "__auto",
+                  "range": false,
+                  "refId": "A"
+              }
+          ],
+          "title": "Average download time",
+          "type": "gauge"
+      },
+      {
+          "collapsed": false,
+          "gridPos": {
+              "h": 1,
+              "w": 24,
+              "x": 0,
+              "y": 9
+          },
+          "id": 13,
+          "panels": [],
+          "title": "AUXIP monitoring",
+          "type": "row"
+      },
+      {
       "datasource": {
         "type": "prometheus",
         "uid": "PBFA97CFB590B2093"
@@ -85,7 +243,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 0
+        "y": 10
       },
       "id": 1,
       "options": {
@@ -187,7 +345,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 0
+        "y": 10
       },
       "id": 2,
       "options": {
@@ -288,7 +446,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 0
+        "y": 18
       },
       "id": 2,
       "options": {
@@ -389,7 +547,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 0
+        "y": 18
       },
       "id": 2,
       "options": {
@@ -490,7 +648,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 0
+        "y": 26
       },
       "id": 2,
       "options": {
@@ -591,7 +749,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 0
+        "y": 26
       },
       "id": 2,
       "options": {
@@ -692,7 +850,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 0
+        "y": 34
       },
       "id": 1,
       "options": {
@@ -794,7 +952,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 0
+        "y": 34
       },
       "id": 2,
       "options": {
@@ -895,7 +1053,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 0
+        "y": 42
       },
       "id": 2,
       "options": {
@@ -996,7 +1154,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 0
+        "y": 42
       },
       "id": 2,
       "options": {
@@ -1097,7 +1255,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 0
+        "y": 50
       },
       "id": 2,
       "options": {
@@ -1198,7 +1356,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 0
+        "y": 50
       },
       "id": 2,
       "options": {

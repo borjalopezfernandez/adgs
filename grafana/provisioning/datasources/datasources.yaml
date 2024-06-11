@@ -9,3 +9,19 @@ datasources:
     basicAuth: false
     isDefault: true
     editable: true
+  - name: ADGS-BOA-DDBB
+    type: grafana-postgresql-datasource
+    access: proxy
+    orgId: 1
+    url: adgs_monitoring_db:5432
+    basicAuth: true
+    isDefault: false
+    editable: true
+    user: eboa
+    database: eboadb
+    postgresVersion: 1100
+    readOnly: true
+    jsonData:
+      database: eboadb
+      postgresVersion: 1100
+      sslmode: disable

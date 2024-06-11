@@ -93,7 +93,7 @@ class TestAuxipDownloadReport(unittest.TestCase):
         # Check number of events generated
         events = self.query_eboa.get_events()
 
-        assert len(events) == 49
+        assert len(events) == 51
 
         # Check AUXIP_DOWNLOAD events
         events = self.query_eboa.get_events(gauge_names = {"filter": "AUXIP_DOWNLOAD", "op": "=="})
@@ -236,6 +236,32 @@ class TestAuxipDownloadReport(unittest.TestCase):
             registered_events[events[0].event_uuid] = None
         # end for
 
+        events = self.query_eboa.get_events(gauge_names = {"filter": "CUMULATIVE_DOWNLOAD_TIME", "op": "=="},
+                                            gauge_systems = {"filter": "GLOBAL", "op": "=="},
+                                            start_filters = [{"date": "2024-05-24T08:46:34.438128", "op": "=="}],
+                                            stop_filters = [{"date": "2024-05-24T08:46:34.454000", "op": "=="}])
+
+        assert len(events) == 1
+
+        assert events[0].get_structured_values() == [
+            {"name": "value",
+             "type": "double",
+             "value": "0.015871592"}
+        ]
+
+        events = self.query_eboa.get_events(gauge_names = {"filter": "CUMULATIVE_DOWNLOAD_SPEED", "op": "=="},
+                                            gauge_systems = {"filter": "GLOBAL", "op": "=="},
+                                            start_filters = [{"date": "2024-05-24T08:46:34.438128", "op": "=="}],
+                                            stop_filters = [{"date": "2024-05-24T08:46:34.454000", "op": "=="}])
+
+        assert len(events) == 1
+
+        assert events[0].get_structured_values() == [
+            {"name": "value",
+             "type": "double",
+             "value": "66066214403.6969"}
+        ]
+        
     def test_insert_two_auxip_download_reports(self):
         """
         This test verifies the ingestion of the download report from the AUXIP 
@@ -288,7 +314,7 @@ class TestAuxipDownloadReport(unittest.TestCase):
         # Check number of events generated
         events = self.query_eboa.get_events()
 
-        assert len(events) == 62
+        assert len(events) == 64
 
         # Check AUXIP_DOWNLOAD events
         events = self.query_eboa.get_events(gauge_names = {"filter": "AUXIP_DOWNLOAD", "op": "=="})
@@ -550,3 +576,29 @@ class TestAuxipDownloadReport(unittest.TestCase):
 
             registered_events[events[0].event_uuid] = None
         # end for
+
+        events = self.query_eboa.get_events(gauge_names = {"filter": "CUMULATIVE_DOWNLOAD_TIME", "op": "=="},
+                                            gauge_systems = {"filter": "GLOBAL", "op": "=="},
+                                            start_filters = [{"date": "2024-05-24T08:46:34.438128", "op": "=="}],
+                                            stop_filters = [{"date": "2024-05-25T08:46:34.454000", "op": "=="}])
+
+        assert len(events) == 1
+
+        assert events[0].get_structured_values() == [
+            {"name": "value",
+             "type": "double",
+             "value": "0.031743184"}
+        ]
+
+        events = self.query_eboa.get_events(gauge_names = {"filter": "CUMULATIVE_DOWNLOAD_SPEED", "op": "=="},
+                                            gauge_systems = {"filter": "GLOBAL", "op": "=="},
+                                            start_filters = [{"date": "2024-05-24T08:46:34.438128", "op": "=="}],
+                                            stop_filters = [{"date": "2024-05-25T08:46:34.454000", "op": "=="}])
+
+        assert len(events) == 1
+
+        assert events[0].get_structured_values() == [
+            {"name": "value",
+             "type": "double",
+             "value": "132132428807.394"}
+        ]

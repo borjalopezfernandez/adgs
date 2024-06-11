@@ -294,6 +294,48 @@ f'''# HELP {metric_name} Cumulated downloaded number of files by client from AUX
             logger.info(f"Metric {metric_name} has been generated")
         # end for
     # end if
+    
+    # CUMULATIVE_DOWNLOAD_TIME
+    cumulative_download_time_events = query.get_events(
+        gauge_names = {"filter": "CUMULATIVE_DOWNLOAD_TIME", "op": "=="},
+        gauge_systems = {"filter": "GLOBAL", "op": "=="}
+    )
+    if len(cumulative_download_time_events) == 0:
+        adgsboa_metrics_up = 0
+        logger.error(f"There is not information about the cumulated download time globally")
+    elif len(cumulative_downloaded_number_events) > 0:
+        cumulative_download_time_event = cumulative_download_time_events[0]
+        cumulative_downloaded_number_event = cumulative_downloaded_number_events[0]
+        average_time_to_download_files = cumulative_download_time_event.eventDoubles[0].value / cumulative_downloaded_number_event.eventDoubles[0].value
+        metric_name = "auxip_average_time_to_download_files_globally"
+        f.write(
+f'''# HELP {metric_name} Average time to download files from AUXIP globally.
+# TYPE {metric_name} gauge
+{metric_name} {average_time_to_download_files}
+''')
+        logger.info(f"Metric {metric_name} has been generated")
+    # end if
+    
+    # CUMULATIVE_DOWNLOAD_SPEED
+    cumulative_download_speed_events = query.get_events(
+        gauge_names = {"filter": "CUMULATIVE_DOWNLOAD_SPEED", "op": "=="},
+        gauge_systems = {"filter": "GLOBAL", "op": "=="}
+    )
+    if len(cumulative_download_speed_events) == 0:
+        adgsboa_metrics_up = 0
+        logger.error(f"There is not information about the cumulated download speed globally")
+    elif len(cumulative_downloaded_number_events) > 0:
+        cumulative_download_speed_event = cumulative_download_speed_events[0]
+        cumulative_downloaded_number_event = cumulative_downloaded_number_events[0]
+        average_speed_to_download_files = cumulative_download_speed_event.eventDoubles[0].value / cumulative_downloaded_number_event.eventDoubles[0].value
+        metric_name = "auxip_average_speed_to_download_files_globally"
+        f.write(
+f'''# HELP {metric_name} Average speed to download files from AUXIP globally.
+# TYPE {metric_name} gauge
+{metric_name} {average_speed_to_download_files}
+''')
+        logger.info(f"Metric {metric_name} has been generated")
+    # end if
 
     f.write(
 f'''# HELP adgsboa_metrics_up Status of the generation of ADGSBOA metrics (1 is 'up', 0 otherwise).

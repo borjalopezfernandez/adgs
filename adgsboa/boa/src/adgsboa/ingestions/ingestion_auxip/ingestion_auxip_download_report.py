@@ -109,6 +109,7 @@ def process_file(file_path, engine, query, reception_time):
     # AUXIP download
     auxip_download_events = []
     auxip_download_events.append({
+        "explicit_reference": downloaded_file_name,
         "gauge": {
             "insertion_type": "SIMPLE_UPDATE",
             "name": "AUXIP_DOWNLOAD",
@@ -184,7 +185,7 @@ def process_file(file_path, engine, query, reception_time):
                             "value": file_size}]
             })
         # end for
-        # Total: per mission and client
+        # Total
         auxip_download_counters.append({
             "gauge": {
                 "insertion_type": "UPDATE_COUNTER",
@@ -233,7 +234,7 @@ def process_file(file_path, engine, query, reception_time):
                             "value": 1}]
             })
         # end for
-        # Total: per mission and client
+        # Total
         auxip_download_counters.append({
             "gauge": {
                 "insertion_type": "UPDATE_COUNTER",
@@ -249,6 +250,38 @@ def process_file(file_path, engine, query, reception_time):
     # end for
 
     eboa_ingestion_functions.insert_ingestion_progress(session_progress, general_source_progress, 80)
+
+    # Total cumulative download time
+    auxip_download_counters.append({
+        "gauge": {
+            "insertion_type": "UPDATE_COUNTER",
+            "name": "CUMULATIVE_DOWNLOAD_TIME",
+            "system": "GLOBAL"
+        },
+        "start": download_start_date,
+        "stop": download_stop_date,
+        "values": [{"name": "value",
+                    "type": "double",
+                    "value": download_elapsed_time}]
+    })
+
+    eboa_ingestion_functions.insert_ingestion_progress(session_progress, general_source_progress, 82)
+
+    # Total cumulative download speed
+    auxip_download_counters.append({
+        "gauge": {
+            "insertion_type": "UPDATE_COUNTER",
+            "name": "CUMULATIVE_DOWNLOAD_SPEED",
+            "system": "GLOBAL"
+        },
+        "start": download_start_date,
+        "stop": download_stop_date,
+        "values": [{"name": "value",
+                    "type": "double",
+                    "value": download_speed}]
+    })
+
+    eboa_ingestion_functions.insert_ingestion_progress(session_progress, general_source_progress, 84)
     
     # Build the xml
     operations = []
