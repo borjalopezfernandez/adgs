@@ -6,62 +6,32 @@ AUXIP Auxiliary Interface Point.
 * Dependencies
 * Development environment
 
+### Docker TEMPORAL COMPOSE ###
 
-### Dependencies ###
-
-* Postgres start in the development environment:
+* Start-up
 ```
-sudo service postgresql start
-```
-
-
-### Development environment ###
-
-## Management of the python with virtual environments ##
-
-* Creation
-```
-python -m venv venv
-python -m venv venv --system-site-packages
-
+docker compose -f compose_auxip.yml  --env-file env/localhost_env up -d
 ```
 
-* Activation
+* Shutdown
 ```
-source venv/bin/activate
-```
-
-* Deactivation
-```
-deactivate
-```
-
-## Package management ##
-
-* Install dependencies
-
-```
-pip install -r requirements.txt
-```
-
-* Inspect installed package baseline
-```
-python -m pip list
-python -m pip freeze
+docker compose -f compose_auxip.yml --env-file env/localhost_env down
 ```
 
 
-## Poetry management ##
 
-* Package software develoment & management with poetry
+### Docker image / container AUXIP ###
 
+* Build app_adgs_auxip
 ```
-poetry add --group dev pytest pytest-cov black isort flake8 bandit safety
-```
-
-* Install fastapi packages
-
-```
-poetry add fastapi uvicorn httpx
+docker build -f Dockerfile.adgs.auxip.localhost.yaml -t app_adgs_auxip:latest .
 ```
 
+
+### Docker image / container minARC ###
+
+* Build app_adgs_auxip
+
+```
+docker build -f Dockerfile.adgs.minarc.localhost.yaml -t app_adgs_minarc:latest .
+```

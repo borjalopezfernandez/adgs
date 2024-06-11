@@ -1,0 +1,44 @@
+#########################################################################
+#
+#     Dockerfile.adgs.auxip.localhost
+#
+#########################################################################
+#
+# Dockerfile for auxip @ ADGS
+# 
+# ALPINE
+# https://pkgs.alpinelinux.org/packages
+#
+FROM python:3.11-alpine
+# ================================================
+RUN apk update && apk add --no-cache build-base
+RUN apk --no-cache add procps
+RUN apk --no-cache add curl
+RUN apk --no-cache add openssl curl-dev
+RUN apk --no-cache add bash
+RUN apk --no-cache add jq
+RUN apk --no-cache add openssh
+RUN apk --no-cache add sshpass
+RUN apk --no-cache add p7zip
+RUN apk --no-cache add postgresql-client
+RUN apk --no-cache add postgresql-dev
+
+
+# change default shell from ash to bash
+RUN sed -i -e "s/bin\/ash/bin\/bash/" /etc/passwd
+
+# in case it is executed rootless to resolve the adgs_db hostname
+# https://forums.docker.com/t/docker-compose-build-error-on-mac-chmod-changing-permissions-of-etc-resolv-conf-read-only-file-system/139187
+# RUN chmod a+r /etc/resolv.conf
+
+RUN addgroup -g 2020 -S adgs && adduser -u 2020 -S adgs -G adgs -s /bin/bash
+
+# ------------------------------------------------
+WORKDIR /code
+COPY requirements.txt /code/
+RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
+COPY api/auxip_backend /code/auxip_backend
+COPY api/test /code/test
+# -------------------------------------------------
+
+CMD ["uvicorn","auxip_backend.main:app", "--proxy-headers", "--host", "0.0.0.0", "--log-level",  "debug"]
