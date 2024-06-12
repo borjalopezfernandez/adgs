@@ -48,4 +48,4 @@ ENV PATH="${PATH}:/home/adgs/.local/bin"
 
 WORKDIR /auxip
 
-CMD ["/bin/bash", "-c", "pip3 install -e '/auxip[tests]'; uvicorn api.auxip_backend.main:app --proxy-headers --host 0.0.0.0 --log-level debug --reload"]
+CMD ["/bin/bash", "-c", "pip3 install -e '/auxip[tests]'; uvicorn auxip.main:app --proxy-headers --host 0.0.0.0 --log-level debug --reload"]

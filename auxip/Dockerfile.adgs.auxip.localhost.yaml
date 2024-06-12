@@ -49,4 +49,4 @@ ENV PATH="${PATH}:/home/adgs/.local/bin"
 # Install AUXIP package
 RUN pip3 install /auxip_packages/*
 
-CMD ["/bin/bash", "-c", "uvicorn api.auxip_backend.main:app --proxy-headers --host 0.0.0.0 --log-level debug"]
+CMD ["/bin/bash", "-c", "uvicorn auxip.main:app --proxy-headers --host 0.0.0.0 --log-level debug"]
