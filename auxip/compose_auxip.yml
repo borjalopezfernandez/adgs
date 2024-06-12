@@ -52,6 +52,7 @@ services:
       image          : app_adgs_minarc
       container_name : adgs_minarc_${SERVICE_LABEL}
       hostname       : adgs_minarc
+      privileged     : true
       ports:
       - 4567:4567
       environment:
@@ -62,7 +63,7 @@ services:
       - MINARC_DATABASE_NAME=${MINARC_DATABASE_NAME}
       - MINARC_DATABASE_USER=${MINARC_DATABASE_USER}
       - MINARC_DATABASE_PASSWORD=${MINARC_DATABASE_PASSWORD}
-   #    restart        : always
+      restart        : always
       networks:
       - adgs_network
       volumes:
