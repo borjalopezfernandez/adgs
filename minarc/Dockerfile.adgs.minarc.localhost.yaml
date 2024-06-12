@@ -28,10 +28,6 @@ RUN apk --no-cache add p7zip
 RUN apk --no-cache add postgresql-client
 RUN apk --no-cache add postgresql-dev
 
-
-RUN chattr -ai /etc/resolv.conf
-RUN chmod a+r /etc/resolv.conf
-
 # change default shell from ash to bash
 RUN sed -i -e "s/bin\/ash/bin\/bash/" /etc/passwd
 
@@ -43,22 +39,20 @@ RUN addgroup -g 2020 -S adgs && adduser -u 2020 -S adgs -G adgs -s /bin/bash
 #RUN groupadd -g 2020 adgs && \
 #    useradd -u 2020 -ms /bin/bash -g adgs -d /home/adgs adgs
 # ------------------------------------------------
-COPY ./env/scripts/entrypoint_adgs_minarc_localhost.sh /usr/bin/
-RUN ln -s /usr/bin/entrypoint_adgs_minarc_localhost.sh /    
-# ------------------------------------------------
 RUN gem update
 # ------------------------------------------------
 # MINARC GEM
-COPY ./minarc/install/minarc_latest.gem .
+COPY ./install/minarc_latest.gem .
 RUN gem install minarc_latest.gem
 # ------------------------------------------------
 # Patch log4r
-COPY ./minarc/install/rollingfileoutputter.rb /usr/local/bundle/gems/log4r-1.1.10/lib/log4r/outputter/
+COPY ./install/rollingfileoutputter.rb /usr/local/bundle/gems/log4r-1.1.10/lib/log4r/outputter/
 # ------------------------------------------------
+COPY ./env/scripts/entrypoint_adgs_minarc_localhost.sh /usr/bin/
+RUN ln -s /usr/bin/entrypoint_adgs_minarc_localhost.sh /    
 # ------------------------------------------------
-USER adgs
+# USER adgs
 
-# COPY --chown=2020:2020 ./config/ssh/known_hosts /home/adgs/.ssh/known_hosts
 ENV GEM_HOME=/usr/local/bundle PATH="/usr/local/bundle/bin:${PATH}"
 # "------------------------------------------------
 
