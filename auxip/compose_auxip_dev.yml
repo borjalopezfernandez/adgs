@@ -1,0 +1,75 @@
+
+volumes:
+   volume_adgs:
+      driver: local
+      driver_opts:
+         type: none
+         o: bind
+         device: /data
+
+services:
+
+   adgs_db:
+      image: postgres:11
+      container_name: adgs_db_${SERVICE_LABEL}
+      hostname: adgs_db
+      restart: always
+      environment:
+         POSTGRES_DB                : ${AUXIP_DATABASE_NAME}
+         POSTGRES_USER              : ${AUXIP_DATABASE_USER}
+         POSTGRES_PASSWORD          : ${AUXIP_DATABASE_PASSWORD}
+         POSTGRES_HOST_AUTH_METHOD  : trust
+      volumes:
+         - /data/adgs/adgs_db:/var/lib/postgresql/data
+      networks:
+         - adgs_network
+
+   adgs_auxip:
+      depends_on:
+         - adgs_db
+      image          : app_adgs_auxip_dev
+      container_name : adgs_auxip_${SERVICE_LABEL}
+      hostname       : adgs_auxip
+      ports:
+         - ${AUXIP_PORT}:8000
+      environment    :
+      - AUXIP_DATABASE_HOST=${AUXIP_DATABASE_HOST}
+      - AUXIP_DATABASE_NAME=${AUXIP_DATABASE_NAME}
+      - AUXIP_DATABASE_USER=${AUXIP_DATABASE_USER}
+      - AUXIP_DATABASE_PASSWORD=${AUXIP_DATABASE_PASSWORD}
+      - AUXIP_LOG_LEVEL=DEBUG
+      - MINARC_PLUGIN=ADGS
+      - TMPDIR=/tmp
+      restart        : always
+      volumes:
+         - /data:/data
+         - ${AUXIP_DEVELOPMENT_PATH}:/auxip
+      networks:
+         - adgs_network
+     
+   adgs_minarc:
+      depends_on:
+      - adgs_db
+      image          : app_adgs_minarc
+      container_name : adgs_minarc_${SERVICE_LABEL}
+      hostname       : adgs_minarc
+      ports:
+      - 4567:4567
+      environment:
+      - TMPDIR=/tmp
+      - MINARC_PLUGIN=ADGS
+      - MINARC_DEBUG=TRUE 
+      - MINARC_DATABASE_HOST=${MINARC_DATABASE_HOST}
+      - MINARC_DATABASE_NAME=${MINARC_DATABASE_NAME}
+      - MINARC_DATABASE_USER=${MINARC_DATABASE_USER}
+      - MINARC_DATABASE_PASSWORD=${MINARC_DATABASE_PASSWORD}
+   #    restart        : always
+      networks:
+      - adgs_network
+      volumes:
+      - /data:/data
+      
+
+networks:
+   adgs_network:
+      name: adgs_network_${SERVICE_LABEL}

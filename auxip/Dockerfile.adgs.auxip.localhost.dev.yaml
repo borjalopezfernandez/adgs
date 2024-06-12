@@ -11,7 +11,8 @@
 #
 FROM python:3.11-alpine
 
-ARG AUXIP_PACKAGE
+ARG UID_HOST_USER
+ARG GID_HOST_USER
 
 # ================================================
 RUN apk update && apk add --no-cache build-base
@@ -34,19 +35,17 @@ RUN sed -i -e "s/bin\/ash/bin\/bash/" /etc/passwd
 # https://forums.docker.com/t/docker-compose-build-error-on-mac-chmod-changing-permissions-of-etc-resolv-conf-read-only-file-system/139187
 # RUN chmod a+r /etc/resolv.conf
 
-RUN addgroup -g 2020 -S adgs && adduser -u 2020 -S adgs -G adgs -s /bin/bash
+RUN addgroup -g $GID_HOST_USER -S adgs && adduser -u $UID_HOST_USER -S adgs -G adgs -s /bin/bash
 
-# Copy AUXIP package
-RUN mkdir /auxip_packages
-COPY --from=auxip_packages_directory $AUXIP_PACKAGE /auxip_packages
-RUN chown -R adgs:adgs /auxip_packages
+# Create directory where the auxip repository is going to be attached for development
+RUN mkdir /auxip
+RUN chown adgs:adgs /auxip
 
 USER adgs
 
 # Add path to the scripts installed by pip in the home of the adgs user to PATH
 ENV PATH="${PATH}:/home/adgs/.local/bin"
 
-# Install AUXIP package
-RUN pip3 install /auxip_packages/*
+WORKDIR /auxip
 
-CMD ["/bin/bash", "-c", "uvicorn api.auxip_backend.main:app --proxy-headers --host 0.0.0.0 --log-level debug"]
+CMD ["/bin/bash", "-c", "pip3 install -e '/auxip[tests]'; uvicorn api.auxip_backend.main:app --proxy-headers --host 0.0.0.0 --log-level debug --reload"]
