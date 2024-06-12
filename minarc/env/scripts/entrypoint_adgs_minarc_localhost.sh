@@ -3,6 +3,7 @@ set +e
 
 [ "$DEBUG" == 'true' ] && set -x
 
+rm -f /data/adgs/arc/tmp/.lock_minArcServer_*
 
 echo "entrypoint adgs minarc / waiting 10s for db"
 sleep 10
