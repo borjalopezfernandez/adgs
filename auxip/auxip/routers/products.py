@@ -114,3 +114,90 @@ async def product_download(id: str, background_tasks: BackgroundTasks, db: Sessi
 
 
 # -------------------------------------------------------------------
+
+
+"""
+    AUXIP Product Query
+
+    https://<service-root-uri>/odata/v1/Products?
+
+    curl -X 'GET' 'http://localhost:8000/odata/v1/Products?' \ -H 'accept: application/json'
+
+"""
+
+@router.get("/odata/v1/Products{query}")
+async def product_query(background_tasks: BackgroundTasks, query: str = Path(..., title = "OData query", description = "query (do not forget the question mark) ?$filter=startswith(Name,'S2')"), db: Session = Depends(get_db)):
+    """
+    query: OData query
+    - Query for Product Entity / Attributes: https://<service-root-uri>/odata/v1/Products
+    - ?$count=true&$filter=startswith(Name,'S2')
+    - ?$filter=startswith(Name,'S1A_AUX_')
+    - ?$skip=13&$top=1000&$filter=startswith(Name,'S2')
+    - ?$orderby=PublicationDate desc
+    """
+    app_logger.logger.debug(f"/get product_query: {query}")
+    
+    # If it is not a query raise 404
+    if query[0:1] != "?":
+        return Response(status_code = status.HTTP_404_NOT_FOUND)
+    
+    count   = None
+    filter  = None
+    top     = None
+    skip    = None
+    orderby = None
+
+    if "$count=true" in query:
+        count = True
+
+    if "$count=false" in query:
+        count = False    
+
+    if "$filter=" in query:
+        if "&" in query.split("$filter=")[1]:
+            orderby = query.split("$filter=")[1].split("&")[0]
+        else:
+            orderby = query.split("$filter=")[1]
+
+    if "$top=" in query:
+        if "&" in query.split("$top=")[1]:
+            top = int(query.split("$top=")[1].split("&")[0])
+        else:
+            top = int(query.split("$top=")[1])
+
+    if "skip=" in query:
+        if "&" in query.split("$skip=")[1]:
+            top = int(query.split("$skip=")[1].split("&")[0])
+        else:
+            top = int(query.split("$skip=")[1])
+
+    if "$orderby" in query:
+        if "&" in query.split("$orderby=")[1]:
+            orderby = query.split("$orderby=")[1].split("&")[0]
+        else:
+            orderby = query.split("$orderby=")[1]
+
+    if filter != None:
+        app_logger.logger.debug(f"$filter={filter}")
+
+    if orderby != None:
+        app_logger.logger.debug(f"$orderby={orderby}")
+
+    if count != None:
+        app_logger.logger.debug(f"$count={count}")
+
+    if top != None:
+        app_logger.logger.debug(f"$top={str(top)}")
+
+    if skip != None:
+        app_logger.logger.debug(f"$skip={str(skip)}")
+
+    if count == True:
+        app_logger.logger.debug(f"perform query count with filter {filter}")
+        return "666"
+
+
+    return {"received": query}
+
+
+# -------------------------------------------------------------------
