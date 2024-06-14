@@ -1,6 +1,6 @@
 from typing import Any
 from uuid import UUID
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Path, status
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Request, Query, status
 from fastapi.responses import JSONResponse, FileResponse, PlainTextResponse, Response
 
 from .. database import get_db
@@ -137,8 +137,17 @@ async def product_download(id: str, background_tasks: BackgroundTasks, db: Sessi
 
 """
 
-@router.get("/odata/v1/Products{query}")
-async def product_query(background_tasks: BackgroundTasks, query: str = Path(..., title = "OData query", description = "query (do not forget the question mark) ?$filter=startswith(Name,'S2')"), db: Session = Depends(get_db)):
+@router.get("/odata/v1/Products")
+# async def product_query(background_tasks: BackgroundTasks, query: str = Path(..., title = "OData query", description = "query (do not forget the question mark) ?$filter=startswith(Name,'S2')"), db: Session = Depends(get_db)):
+async def product_query(background_tasks: BackgroundTasks,
+                        request : Request,
+                        db      : Session = Depends(get_db),
+                        filter  : str = Query(alias = "$filter",    default = None), 
+                        count   : str = Query(alias = "$count",     default = None),
+                        top     : str = Query(alias = "$top",       default = None), 
+                        skip    : str = Query(alias = "$skip",      default = None),
+                        orderby : str = Query(alias = "$orderby",   default = None),
+                        ):
     """
     query: OData query
     - Query for Product Entity / Attributes: https://<service-root-uri>/odata/v1/Products
@@ -149,22 +158,16 @@ async def product_query(background_tasks: BackgroundTasks, query: str = Path(...
     - ?$filter=startswith(Name,'S1') and endswith(Name,'.EOF.zip')
     - ?$filter=contains(Name,'AMH_ERRMAT') or contains(Name,'AMV_ERRMAT')
     """
-    app_logger.logger.debug(f"/get product_query: {query}")
-    
-    # If it is not a query raise 404
-    if query[0:1] != "?":
-        return Response(status_code = status.HTTP_404_NOT_FOUND)
-
     try:
-        result = odata_product_query.odata_get_product(db = db, query = query)
+        result = odata_product_query.odata_get_product(db = db, count = count, filter = filter, top = top, skip = skip, orderby = orderby)
     except Exception as error:
-        headers = {"x-get-product-query" : query, "x-get-product-query-error": str(error), "Content-Language": "en-UK"}
+        headers = {"x-product-query" : str(request.url) , "x-get-product-query-error": str(error), "Content-Language": "en-UK"}
         return PlainTextResponse("", headers = headers, status_code = 400)
 
     # $count=true returns a string with the number of elements
     if isinstance(result, str) == True:
         return result
-    
+
     list_product = []
 
     for item in result:
@@ -179,6 +182,5 @@ async def product_query(background_tasks: BackgroundTasks, query: str = Path(...
         list_product.append(product)
 
     return list_product
-
 
 # -------------------------------------------------------------------
