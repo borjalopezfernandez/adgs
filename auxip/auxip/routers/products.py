@@ -1,14 +1,26 @@
 from typing import Any
 from uuid import UUID
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
-from fastapi.responses import JSONResponse, FileResponse, Response
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Path, status
+from fastapi.responses import JSONResponse, FileResponse, PlainTextResponse, Response
 
 from .. database import get_db
 from .. import logger as app_logger
 from .. crud import crud_products as crud
+from .. crud.odata import products_query as odata_product_query
 from .. schemas import products
 
 from sqlalchemy.orm import Session
+
+'''
+HTTP Response Envelope
+The following overall HTTP status codes may be returned with the response:
+- 200 OK: if the request is accepted and a response can be returned
+- 400 Bad Request
+- 401 Unauthorized: if the requesting client is unauthorised
+- 404 Not Found
+- 429 Too Many Requests: if a quota is exceeded (see section 4.1.2)
+- 500 Internal Server Error
+'''
 
 app_logger.logger.info(f"API Router start => {__name__}")
 
@@ -110,11 +122,10 @@ async def product_download(id: str, background_tasks: BackgroundTasks, db: Sessi
         return FileResponse(file_path, filename = db_product.filename)
     except Exception as e:
         app_logger.logger.error(f"Failed get product_download: {e}")
-        raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="The service is unavailable due to a connection error.")
+        raise HTTPException(status_code = 500 , detail="The service is unavailable due to a connection error.")
 
 
 # -------------------------------------------------------------------
-
 
 """
     AUXIP Product Query
@@ -122,6 +133,7 @@ async def product_download(id: str, background_tasks: BackgroundTasks, db: Sessi
     https://<service-root-uri>/odata/v1/Products?
 
     curl -X 'GET' 'http://localhost:8000/odata/v1/Products?' \ -H 'accept: application/json'
+
 
 """
 
@@ -134,70 +146,39 @@ async def product_query(background_tasks: BackgroundTasks, query: str = Path(...
     - ?$filter=startswith(Name,'S1A_AUX_')
     - ?$skip=13&$top=1000&$filter=startswith(Name,'S2')
     - ?$orderby=PublicationDate desc
+    - ?$filter=startswith(Name,'S1') and endswith(Name,'.EOF.zip')
+    - ?$filter=contains(Name,'AMH_ERRMAT') or contains(Name,'AMV_ERRMAT')
     """
     app_logger.logger.debug(f"/get product_query: {query}")
     
     # If it is not a query raise 404
     if query[0:1] != "?":
         return Response(status_code = status.HTTP_404_NOT_FOUND)
+
+    try:
+        result = odata_product_query.odata_get_product(db = db, query = query)
+    except Exception as error:
+        headers = {"x-get-product-query" : query, "x-get-product-query-error": str(error), "Content-Language": "en-UK"}
+        return PlainTextResponse("", headers = headers, status_code = 400)
+
+    # $count=true returns a string with the number of elements
+    if isinstance(result, str) == True:
+        return result
     
-    count   = None
-    filter  = None
-    top     = None
-    skip    = None
-    orderby = None
+    list_product = []
 
-    if "$count=true" in query:
-        count = True
+    for item in result:
+        # app_logger.logger.debug("Name : ".format(item.filename) )
+        product = products.ProductBase( Id                      = str(item.uuid),
+                                        Name                        = item.filename,
+                                        ContentLength               = item.size,
+                                        ContentDate                 = {"ContentDate" : {"Start" : item.validity_start.strftime("%Y-%m-%dT%H:%M:%S.000Z"), "End" : item.validity_stop.strftime("%Y-%m-%dT%H:%M:%S.000Z")} },
+                                        PublicationDate             = item.archive_date.strftime("%Y-%m-%dT%H:%M:%S.000Z"),
+                                        Checksum                    = {"Checksum" : { "Algorithm" : "MD5", "Value" : str(item.md5), "ChecksumDate" : item.archive_date.strftime("%Y-%m-%dT%H:%M:%S.000Z") } }
+                                    )
+        list_product.append(product)
 
-    if "$count=false" in query:
-        count = False    
-
-    if "$filter=" in query:
-        if "&" in query.split("$filter=")[1]:
-            orderby = query.split("$filter=")[1].split("&")[0]
-        else:
-            orderby = query.split("$filter=")[1]
-
-    if "$top=" in query:
-        if "&" in query.split("$top=")[1]:
-            top = int(query.split("$top=")[1].split("&")[0])
-        else:
-            top = int(query.split("$top=")[1])
-
-    if "skip=" in query:
-        if "&" in query.split("$skip=")[1]:
-            top = int(query.split("$skip=")[1].split("&")[0])
-        else:
-            top = int(query.split("$skip=")[1])
-
-    if "$orderby" in query:
-        if "&" in query.split("$orderby=")[1]:
-            orderby = query.split("$orderby=")[1].split("&")[0]
-        else:
-            orderby = query.split("$orderby=")[1]
-
-    if filter != None:
-        app_logger.logger.debug(f"$filter={filter}")
-
-    if orderby != None:
-        app_logger.logger.debug(f"$orderby={orderby}")
-
-    if count != None:
-        app_logger.logger.debug(f"$count={count}")
-
-    if top != None:
-        app_logger.logger.debug(f"$top={str(top)}")
-
-    if skip != None:
-        app_logger.logger.debug(f"$skip={str(skip)}")
-
-    if count == True:
-        app_logger.logger.debug(f"perform query count with filter {filter}")
-        return "666"
-
-
-    return {"received": query}
+    return list_product
 
 
 # -------------------------------------------------------------------
