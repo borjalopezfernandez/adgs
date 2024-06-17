@@ -157,6 +157,11 @@ async def product_query(background_tasks: BackgroundTasks,
     - ?$orderby=PublicationDate desc
     - ?$filter=startswith(Name,'S1') and endswith(Name,'.EOF.zip')
     - ?$filter=contains(Name,'AMH_ERRMAT') or contains(Name,'AMV_ERRMAT')
+    - ?$filter=Attributes/OData.CSC.StringAttribute/any(att:att/Name eq 'productType' and att/OData.CSC.StringAttribute/Value eq 'AUX_UT1UTC')
+    - ?$filter=Attributes/OData.CSC.StringAttribute/any(att:att/Name eq 'processingCenter' and att/OData.CSC.StringAttribute/Value eq 'PDMC')
+    - ?$filter=Attributes/OData.CSC.StringAttribute/any(att:att/Name eq 'platformShortName' and att/OData.CSC.StringAttribute/Value eq 'SENTINEL-2')
+    - ?$filter=Attributes/OData.CSC.StringAttribute/any(att:att/Name eq 'platformShortName' and att/OData.CSC.StringAttribute/Value eq 'SENTINEL-2') and Attributes/OData.CSC.StringAttribute/any(att:att/Name eq 'processingCenter' and att/OData.CSC.StringAttribute/Value eq 'PDMC')
+    - ?$filter=Attributes/OData.CSC.StringAttribute/any(att:att/Name eq 'platformShortName' and att/OData.CSC.StringAttribute/Value eq 'SENTINEL-2') and Attributes/OData.CSC.StringAttribute/any(att:att/Name eq 'processingCenter' and att/OData.CSC.StringAttribute/Value eq 'PDMC') Attributes/OData.CSC.StringAttribute/any(att:att/Name eq 'productType' and att/OData.CSC.StringAttribute/Value eq 'AUX_UT1UTC')
     """
     try:
         result = odata_product_query.odata_get_product(db = db, count = count, filter = filter, top = top, skip = skip, orderby = orderby)
@@ -169,6 +174,10 @@ async def product_query(background_tasks: BackgroundTasks,
         return result
 
     list_product = []
+
+    if result == None:
+        app_logger.logger.debug("NO ITEMS")
+        return
 
     for item in result:
         # app_logger.logger.debug("Name : ".format(item.filename) )

@@ -7,9 +7,6 @@ from uuid import UUID, uuid4
 from pydantic import BaseModel, ConfigDict, Field, SkipValidation, PrivateAttr
 
 
-
-# -----------------------------------------------------------------------------
-
 class ProductId(BaseModel):
     Id: UUID
 
