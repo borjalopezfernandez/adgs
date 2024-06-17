@@ -20,7 +20,8 @@ setup(name="auxip",
           "psycopg2-binary",
           "alembic",
           "fastapi[all]",
-          "httpx"
+          "httpx",
+          "requests"
       ],
       extras_require={
           "tests" :[

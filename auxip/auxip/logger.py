@@ -3,7 +3,7 @@ import logging
 
 
 logging.basicConfig(
-    level=logging.INFO, format="%(levelname)-9s %(asctime)s - %(name)s - %(message)s"
+    level=logging.INFO, format="%(levelname)-9s %(asctime)s - %(name)s(%(lineno)d) - %(message)s"
 )
 
 logger = logging.getLogger(__name__)

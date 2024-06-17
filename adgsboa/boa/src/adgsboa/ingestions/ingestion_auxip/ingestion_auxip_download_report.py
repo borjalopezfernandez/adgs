@@ -153,6 +153,7 @@ def process_file(file_path, engine, query, reception_time):
     stop_date = (parser.parse(auxip_download_report_data["download_date"][0:4] + "-01-01") + relativedelta.relativedelta(years=1)).isoformat()
     coverage_dates.append([start_date, stop_date, "PER_YEAR"])
 
+    # Cumulative downloaded volume
     downloaded_volume_gauges = [
         ["CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION_CLIENT", f"{mission}#{client}"],
         ["CUMULATIVE_DOWNLOADED_VOLUME_BY_CLIENT", client],
@@ -160,7 +161,7 @@ def process_file(file_path, engine, query, reception_time):
         ["CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION_PRODUCT_TYPE", f"{mission}#{product_type}"],
         ["CUMULATIVE_DOWNLOADED_VOLUME_BY_PRODUCT_TYPE", product_type],
         ["CUMULATIVE_DOWNLOADED_VOLUME", "GLOBAL"],
-
+        ["CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION_PRODUCT_TYPE_CLIENT", f"{mission}#{product_type}#{client}"]
     ]
 
     for gauge in downloaded_volume_gauges:
@@ -202,6 +203,7 @@ def process_file(file_path, engine, query, reception_time):
 
     eboa_ingestion_functions.insert_ingestion_progress(session_progress, general_source_progress, 60)
 
+    # Cumulative downloaded number
     downloaded_number_gauges = [
         ["CUMULATIVE_DOWNLOADED_NUMBER_BY_MISSION_CLIENT", f"{mission}#{client}"],
         ["CUMULATIVE_DOWNLOADED_NUMBER_BY_CLIENT", client],
@@ -209,7 +211,7 @@ def process_file(file_path, engine, query, reception_time):
         ["CUMULATIVE_DOWNLOADED_NUMBER_BY_MISSION_PRODUCT_TYPE", f"{mission}#{product_type}"],
         ["CUMULATIVE_DOWNLOADED_NUMBER_BY_PRODUCT_TYPE", product_type],
         ["CUMULATIVE_DOWNLOADED_NUMBER", "GLOBAL"],
-
+        ["CUMULATIVE_DOWNLOADED_NUMBER_BY_MISSION_PRODUCT_TYPE_CLIENT", f"{mission}#{product_type}#{client}"]
     ]
 
     for gauge in downloaded_number_gauges:

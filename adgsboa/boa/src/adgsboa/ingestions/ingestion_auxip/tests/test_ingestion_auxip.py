@@ -93,7 +93,7 @@ class TestAuxipDownloadReport(unittest.TestCase):
         # Check number of events generated
         events = self.query_eboa.get_events()
 
-        assert len(events) == 51
+        assert len(events) == 59
 
         # Check AUXIP_DOWNLOAD events
         events = self.query_eboa.get_events(gauge_names = {"filter": "AUXIP_DOWNLOAD", "op": "=="})
@@ -153,10 +153,11 @@ class TestAuxipDownloadReport(unittest.TestCase):
             ["CUMULATIVE_DOWNLOADED_VOLUME_PER_DAY_2024-05-24T00:00:00_2024-05-25T00:00:00", "GLOBAL"],
             ["CUMULATIVE_DOWNLOADED_VOLUME_PER_MONTH_2024-05-01T00:00:00_2024-06-01T00:00:00", "GLOBAL"],
             ["CUMULATIVE_DOWNLOADED_VOLUME_PER_YEAR_2024-01-01T00:00:00_2025-01-01T00:00:00", "GLOBAL"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME", "GLOBAL"]
+            ["CUMULATIVE_DOWNLOADED_VOLUME", "GLOBAL"],
+            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION_PRODUCT_TYPE_CLIENT", "S2_#AUX_UT1UTC#test"]
         ]
 
-        assert len(gauges) == 24
+        assert len(gauges) == 25
 
         registered_events = {}
         
@@ -207,10 +208,11 @@ class TestAuxipDownloadReport(unittest.TestCase):
             ["CUMULATIVE_DOWNLOADED_NUMBER_PER_DAY_2024-05-24T00:00:00_2024-05-25T00:00:00", "GLOBAL"],
             ["CUMULATIVE_DOWNLOADED_NUMBER_PER_MONTH_2024-05-01T00:00:00_2024-06-01T00:00:00", "GLOBAL"],
             ["CUMULATIVE_DOWNLOADED_NUMBER_PER_YEAR_2024-01-01T00:00:00_2025-01-01T00:00:00", "GLOBAL"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER", "GLOBAL"]
+            ["CUMULATIVE_DOWNLOADED_NUMBER", "GLOBAL"],
+            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_MISSION_PRODUCT_TYPE_CLIENT", "S2_#AUX_UT1UTC#test"]
         ]
 
-        assert len(gauges) == 24
+        assert len(gauges) == 25
 
         registered_events = {}
         
@@ -314,7 +316,7 @@ class TestAuxipDownloadReport(unittest.TestCase):
         # Check number of events generated
         events = self.query_eboa.get_events()
 
-        assert len(events) == 64
+        assert len(events) == 74
 
         # Check AUXIP_DOWNLOAD events
         events = self.query_eboa.get_events(gauge_names = {"filter": "AUXIP_DOWNLOAD", "op": "=="})
@@ -427,10 +429,11 @@ class TestAuxipDownloadReport(unittest.TestCase):
             ["CUMULATIVE_DOWNLOADED_VOLUME_BY_PRODUCT_TYPE", "AUX_UT1UTC"],
             ["CUMULATIVE_DOWNLOADED_VOLUME_PER_MONTH_2024-05-01T00:00:00_2024-06-01T00:00:00", "GLOBAL"],
             ["CUMULATIVE_DOWNLOADED_VOLUME_PER_YEAR_2024-01-01T00:00:00_2025-01-01T00:00:00", "GLOBAL"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME", "GLOBAL"]
+            ["CUMULATIVE_DOWNLOADED_VOLUME", "GLOBAL"],
+            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION_PRODUCT_TYPE_CLIENT", "S2_#AUX_UT1UTC#test"]
         ]
 
-        assert len(gauges) == 18
+        assert len(gauges) == 19
 
         registered_events = {}
         
@@ -548,10 +551,11 @@ class TestAuxipDownloadReport(unittest.TestCase):
             ["CUMULATIVE_DOWNLOADED_NUMBER_BY_PRODUCT_TYPE", "AUX_UT1UTC"],
             ["CUMULATIVE_DOWNLOADED_NUMBER_PER_MONTH_2024-05-01T00:00:00_2024-06-01T00:00:00", "GLOBAL"],
             ["CUMULATIVE_DOWNLOADED_NUMBER_PER_YEAR_2024-01-01T00:00:00_2025-01-01T00:00:00", "GLOBAL"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER", "GLOBAL"]
+            ["CUMULATIVE_DOWNLOADED_NUMBER", "GLOBAL"],
+            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_MISSION_PRODUCT_TYPE_CLIENT", "S2_#AUX_UT1UTC#test"]
         ]
 
-        assert len(gauges) == 18
+        assert len(gauges) == 19
 
         registered_events = {}
         

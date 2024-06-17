@@ -16,6 +16,7 @@ from .logger import logger
 # api routers:
 from .routers import subscriptions
 from .routers import products
+from .routers import metrics
 from .routers import test_api
 from .routers import subscription_notification_endpoint
 # -------------------------------------
@@ -46,6 +47,10 @@ tags_metadata = [
             "url": "https://fastapi.tiangolo.com/",
         },
     },
+    {
+        "name": "Metrics",
+        "description": "Operations with metrics",
+    }
 ]
 
 app             = FastAPI(openapi_tags=tags_metadata)
@@ -63,6 +68,9 @@ app.include_router(products.router)
 
 # Router for a simulated end-point for subscription notification
 app.include_router(subscription_notification_endpoint.router)
+
+# Router for metrics management
+app.include_router(metrics.router)
 
 # Router for some dummy test api for sanity check
 app.include_router(test_api.router)
