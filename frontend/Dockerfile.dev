@@ -1,0 +1,66 @@
+#########################################################################
+#
+#     Dockerfile.dev
+#
+#########################################################################
+#
+# Dockerfile for the development of the Front-End of the ADGS
+#
+# Base the image on centos7
+FROM centos:centos7
+MAINTAINER Daniel Brosnan Blázquez <daniel.brosnan@deimos-space.com>
+
+ARG FLASK_APP
+ARG UID_HOST_USER
+
+USER root
+
+RUN useradd -m -o -r -u $UID_HOST_USER adgs
+
+RUN yum install -y epel-release
+
+RUN yum install -y python36 \
+    python36-pip \
+    gcc \
+    python36-devel \
+    pytest \
+    npm \
+    openssl \
+    chromium \
+    chromedriver
+
+RUN yum update -y
+
+RUN pip3 install wheel
+    
+# Create folders for ADGSFE
+RUN mkdir /log
+RUN mkdir /scripts
+RUN mkdir /resources_path
+
+# Change ownership to the boa user
+RUN chown -R adgs /log /scripts /resources_path
+
+# Create directory where the auxip repository is going to be attached for development
+RUN mkdir /adgsfe
+RUN chown adgs /adgsfe
+
+USER adgs
+
+# Install scripts
+RUN ln -s /adgsfe/scripts/start_flask.sh /scripts/start_flask.sh
+
+# Environment Variables for ADGSFE
+ENV FLASK_APP $FLASK_APP
+ENV FLASK_ENV development
+ENV LC_ALL en_US.utf-8
+ENV LANG en_US.utf-8
+ENV PATH="${PATH}:/scripts"
+
+# Add path to the scripts installed by pip in the home of the adgs user to PATH
+ENV PATH="${PATH}:/home/adgs/.local/bin"
+
+# expose port
+EXPOSE 5001
+
+CMD ["/bin/bash", "-c", "/scripts/start_flask.sh"]

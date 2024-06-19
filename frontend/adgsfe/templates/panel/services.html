@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block sections %}
+<!-- Services section-->
+<section class="py-5 border-bottom" id="features">
+  <div class="container px-5 my-5">
+    <div class="row gx-5">
+      <div class="col-lg-4 mb-5 mb-lg-0">
+        <a href="{{ metadata.adgs_dashboard_url }}" style="text-decoration: none; color: #000000;">
+          <div style="text-align:left; width: calc(99% / 3); display: inline-block">
+            <img width="50px" height="50px" src="/adgsfe_static_images/Grafana_icon.svg"/>
+          </div>
+          <h2 class="h4 fw-bolder">ADGS Dashboard</h2>
+          <p>ADGS Dashboard ...</p>
+        </a>
+      </div>
+      <div class="col-lg-4 mb-5 mb-lg-0">
+        <a href="{{ metadata.auxip_swagger_url }}" style="text-decoration: none; color: #000000;">
+          <div style="text-align:left; width: calc(99% / 3); display: inline-block">
+            <img width="50px" height="50px" src="/adgsfe_static_images/swagger_icon.svg"/>
+          </div>
+          <h2 class="h4 fw-bolder">AUXIP Swagger UI</h2>
+          <p>AUXIP Swagger UI ...</p>
+        </a>
+      </div>
+      <div class="col-lg-4 mb-5 mb-lg-0">
+        <a href="#!" style="text-decoration: none; color: #000000;">
+          <div style="text-align:left; width: calc(99% / 3); display: inline-block">
+            <img width="50px" height="50px" src="/adgsfe_static_images/baseline_management_icon.svg"/>
+          </div>
+          <h2 class="h4 fw-bolder">AUXIP baseline management</h2>
+          <p>AUXIP baseline management ...</p>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="container px-5 my-5">
+    <div class="row gx-5">
+      <div class="col-lg-4 mb-5 mb-lg-0">
+      </div>
+      <div class="col-lg-4 mb-5 mb-lg-0">
+        <a href="{{ metadata.adgsboa_url }}" style="text-decoration: none; color: #000000;">
+          <div style="text-align:left; width: calc(99% / 3); display: inline-block">
+            <img width="70px" height="90px" src="/adgsfe_static_images/boa_icon.svg"/>
+          </div>
+          <h2 class="h4 fw-bolder">ADGS Business Operations Analysis</h2>
+          <p>ADGS Dashboard ...</p>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

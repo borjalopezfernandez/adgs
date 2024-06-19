@@ -1,0 +1,7 @@
+
+SERVICE_LABEL=localhost_dev
+ADGSFE_PORT=5200
+ADGSFE_DEVELOPMENT_PATH=.
+ADGS_DASHBOARD_URL=http://localhost:3000
+AUXIP_SWAGGER_URL=http://localhost:8001/docs
+ADGSBOA_URL=https://localhost:5100

@@ -1,0 +1,5 @@
+graft adgsfe/templates
+graft adgsfe/static/dist
+graft adgsfe/static/css
+graft adgsfe/static/images
+graft scripts

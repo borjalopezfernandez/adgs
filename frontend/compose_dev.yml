@@ -1,0 +1,23 @@
+
+services:
+
+   adgs_adgsfe:
+      image          : app_adgsfe_dev
+      container_name : adgs_adgsfefe_${SERVICE_LABEL}
+      hostname       : adgs_adgsfe
+      environment    :
+         - ADGS_DASHBOARD_URL=${ADGS_DASHBOARD_URL}
+         - AUXIP_SWAGGER_URL=${AUXIP_SWAGGER_URL}
+         - ADGSBOA_URL=${ADGSBOA_URL}
+      ports:
+         - ${ADGSFE_PORT}:5001
+      restart        : always
+      volumes:
+         - ${ADGSFE_DEVELOPMENT_PATH}:/adgsfe
+      networks:
+         - adgs_network
+
+networks:
+   adgs_network:
+      external: true
+      name: boa_network_adgs_dev
