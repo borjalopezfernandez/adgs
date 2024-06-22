@@ -11,6 +11,8 @@ from dateutil import parser
 import datetime
 from dateutil import relativedelta
 import csv
+from .. import errors
+import re
 
 # Import query
 from eboa.engine.query import Query
@@ -82,9 +84,9 @@ def process_file(file_path, engine, query, reception_time):
     with open(file_path, newline="") as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
-            auxiliary_data_validity_start = row["Application From"]
-            auxiliary_data_validity_stop = row["Application To"]
-            associated_product_level = row["Product Level"]
+            auxiliary_data_validity_start = parser.parse(row["Application From"]).isoformat()
+            auxiliary_data_validity_stop = parser.parse(row["Application To"]).isoformat()
+            associated_product_levels = row["Product Level"]
             associated_product_types = row["Product Type"]
             auxiliary_product_type = row["Auxiliary Type"]
             auxiliary_product_name = row["Auxiliary File"]
@@ -106,9 +108,9 @@ def process_file(file_path, engine, query, reception_time):
                            {"name": "mission",
                             "type": "text",
                             "value": mission},
-                           {"name": "associated_product_level",
+                           {"name": "associated_product_levels",
                             "type": "text",
-                            "value": associated_product_level},
+                            "value": associated_product_levels},
                            {"name": "associated_product_types",
                             "type": "text",
                             "value": associated_product_types},
@@ -119,11 +121,25 @@ def process_file(file_path, engine, query, reception_time):
             })
 
             # Build operations for the baseline management associated to each auxiliiary file
-            auxiliary_generation_time = auxiliary_product_name.split("_G")[1][0:15]
+            if mission == "S1_":
+                dates = re.findall(r'\d{8}T\d{6}', auxiliary_product_name) 
+                if len(dates) == 3:
+                    auxiliary_generation_time = dates[0]
+                # end if
+                elif len(re.findall(r'G\d{8}T\d{6}', auxiliary_product_name)) == 1:
+                    auxiliary_generation_time = re.findall(r'G\d{8}T\d{6}', auxiliary_product_name)[0].replace("G", "")
+                # end if
+            elif mission == "S2_":
+                auxiliary_generation_time = re.findall(r'\d{8}T\d{6}', auxiliary_product_name)[0]
+            elif mission == "S3_":
+                auxiliary_generation_time = re.findall(r'\d{8}T\d{6}', auxiliary_product_name)[2]
+            else:
+                raise errors.UnrecognizedMission(f"The mission {mission} is not recognized as a mission to be handled under the service")
+            # end if
             operations.append({
                 "mode": "insert",
                 "dim_signature": {
-                    "name": "AUXILIARY_PRODUCTS_BASELINE",
+                    "name": "AUXILIARY_PRODUCTS_BASELINE_" + satellite,
                     "exec": os.path.basename(__file__) + "_" + auxiliary_product_name,
                     "version": version
                 },
@@ -151,9 +167,9 @@ def process_file(file_path, engine, query, reception_time):
                                {"name": "mission",
                                 "type": "text",
                                 "value": mission},
-                               {"name": "associated_product_level",
+                               {"name": "associated_product_levels",
                                 "type": "text",
-                                "value": associated_product_level},
+                                "value": associated_product_levels},
                                {"name": "associated_product_types",
                                 "type": "text",
                                 "value": associated_product_types},
