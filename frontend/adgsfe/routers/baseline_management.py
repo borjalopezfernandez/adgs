@@ -84,8 +84,8 @@ def query_baseline():
                 "filter": "AUXILIARY_PRODUCT_BASELINE",
                 "op": "=="
             },
-            "start_filters": [{"date": sensing_stop, "op": "<"}],
-            "stop_filters": [{"date": sensing_start, "op": ">"}],
+            "start_filters": [{"date": sensing_stop, "op": "<="}],
+            "stop_filters": [{"date": sensing_start, "op": ">="}],
             "value_filters": [{"name": {"filter": "satellite", "op": "=="}, "type": "text", "value": {"op": "like", "filter": query_satellite}}]
         }
     }
@@ -119,8 +119,6 @@ def query_baseline():
                 "filter": response_json["data"]["event_groups"]["events"],
                 "op": "in"
             },
-            "start_filters": [{"date": sensing_stop, "op": "<"}],
-            "stop_filters": [{"date": sensing_start, "op": ">"}],
             "value_filters": [{"name": {"filter": "associated_product_types", "op": "=="}, "type": "text", "value": {"op": "like", "filter": f"%{product_type}%"}}],
             "limit": limit,
             "offset": offset,
