@@ -59,6 +59,7 @@ def query_baseline():
     sensing_start = filters["sensing_start"]
     sensing_stop = filters["sensing_stop"]
     limit = filters["limit"]
+    offset = filters["offset"]
 
     logger.info(f"Mission: {mission}")
     logger.info(f"Satellite: {satellite}")
@@ -67,6 +68,7 @@ def query_baseline():
     logger.info(f"Sensing start: {sensing_start}")
     logger.info(f"Sensing stop: {sensing_stop}")
     logger.info(f"Limit: {limit}")
+    logger.info(f"Offset: {offset}")
 
     query_satellite = f"{mission[0:2]}{satellite}".replace("X", "_")
 
@@ -84,14 +86,30 @@ def query_baseline():
             },
             "start_filters": [{"date": sensing_stop, "op": "<"}],
             "stop_filters": [{"date": sensing_start, "op": ">"}],
-            "value_filters": [{"name": {"filter": "satellite", "op": "=="}, "type": "text", "value": {"op": "like", "filter": query_satellite}}],
-            "limit": limit
+            "value_filters": [{"name": {"filter": "satellite", "op": "=="}, "type": "text", "value": {"op": "like", "filter": query_satellite}}]
         }
     }
 
     logger.info(f"The baseline is going to be requested to ADGSBOA ({adgsboa_url}) with the following filters:")
     logger.info(f"{query_filters}")
     response = requests.get(url=adgsboa_url, json=query_filters)
+
+    # Query result
+    query_result = {
+        "status": "OK",
+        "auxiliary_baseline": []
+    }
+
+    if response.status_code != 200:
+        error_message = f"There was a failure requesting the baseline to ADGSBOA. Response code was {response.status_code}"
+        logger.error(error_message)
+        query_result = {
+            "status": "NOK",
+            "error_message": error_message
+        }
+
+        return jsonify(query_result), 500
+    # end if
 
     # Second filter by product type
     response_json = response.json()
@@ -104,20 +122,14 @@ def query_baseline():
             "start_filters": [{"date": sensing_stop, "op": "<"}],
             "stop_filters": [{"date": sensing_start, "op": ">"}],
             "value_filters": [{"name": {"filter": "associated_product_types", "op": "=="}, "type": "text", "value": {"op": "like", "filter": f"%{product_type}%"}}],
-            "limit": limit
+            "limit": limit,
+            "offset": offset,
         }
     }
 
     logger.info(f"The baseline is going to be filtered by product type sending a request to ADGSBOA ({adgsboa_url}) with the following filters:")
     logger.info(f"{query_filters}")
     response = requests.get(url=adgsboa_url, json=query_filters)
-
-
-    # Query result
-    query_result = {
-        "status": "OK",
-        "auxiliary_baseline": []
-    }
     
     if response.status_code != 200:
         error_message = f"There was a failure requesting the baseline to ADGSBOA. Response code was {response.status_code}"
@@ -128,37 +140,47 @@ def query_baseline():
         }
 
         return jsonify(query_result), 500
-    else:
-        response_json = response.json()
-        if "data" in  response_json and "events" in response_json["data"] and len(response_json["data"]["events"].keys()) > 0:
-            for event_uuid in response_json["data"]["event_groups"]["events"]:
-                event = response_json["data"]["events"][event_uuid]
-                mission = event["indexed_values"]["mission"][0]["value"]
-                satellite = event["indexed_values"]["satellite"][0]["value"]
-                associated_product_levels = event["indexed_values"]["associated_product_levels"][0]["value"]
-                associated_product_types = event["indexed_values"]["associated_product_types"][0]["value"]
-                processing_version = event["indexed_values"]["processing_version"][0]["value"]
-                auxiliary_type = event["gauge"]["system"]
-                auxiliary_file = event["explicit_reference"]["name"]
+    # end if
 
-                query_result["auxiliary_baseline"].append({
-                    "id": event["event_uuid"],
-                    "mission": mission,
-                    "satellite": satellite,
-                    "associated_product_levels": associated_product_levels,
-                    "associated_product_types": associated_product_types,
-                    "processing_version": processing_version,
-                    "auxiliary_type": auxiliary_type,
-                    "auxiliary_file": auxiliary_file,
-                    "validity_start": event["start"],
-                    "validity_stop": event["stop"]
-                })
-                
-            # end for
-            status_message = f"The were {len(response_json['data']['events'].keys())} auxiliary products retrieved"
-        else:
-            status_message = "The query result is empty with the provided filters"
-        # end if
+    # Insert metadata for pagination in the query results
+    query_result["metadata"] = {
+        "sensing_start": sensing_start,
+        "sensing_stop": sensing_stop,
+        "mission": mission,
+        "satellite": satellite,
+        "product_type": product_type,
+        "limit": limit,
+        "offset": offset,
+    }
+    response_json = response.json()
+    if "data" in  response_json and "events" in response_json["data"] and len(response_json["data"]["events"].keys()) > 0:
+        for event_uuid in response_json["data"]["event_groups"]["events"]:
+            event = response_json["data"]["events"][event_uuid]
+            mission = event["indexed_values"]["mission"][0]["value"]
+            satellite = event["indexed_values"]["satellite"][0]["value"]
+            associated_product_levels = event["indexed_values"]["associated_product_levels"][0]["value"]
+            associated_product_types = event["indexed_values"]["associated_product_types"][0]["value"]
+            processing_version = event["indexed_values"]["processing_version"][0]["value"]
+            auxiliary_type = event["gauge"]["system"]
+            auxiliary_file = event["explicit_reference"]["name"]
+
+            query_result["auxiliary_baseline"].append({
+                "id": event["event_uuid"],
+                "mission": mission,
+                "satellite": satellite,
+                "associated_product_levels": associated_product_levels,
+                "associated_product_types": associated_product_types,
+                "processing_version": processing_version,
+                "auxiliary_type": auxiliary_type,
+                "auxiliary_file": auxiliary_file,
+                "validity_start": event["start"],
+                "validity_stop": event["stop"]
+            })
+
+        # end for
+        status_message = f"The were {len(response_json['data']['events'].keys())} auxiliary products retrieved"
+    else:
+        status_message = "The query result is empty with the provided filters"
     # end if
     
     return jsonify(query_result)

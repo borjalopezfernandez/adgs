@@ -28,17 +28,12 @@ import "toastr/build/toastr.min.css";
 
 export let datatables = datatableFunctions;
 export let jquery = jQuery;
-
+export let messages = toastr;
 
 /* Activate tooltips */
 jQuery(document).ready(function(){
   jQuery('[data-toggle="tooltip"]').tooltip();
 });
-
-/* Toasts configuration */
-toastr.options.progressBar = true; // Show how long it takes before it expires
-toastr.options.timeOut = 10000; // How long the toast will display without user interaction (milliseconds)
-toastr.options.extendedTimeOut = 10000; // How long the toast will display after a user hovers over it (milliseconds)
 
 /* Associate datetimepicker functionality */
 jQuery(document).ready(function () {
@@ -85,3 +80,11 @@ document.addEventListener("keydown", function(event) {
         }
     }
 });
+
+/***
+* Toasts configuration
+***/
+toastr.options.progressBar = true; // Show how long it takes before it expires
+toastr.options.timeOut = 10000; // How long the toast will display without user interaction (milliseconds)
+toastr.options.extendedTimeOut = 10000; // How long the toast will display after a user hovers over it (milliseconds)
+toastr.options.toastClass = 'toastr';

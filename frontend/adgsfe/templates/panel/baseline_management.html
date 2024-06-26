@@ -111,6 +111,14 @@
         <div class="row" id="retrieved-axuliary-data-baseline" hidden>
           <div>
             <h5 class="card-title text-center">Retrieved auxiliary data</h5>
+            <div id="pagination" hidden>
+              <p class="text-center">
+                The results of the query exceeded the specified limit. Retrieve more results by paginating:
+              </p>
+              <div class="text-center" id="pagination-links">
+                
+              </div>
+            </div>
             <p class="text-center">
               The following table shows the retrieved auxiiliary data following the filters specified:
             </p>
@@ -240,7 +248,7 @@
 
       /* Check limit */
       let limit_error = "";
-      if (limit.value.match(/\d*/) == null || limit.value > 1000 || limit.value < 1){
+      if (limit_container.value.match(/\d*/) == null || limit_container.value > 1000 || limit_container.value < 1){
 
           limit_error = "Limit should be a number in the range (1,1000)";
           
@@ -304,7 +312,6 @@
           /* Highlight error */
           limit_container.style.borderColor="red";
           limit_error_container.hidden = false;
-          console.log(limit_error)
           limit_error_container.getElementsByTagName("b")[0].textContent = limit_error;
           
       }else{
@@ -324,7 +331,8 @@
               "mission": mission_container.value,
               "satellite": satellite_container.value,
               "product_type": product_type_container.value,
-              "limit": limit_container.value
+              "limit": limit_container.value,
+              "offset": 0
           }
 
           adgsfe.request_info_json("/baseline-management/query-baseline", update_dashboard, query_filters, true);
@@ -338,9 +346,12 @@
    */
   function update_dashboard(query_result){
 
-      console.log(query_result)
-      
       const query_result_to_json = JSON.parse(query_result)
+      
+      if ("return_code" in query_result_to_json && query_result_to_json["return_code"] == 500){
+          /* Skip update of dashboard as the query failed */
+          return
+      }
       
       /* Information containers */
       const retrieved_axuliary_data_baseline_container = document.getElementById("retrieved-axuliary-data-baseline");
@@ -395,11 +406,11 @@
           const mission_container = document.getElementById("mission");
           const satellite_container = document.getElementById("satellite");
           const product_type_container = document.getElementById("product-type");
-          const mission = mission_container.value;
-          const satellite = satellite_container.value;
-          const product_type =  product_type_container.value;
-          const sensing_start =  start_container.value;
-          const sensing_stop =  stop_container.value;
+          const mission = query_result_to_json["metadata"]["mission"];
+          const satellite = query_result_to_json["metadata"]["satellite"];
+          const product_type =  query_result_to_json["metadata"]["product_type"];
+          const sensing_start =  query_result_to_json["metadata"]["sensing_start"];
+          const sensing_stop =  query_result_to_json["metadata"]["sensing_stop"];
           
           /* Mission */
           groups.push({
@@ -529,8 +540,6 @@
       adgsfe.datatables.activate_search_on_columns();
 
       if (show_timeline.checked){
-          console.log(items)
-          console.log(groups)
           adgsfe.display_timeline("retrieved-axuliary-data-baseline-timeline-container", items, groups, "REQUESTED_SENSING_PERIOD");
 
           /* Activate retrieved axuliary data baseline timeline */
@@ -541,6 +550,63 @@
           /* Deactivate retrieved axuliary data baseline timeline */
           timeline_container.hidden = true;
           timeline_title_container.hidden = true;
+      }
+
+      /* Configure pagination */
+      const pagination_container = document.getElementById("pagination");
+      if ((parseFloat(query_result_to_json["metadata"]["limit"]) == query_result_to_json["auxiliary_baseline"].length) ||
+          (parseFloat(query_result_to_json["metadata"]["offset"]) > 0 && query_result_to_json["auxiliary_baseline"].length == 0)){
+          const pagination_links_container = document.getElementById("pagination-links");
+          pagination_links_container.innerHTML = "";
+          pagination_container.hidden = false;
+          if (parseFloat(query_result_to_json["metadata"]["offset"]) > 0){
+              var previous_link = document.createElement("a");
+              previous_link.textContent = "<< Previous"
+              previous_link.classList.add("btn")
+              previous_link.classList.add("btn-link")
+              pagination_links_container.appendChild(previous_link);
+              previous_link.addEventListener("click", function(e) {
+                  
+                  const query_filters = {
+                      "sensing_start": query_result_to_json["metadata"]["sensing_start"],
+                      "sensing_stop": query_result_to_json["metadata"]["sensing_stop"],
+                      "mission": query_result_to_json["metadata"]["mission"],
+                      "satellite": query_result_to_json["metadata"]["satellite"],
+                      "product_type": query_result_to_json["metadata"]["product_type"],
+                      "limit": query_result_to_json["metadata"]["limit"],
+                      "offset": parseFloat(query_result_to_json["metadata"]["offset"]) - parseFloat(query_result_to_json["metadata"]["limit"])
+                  }
+                  
+                  adgsfe.request_info_json("/baseline-management/query-baseline", update_dashboard, query_filters, true);
+                  
+              }, false);
+
+          }
+          if (query_result_to_json["auxiliary_baseline"].length > 0){
+              var next_link = document.createElement("a");
+              next_link.textContent = "Next >>"
+              next_link.classList.add("btn")
+              next_link.classList.add("btn-link")
+              pagination_links_container.appendChild(next_link);
+              next_link.addEventListener("click", function(e) {
+                  
+                  const query_filters = {
+                      "sensing_start": query_result_to_json["metadata"]["sensing_start"],
+                      "sensing_stop": query_result_to_json["metadata"]["sensing_stop"],
+                      "mission": query_result_to_json["metadata"]["mission"],
+                      "satellite": query_result_to_json["metadata"]["satellite"],
+                      "product_type": query_result_to_json["metadata"]["product_type"],
+                      "limit": query_result_to_json["metadata"]["limit"],
+                      "offset": parseFloat(query_result_to_json["metadata"]["offset"]) + parseFloat(query_result_to_json["metadata"]["limit"])
+                  }
+                  
+                  adgsfe.request_info_json("/baseline-management/query-baseline", update_dashboard, query_filters, true);
+                  
+              }, false);
+          }
+      }
+      else{
+          pagination_container.hidden = true;
       }
   }
 
