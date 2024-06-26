@@ -19,7 +19,8 @@ setup(name="adgsfe",
           "flask-security-too",
           "gunicorn",
           "bleach",
-          "geopy"
+          "geopy",
+          "requests"
       ],
       extras_require={
           "tests" :[

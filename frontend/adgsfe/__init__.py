@@ -12,6 +12,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 
 # Import contents
 from adgsfe.routers import main
+from adgsfe.routers import baseline_management
 
 def create_app():
     """
@@ -41,6 +42,7 @@ def create_app():
     )
 
     app.register_blueprint(main.bp)
+    app.register_blueprint(baseline_management.bp)
     
     if "ADGSFE_DEBUG" in os.environ and os.environ["ADGSFE_DEBUG"] == "TRUE":
         app.debug = True

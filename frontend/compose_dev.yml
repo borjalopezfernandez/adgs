@@ -9,6 +9,8 @@ services:
          - ADGS_DASHBOARD_URL=${ADGS_DASHBOARD_URL}
          - AUXIP_SWAGGER_URL=${AUXIP_SWAGGER_URL}
          - ADGSBOA_URL=${ADGSBOA_URL}
+         - ADGSBOA_HOST=${ADGSBOA_HOST}
+         - ADGSBOA_PORT=${ADGSBOA_PORT}
       ports:
          - ${ADGSFE_PORT}:5001
       restart        : always

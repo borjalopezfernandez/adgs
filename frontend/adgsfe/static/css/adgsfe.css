@@ -1,0 +1,152 @@
+
+/* Styles for tables */
+.table-text-xs {
+    font-size:0.8em;
+}
+
+/* Draaggable div */
+.draggable-div {
+    position: absolute;
+    z-index: 9;
+    text-align: center;
+}
+.draggable-div-header-text {
+    width: 97%;
+    background-color: #2196F3;
+    padding: 10px;
+    cursor: move;
+    z-index: 10;
+    color: #fff;
+    float: left;
+}
+.draggable-div-close {
+    width: 3%;
+    float: right;
+    display:inline-block;
+    cursor: pointer;
+}
+.draggable-div-body {
+    width: 97%;
+    background-color: #f1f1f1;
+    float: left;
+}
+
+.draggable-div-body td {
+    width: 100%;
+    padding-top: 5px;
+    padding-right: 5px;
+    padding-bottom: 5px;
+    padding-left: 5px;
+}
+
+.btn-margin-1 {
+    margin: 1em;
+}
+
+/* Loaders */
+.loader {
+  border: 1px solid #f3f3f3; /* Light grey */
+  border-top: 1px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 12px;
+  height: 12px;
+  animation: spin 2s linear infinite;
+}
+.loader-render {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  z-index: 10;
+  border: 10px solid #f3f3f3; /* Light grey */
+  border-top: 10px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loader-text {
+  position: fixed;
+  left: 50%;
+  top: 45%;
+  z-index: 10;
+  text-align: center;
+  width: 80px;
+  height: 80px;
+}
+
+/* Fill and border Colours */
+.fill-border-green {
+    background: green;
+    border-color: green;
+}
+.fill-green-border-darkgreen {
+    background: green;
+    border-color: darkgreen;
+}
+.fill-border-blue {
+    background: blue;
+    border-color: blue;
+}
+.fill-border-yellow {
+    background: yellow;
+    border-color: yellow;
+}
+.fill-border-pink {
+    background: pink;
+    border-color: pink;
+}
+.fill-border-brown {
+    background: brown;
+    border-color: brown;
+}
+.fill-border-red {
+    background: red;
+    border-color: red;
+}
+.fill-darkred-border-red {
+    background: darkred;
+    border-color: red;
+}
+.fill-border-orange {
+    background: orange;
+    border-color: orange;
+}
+.fill-border-light-green {
+    background: lightgreen;
+    border-color: lightgreen;
+}
+.fill-border-light-blue {
+    background: lightblue;
+    border-color: lightblue;
+}
+.fill-border-light-yellow {
+    background: gold;
+    border-color: gold;
+}
+.fill-border-light-pink {
+    background: lightpink;
+    border-color: lightpink;
+}
+.fill-border-light-brown {
+    background: burlywood;
+    border-color: burlywood;
+}
+.fill-border-light-red {
+    background: lightcoral;
+    border-color: lightcoral;
+}
+.fill-border-light-orange {
+    background: coral;
+    border-color: coral;    
+}
+
+/* Timeline styles */
+.timeline-text-align-left {
+    text-align: left;
+}

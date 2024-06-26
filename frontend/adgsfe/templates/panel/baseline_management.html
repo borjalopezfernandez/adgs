@@ -1,0 +1,552 @@
+{% extends "base.html" %}
+{% block section_header %}
+<div class="container px-5">
+  <div class="row gx-5 justify-content-center">
+    <div class="col-lg-12">
+      <div class="text-center my-1">
+        <h3 class="fw-bolder text-white mb-2" style>Baseline management</h3>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block sections %}
+<section class="py-5 border-bottom">
+  <div class="row" style="padding:50px">
+    <div class="card">
+      <div class="card-header text-center">
+        Query interface for the Auxiliary Data baseline
+      </div>
+      <div class="card-body">
+        <ul class="nav nav-tabs justify-content-center card-title" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link" id="query-by-l0-file-name-tab" data-toggle="pill" href="#query-by-l0-file-name" role="tab" aria-controls="query-by-l0-file-name" aria-selected="false">Query by L0 file name</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" id="query-by-sensing-period-tab" data-toggle="pill" href="#query-by-sensing-period" role="tab" aria-controls="query-by-sensing-period" aria-selected="true">Query by sensing period</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane fade" id="query-by-l0-file-name" role="tabpanel" aria-labelledby="query-by-l0-file-name-tab">
+            <h5 class="card-title">Query by L0 file name</h5>
+            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+            <a href="#" class="btn btn-primary">Go somewhere</a>
+          </div>
+          <div class="tab-pane fade show active text-center" id="query-by-sensing-period" role="tabpanel" aria-labelledby="query-by-sensing-period-tab">
+            <br/>
+            <h5 class="card-title">Query by sensing period</h5>
+            <br/>
+            <p class="card-text">Filter by relevant mission, satellite, product type and sensing period:</p>
+            <br/>
+            <div class="row" style="padding-left:8em;padding-right:8em">
+              <div class="col-1">
+                  <label>Mission</label>
+                  <select class="custom-select" style="width: 100%" name="mission" id="mission" onchange="update_satellite_select(); update_product_type_select()">
+                    <option>S1SAR</option>
+                    <option>S2MSI</option>
+                    <option>S3ALL</option>
+                    <option>S3MWR</option>
+                    <option>S3OLCI</option>
+                    <option>S3SLSTR</option>
+                    <option>S3SRAL</option>
+                    <option>S3SYN</option>
+                  </select>
+              </div>
+              <div class="col-1">
+                  <label>Satellite</label>
+                  <select class="custom-select" style="width: 100%" name="satellite" id="satellite">
+                    <option>A</option>
+                    <option>B</option>
+                    <option>X</option>
+                  </select>
+              </div>
+              <div class="col-2">
+                  <label>Product type to be generated</label>
+                  <select class="custom-select" style="width: 100%" name="product_type" id="product-type">
+                    <option>L1GRD</option>
+                    <option>L1SLC</option>
+                    <option>L2OCN</option>
+                  </select>
+              </div>
+              <div class="col-3">
+                <label>Start</label>
+                <div class="input-group date">
+                  <input type="text" class="form-control" name="sensing_start" id="sensing-start"/>
+                  <span class="input-group-addon input-group-text">
+                    <span class="fa fa-calendar"></span>
+                  </span>
+                </div>
+                <pre id="sensing-start-error" style="width:100%" hidden><b style="font-size:12px; color:red; white-space: pre"></b></pre>
+              </div>
+              <div class="col-3">
+                <label>Stop</label>
+                <div class="input-group date">
+                  <input type="text" class="form-control" name="sensing_stop" id="sensing-stop"/>
+                  <span class="input-group-addon input-group-text">
+                    <span class="fa fa-calendar"></span>
+                  </span>
+                </div>
+                <pre id="sensing-stop-error" style="width:100%" hidden><b style="font-size:12px; color:red; white-space: pre"></b></pre>
+              </div>
+              <div class="col-1">
+                <label>Show timeline</label>
+                <div>
+                  <input type="checkbox" name="show_timeline" id="show-timeline" checked/>
+                </div>
+              </div>
+              <div class="col-1">
+                <label>Limit</label>
+                <div>
+                  <input type="text" style="width: 100%; text-align:center" name="limit" id="limit" value="1000"/>
+                </div>
+                <pre id="limit-error" style="width:100%" hidden><b style="font-size:12px; color:red; white-space: pre"></b></pre>
+              </div>
+            </div>
+            <br/>
+            <br/>
+            <a class="btn btn-primary" onclick="query_auxiliary_data_baseline()">Query</a>
+          </div>
+        </div>
+        <br/>
+        <div class="row" id="retrieved-axuliary-data-baseline" hidden>
+          <div>
+            <h5 class="card-title text-center">Retrieved auxiliary data</h5>
+            <p class="text-center">
+              The following table shows the retrieved auxiiliary data following the filters specified:
+            </p>
+            <div class="col-12" id="retrieved-axuliary-data-baseline-table-container">
+            </div>
+            <p class="text-center" id="retrieved-axuliary-data-baseline-timeline-title-container" hidden>
+              The following graph shows the retrieved auxiiliary data timeline following the filters specified:
+            </p>
+            <div class="col-12" id="retrieved-axuliary-data-baseline-timeline-container" hidden>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script type="text/javascript">
+
+  /**
+   * @description Function to update the list of satellite units in the select node
+   */
+  function update_satellite_select(){
+      
+      /* Information containers */
+      const mission_container = document.getElementById("mission");
+      const satellite_container = document.getElementById("satellite");
+
+      const satellite_units = {
+          "S1SAR": ["A", "B", "X"],
+          "S2MSI": ["A", "B", "X"],
+          "S3ALL": ["A", "B", "X"],
+          "S3MWR": ["A", "B", "X"],
+          "S3OLCI": ["A", "B", "X"],
+          "S3SLSTR": ["A", "B", "X"],
+          "S3SRAL": ["A", "B", "X"],
+          "S3SYN": ["A", "B", "X"]
+      }
+      satellite_container.innerHTML = ""
+      for (satellite_unit of satellite_units[mission_container.value]){
+          satellite_container.innerHTML += "<option>" + satellite_unit + "</option>"
+      }
+
+  }
+
+  /**
+   * @description Function to update the list of satellite units in the select node
+   */
+  function update_product_type_select(){
+
+      /* Information containers */
+      const mission_container = document.getElementById("mission");
+      const product_type_container = document.getElementById("product-type");
+
+      const product_types = {
+          "S1SAR": ["L1GRD", "L1SLC", "L2OCN"],
+          "S2MSI": ["L1A", "L1B", "L1C", "L2A"],
+          "S3ALL": ["L1", "L1A", "L1B", "L1C", "L2"],
+          "S3MWR": ["L1CAL", "L1MWR"],
+          "S3OLCI": ["L1EFR", "L1ERR", "L2LFR", "L2LRR"],
+          "S3SLSTR": ["L1RBT", "L1FRP", "L2SLT"],
+          "S3SRAL": ["L1", "L1CAL", "L1SRA", "L2", "L2LAN"],
+          "S3SYN": ["L1MISR", "L2"]
+      }
+      product_type_container.innerHTML = ""
+      for (product_type of product_types[mission_container.value]){
+          product_type_container.innerHTML += "<option>" + product_type + "</option>"
+      }
+
+  }
+  
+  /**
+   * @description Function to query the results following the provided filters
+   */
+  function query_auxiliary_data_baseline(){
+
+      /* Input verification variables */
+      let start_verifies = true;
+      let stop_verifies = true;
+      let limit_verifies = true;
+
+      /* Information containers */
+      const retrieved_axuliary_data_baseline_container = document.getElementById("retrieved-axuliary-data-baseline");
+      const start_container = document.getElementById("sensing-start");
+      const start_error_container = document.getElementById("sensing-start-error");
+      const stop_container = document.getElementById("sensing-stop");
+      const stop_error_container = document.getElementById("sensing-stop-error");
+      const mission_container = document.getElementById("mission");
+      const satellite_container = document.getElementById("satellite");
+      const product_type_container = document.getElementById("product-type");
+      const limit_container = document.getElementById("limit");
+      const limit_error_container = document.getElementById("limit-error");
+      
+      /* Check format of dates */
+      let start_error = "";
+      let stop_error = "";
+      if (start_container.value == ""){
+
+          start_error = "Start date should be defined";
+          
+          /* Register verification error */
+          start_verifies = false;
+      }else if (start_container.value.match(/....-..-..T..:..:../) == null){
+
+          start_error = "Date should have the format: YYYY-MM-DDThh:mm:ss";
+          
+          /* Register verification error */
+          start_verifies = false;
+
+      }
+
+      if (stop_container.value == ""){
+
+          stop_error = "Stop date should be defined";
+          
+          /* Register verification error */
+          stop_verifies = false;
+      }else if (stop_container.value.match(/....-..-..T..:..:../) == null){
+
+          stop_error = "Date should have the format: YYYY-MM-DDThh:mm:ss";
+          
+          /* Register verification error */
+          stop_verifies = false;
+      }
+
+      /* Check limit */
+      let limit_error = "";
+      if (limit.value.match(/\d*/) == null || limit.value > 1000 || limit.value < 1){
+
+          limit_error = "Limit should be a number in the range (1,1000)";
+          
+          /* Register verification error */
+          limit_verifies = false;
+
+      }
+
+      /* Check that start is lower or equal than stop */
+      if (start_verifies && stop_verifies && (start_container.value > stop_container.value)){
+
+          start_error = "Start should be lower or equal to stop";
+          
+          /* Register verification error */
+          start_verifies = false;
+          
+      }
+
+      /* Handle errors in dates */
+      if (! start_verifies){
+
+          /* Deactivate query results container */
+          retrieved_axuliary_data_baseline_container.hidden = true;
+
+          /* Highlight error */
+          start_container.style.borderColor="red";
+          start_error_container.hidden = false;
+          start_error_container.getElementsByTagName("b")[0].textContent = start_error;
+          
+      }else{
+          
+          /* Deactivate error if there was any previously */
+          start_container.style.borderColor="green";
+          start_error_container.hidden = true;
+          
+      }
+      if (! stop_verifies){
+
+          /* Deactivate query results container */
+          retrieved_axuliary_data_baseline_container.hidden = true;
+
+          /* Highlight error */
+          stop_container.style.borderColor="red";
+          stop_error_container.hidden = false;
+          stop_error_container.getElementsByTagName("b")[0].textContent = stop_error;
+          
+      }else{
+          
+          /* Deactivate error if there was any previously */
+          stop_container.style.borderColor="green";
+          stop_error_container.hidden = true;
+          
+      }
+
+      /* Handle errors in limit */
+      if (! limit_verifies){
+
+          /* Deactivate query results container */
+          retrieved_axuliary_data_baseline_container.hidden = true;
+
+          /* Highlight error */
+          limit_container.style.borderColor="red";
+          limit_error_container.hidden = false;
+          console.log(limit_error)
+          limit_error_container.getElementsByTagName("b")[0].textContent = limit_error;
+          
+      }else{
+          
+          /* Deactivate error if there was any previously */
+          limit_container.style.borderColor="green";
+          limit_error_container.hidden = true;
+          
+      }
+
+      /* Check if query results could be retrieved */
+      if (start_verifies && stop_verifies && limit_verifies){
+
+          const query_filters = {
+              "sensing_start": start_container.value,
+              "sensing_stop": stop_container.value,
+              "mission": mission_container.value,
+              "satellite": satellite_container.value,
+              "product_type": product_type_container.value,
+              "limit": limit_container.value
+          }
+
+          adgsfe.request_info_json("/baseline-management/query-baseline", update_dashboard, query_filters, true);
+          
+      }
+
+  }
+
+  /**
+   * @description Function to update the baseline management dashboard with the query results
+   */
+  function update_dashboard(query_result){
+
+      console.log(query_result)
+      
+      const query_result_to_json = JSON.parse(query_result)
+      
+      /* Information containers */
+      const retrieved_axuliary_data_baseline_container = document.getElementById("retrieved-axuliary-data-baseline");
+      
+      /* Update auxiliary data table */
+      const auxiliary_data_table_container = document.getElementById("retrieved-axuliary-data-baseline-table-container");
+      auxiliary_data_table_container.innerHTML = "<table width='100%' class='table-text-xs table table-striped table-bordered table-hover table-search' id='retrieved-axuliary-data-baseline-table'>" +
+          "<thead>" +
+          "<tr>" +
+          "<th>Mission</th>" +
+          "<th>Unit</th>" +
+          "<th>Adjusted validity start</th>" +
+          "<th>Adjusted validity stop</th>" +
+          "<th>Product Level/s</th>" +
+          "<th>Product Type/s</th>" +
+          "<th>Auxiliary Type</th>" +
+          "<th>Auxiliary File</th>" +
+          "<th>IPF Version</th>" +
+          "</tr>" +
+          "</thead>" +
+          "<tbody>" +
+          "</tbody>" +
+          "<tfoot>" +
+          "<tr>" +
+          "<th>Mission</th>" +
+          "<th>Unit</th>" +
+          "<th>Adjusted validity start</th>" +
+          "<th>Adjusted validity stop</th>" +
+          "<th>Product Level/s</th>" +
+          "<th>Product Type/s</th>" +
+          "<th>Auxiliary Type</th>" +
+          "<th>Auxiliary File</th>" +
+          "<th>IPF Version</th>" +
+          "</tr>" +
+          "</tfoot>" +
+          "</table>"
+
+      const auxiliary_data_table = document.getElementById("retrieved-axuliary-data-baseline-table");
+
+      const show_timeline = document.getElementById("show-timeline");
+      const timeline_container = document.getElementById("retrieved-axuliary-data-baseline-timeline-container");
+      timeline_container.innerHTML = ""
+      const timeline_title_container = document.getElementById("retrieved-axuliary-data-baseline-timeline-title-container");
+      var groups = [];
+      var items = [];
+      var obtained_auxiliary_types = {}
+      var auxiliary_type_groups = []
+      if (show_timeline.checked){
+          /* Populate groups with mission, satellite and product type */
+          const start_container = document.getElementById("sensing-start");
+          const stop_container = document.getElementById("sensing-stop");
+          const mission_container = document.getElementById("mission");
+          const satellite_container = document.getElementById("satellite");
+          const product_type_container = document.getElementById("product-type");
+          const mission = mission_container.value;
+          const satellite = satellite_container.value;
+          const product_type =  product_type_container.value;
+          const sensing_start =  start_container.value;
+          const sensing_stop =  stop_container.value;
+          
+          /* Mission */
+          groups.push({
+              id: mission,
+              treeLevel: 1,
+              content: mission,
+              nestedGroups: [satellite]
+          })
+          /* Satellite */
+          groups.push({
+              id: satellite,
+              treeLevel: 2,
+              content: satellite,
+              nestedGroups: [product_type]
+          })
+          /* Product type */
+          groups.push({
+              id: product_type,
+              treeLevel: 3,
+              content: product_type,
+              nestedGroups: auxiliary_type_groups
+          })
+
+          /* Requested sensing period */
+          groups.push({
+              id: "REQUESTED_SENSING_PERIOD",
+              treeLevel: 1,
+              content: "REQUESTED_SENSING_PERIOD"
+          })
+
+          /* Introduce items for timeline */
+          items.push({
+              id: "REQUESTED_SENSING_PERIOD",
+              content: product_type,
+              group: "REQUESTED_SENSING_PERIOD",
+              start: sensing_start,
+              end: sensing_stop,
+              className: "fill-green-border-darkgreen",
+              tooltip: "<table border='1'>" +
+                  "<tr><td>Sensing start</td><td>" + sensing_start + "</td></tr>" +
+                  "<tr><td>Sensing stop</td><td>" + sensing_stop + "</td></tr>" +
+                  "</table>"
+          })
+
+      }
+      
+      for (const auxiliary_file of query_result_to_json["auxiliary_baseline"]){
+
+          /* Create line */
+          var tr = document.createElement("tr");
+          /* Mission */
+          var td_mission = document.createElement("td");
+          tr.appendChild(td_mission);
+          td_mission.textContent = auxiliary_file["mission"];
+          /* Satellite */
+          var td_satellite = document.createElement("td");
+          tr.appendChild(td_satellite);
+          td_satellite.textContent = auxiliary_file["satellite"];
+          /* Validity start */
+          var td_validity_start = document.createElement("td");
+          tr.appendChild(td_validity_start);
+          td_validity_start.textContent = auxiliary_file["validity_start"];
+          /* Validity stop */
+          var td_validity_stop = document.createElement("td");
+          tr.appendChild(td_validity_stop);
+          td_validity_stop.textContent = auxiliary_file["validity_stop"];
+          /* Product level/s */
+          var td_associated_product_levels = document.createElement("td");
+          tr.appendChild(td_associated_product_levels);
+          td_associated_product_levels.textContent = auxiliary_file["associated_product_levels"];
+          /* Product type/s */
+          var td_associated_product_types = document.createElement("td");
+          tr.appendChild(td_associated_product_types);
+          td_associated_product_types.textContent = auxiliary_file["associated_product_types"];
+          /* Auxiliary type */
+          var td_auxiliary_type = document.createElement("td");
+          tr.appendChild(td_auxiliary_type);
+          td_auxiliary_type.textContent = auxiliary_file["auxiliary_type"];
+          /* Auxiliary file */
+          var td_auxiliary_file = document.createElement("td");
+          tr.appendChild(td_auxiliary_file);
+          td_auxiliary_file.textContent = auxiliary_file["auxiliary_file"];
+          /* Processing version */
+          var td_processing_version = document.createElement("td");
+          tr.appendChild(td_processing_version);
+          td_processing_version.textContent = auxiliary_file["processing_version"];
+
+          /* Insert line into table */
+          auxiliary_data_table.tBodies[0].appendChild(tr);
+
+          /* Insert auxiliary type group */
+          if (!(auxiliary_file["auxiliary_type"] in obtained_auxiliary_types)){
+              auxiliary_type_groups.push(auxiliary_file["auxiliary_type"])
+              /* Auxiliary type */
+              groups.push({
+                  id: auxiliary_file["auxiliary_type"],
+                  treeLevel: 4,
+                  content: auxiliary_file["auxiliary_type"],
+              })
+              obtained_auxiliary_types[auxiliary_file["auxiliary_type"]] = true;
+          }
+          /* Introduce items for timeline */
+          items.push({
+              id: auxiliary_file["id"],
+              content: auxiliary_file["auxiliary_file"],
+              group: auxiliary_file["auxiliary_type"],
+              start: auxiliary_file["validity_start"],
+              end: auxiliary_file["validity_stop"],
+              className: "timeline-text-align-left",
+              tooltip: "<table border='1'>" +
+                  "<tr><td>ID</td><td>" + auxiliary_file["id"] + "</td></tr>" +
+                  "<tr><td>Mission</td><td>" + auxiliary_file["mission"] + "</td></tr>" +
+                  "<tr><td>Satellite</td><td>" + auxiliary_file["satellite"] + "</td></tr>" +
+                  "<tr><td>Associated product level/s</td><td>" + auxiliary_file["associated_product_levels"] + "</td></tr>" +
+                  "<tr><td>Associated product type/s</td><td>" + auxiliary_file["associated_product_types"] + "</td></tr>" +
+                  "<tr><td>Processing version</td><td>" + auxiliary_file["processing_version"] + "</td></tr>" +
+                  "<tr><td>Auxiliary type</td><td>" + auxiliary_file["auxiliary_type"] + "</td></tr>" +
+                  "<tr><td>Auxiliary file</td><td>" + auxiliary_file["auxiliary_file"] + "</td></tr>" +
+                  "<tr><td>Adjusted validity start</td><td>" + auxiliary_file["validity_start"] + "</td></tr>" +
+                  "<tr><td>Adjusted validity stop</td><td>" + auxiliary_file["validity_stop"] + "</td></tr>" +
+                  "</table>"
+          })
+      }
+
+      /* Activate retrieved axuliary data baseline container */
+      retrieved_axuliary_data_baseline_container.hidden = false;
+      adgsfe.datatables.activate_search_on_columns();
+
+      if (show_timeline.checked){
+          console.log(items)
+          console.log(groups)
+          adgsfe.display_timeline("retrieved-axuliary-data-baseline-timeline-container", items, groups, "REQUESTED_SENSING_PERIOD");
+
+          /* Activate retrieved axuliary data baseline timeline */
+          timeline_container.hidden = false;
+          timeline_title_container.hidden = false;
+      }
+      else{
+          /* Deactivate retrieved axuliary data baseline timeline */
+          timeline_container.hidden = true;
+          timeline_title_container.hidden = true;
+      }
+  }
+
+  /* Update select nodes for the first time (in case the values are not the default ones) */
+  update_satellite_select();
+  update_product_type_select();
+  
+</script>
+{% endblock %}

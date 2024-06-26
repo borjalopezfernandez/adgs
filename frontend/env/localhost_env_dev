@@ -5,3 +5,5 @@ ADGSFE_DEVELOPMENT_PATH=.
 ADGS_DASHBOARD_URL=http://localhost:3000
 AUXIP_SWAGGER_URL=http://localhost:8001/docs
 ADGSBOA_URL=https://localhost:5100
+ADGSBOA_HOST=boa_app_adgs_dev
+ADGSBOA_PORT=5000

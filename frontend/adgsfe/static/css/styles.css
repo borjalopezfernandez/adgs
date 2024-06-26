@@ -326,16 +326,17 @@ th {
   text-align: -webkit-match-parent;
 }
 
-thead,
-tbody,
-tfoot,
-tr,
-td,
-th {
-  border-color: inherit;
-  border-style: solid;
-  border-width: 0;
-}
+/* Commented to have the borders for the tooltips */
+/* thead, */
+/* tbody, */
+/* tfoot, */
+/* tr, */
+/* td, */
+/* th { */
+/*   border-color: inherit; */
+/*   border-style: solid; */
+/*   border-width: 0; */
+/* } */
 
 label {
   display: inline-block;

@@ -1,7 +1,18 @@
 {% extends "base.html" %}
+{% block section_header %}
+<div class="container px-5">
+  <div class="row gx-5 justify-content-center">
+    <div class="col-lg-12">
+      <div class="text-center my-1">
+        <h3 class="fw-bolder text-white mb-2" style>Services</h3>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
 {% block sections %}
 <!-- Services section-->
-<section class="py-5 border-bottom" id="features">
+<section class="py-5 border-bottom" id="services">
   <div class="container px-5 my-5">
     <div class="row gx-5">
       <div class="col-lg-4 mb-5 mb-lg-0">
@@ -23,7 +34,7 @@
         </a>
       </div>
       <div class="col-lg-4 mb-5 mb-lg-0">
-        <a href="#!" style="text-decoration: none; color: #000000;">
+        <a href="/baseline-management" style="text-decoration: none; color: #000000;">
           <div style="text-align:left; width: calc(99% / 3); display: inline-block">
             <img width="50px" height="50px" src="/adgsfe_static_images/baseline_management_icon.svg"/>
           </div>
