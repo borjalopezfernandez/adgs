@@ -187,7 +187,7 @@ def odata_get_product(db: Session, count: str | None, filter: str | None, skip: 
 
     if filter == None and count == None and orderby == None:
         logger.error("query not supported / OData parameters not found")
-        raise ValueError("bad raquest: query not supported / OData parameters not found")
+        raise ValueError(f"bad raquest: query not supported / OData parameters not found in {filter}")
 
     if filter != None:
         return _query_filter(db = db, filter = filter, count = count)

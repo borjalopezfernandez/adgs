@@ -1,7 +1,9 @@
+import json
 from typing import Any
 from uuid import UUID
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Request, Query, status
 from fastapi.responses import JSONResponse, FileResponse, PlainTextResponse, Response
+from fastapi.encoders import jsonable_encoder
 
 from .. database import get_db
 from .. import logger as app_logger
@@ -163,6 +165,11 @@ async def product_query(background_tasks: BackgroundTasks,
     - ?$filter=Attributes/OData.CSC.StringAttribute/any(att:att/Name eq 'platformShortName' and att/OData.CSC.StringAttribute/Value eq 'SENTINEL-2') and Attributes/OData.CSC.StringAttribute/any(att:att/Name eq 'processingCenter' and att/OData.CSC.StringAttribute/Value eq 'PDMC')
     - ?$filter=Attributes/OData.CSC.StringAttribute/any(att:att/Name eq 'platformShortName' and att/OData.CSC.StringAttribute/Value eq 'SENTINEL-2') and Attributes/OData.CSC.StringAttribute/any(att:att/Name eq 'processingCenter' and att/OData.CSC.StringAttribute/Value eq 'PDMC') Attributes/OData.CSC.StringAttribute/any(att:att/Name eq 'productType' and att/OData.CSC.StringAttribute/Value eq 'AUX_UT1UTC')
     """
+    app_logger.logger.debug("request.url.path           : {}".format(request.url.path) )
+    app_logger.logger.debug("request.url.query_params   : {}".format(request.url) )
+    app_logger.logger.debug("request.url.scheme         : {}".format(request.url.scheme) )
+    app_logger.logger.debug(f"$filter : {filter}")
+
     try:
         result = odata_product_query.odata_get_product(db = db, count = count, filter = filter, top = top, skip = skip, orderby = orderby)
     except Exception as error:
@@ -171,9 +178,13 @@ async def product_query(background_tasks: BackgroundTasks,
 
     # $count=true returns a string with the number of elements
     if isinstance(result, str) == True:
-        return result
+        json_count_product   = {}
+        json_count_product["@odata.context"]    = "$metadata#Products"
+        json_count_product["count"]             = result
+        return JSONResponse(content = json_count_product)
 
-    list_product = []
+    list_product        = []
+    json_list_product   = {}
 
     if result == None:
         app_logger.logger.debug("NO ITEMS")
@@ -181,15 +192,19 @@ async def product_query(background_tasks: BackgroundTasks,
 
     for item in result:
         # app_logger.logger.debug("Name : ".format(item.filename) )
-        product = products.ProductBase( Id                      = str(item.uuid),
+        product = products.ProductBase( Id                          = str(item.uuid),
                                         Name                        = item.filename,
                                         ContentLength               = item.size,
                                         ContentDate                 = {"ContentDate" : {"Start" : item.validity_start.strftime("%Y-%m-%dT%H:%M:%S.000Z"), "End" : item.validity_stop.strftime("%Y-%m-%dT%H:%M:%S.000Z")} },
                                         PublicationDate             = item.archive_date.strftime("%Y-%m-%dT%H:%M:%S.000Z"),
                                         Checksum                    = {"Checksum" : { "Algorithm" : "MD5", "Value" : str(item.md5), "ChecksumDate" : item.archive_date.strftime("%Y-%m-%dT%H:%M:%S.000Z") } }
                                     )
-        list_product.append(product)
-
-    return list_product
+        list_product.append(jsonable_encoder(product))
+        
+    json_list_product["@odata.context"] = "$metadata#Products"
+    json_list_product["value"]          = list_product
+   
+    return JSONResponse(content = json_list_product)
+   
 
 # -------------------------------------------------------------------
