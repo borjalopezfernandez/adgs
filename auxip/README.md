@@ -61,36 +61,30 @@ Build the production image (name of the image should be app_adgs_auxip):
 docker build --build-context auxip_packages_directory=/tmp --build-arg AUXIP_PACKAGE=auxip-0.0.1.tar.gz -f Dockerfile.adgs.auxip.localhost.yaml -t app_adgs_auxip:latest .
 ```
 
+### Export docker image ###
+
+Export the production image (name of the image should be app_adgs_auxip plus the version):
+
+* Export image
+```
+docker save app_adgs_auxip > /tmp/app_adgs_auxip-0.0.1.tar
+```
+
 ### Docker compose ###
 
 Setup the docker compose pointing to the development environment:
 
-<<<<<<< HEAD
 * Start-up
 ```
 docker compose -f compose_auxip.yml --env-file env/localhost_env up -d
 ```
-=======
-* Build gem in the repository
-```
-rake -f build_minarc.rake minarc:build[adgs,localhost,adgs_test_pg]
-```
-
-* Build app_adgs_auxip
->>>>>>> 6623a9569214f537de33496dea5ed29ca8c8f2ac
 
 * Shutdown
 ```
 docker compose -f compose_auxip.yml --env-file env/localhost_env down
 ```
 
-<<<<<<< HEAD
 ### AUXIP URL ###
 
 AUXIP should be serving at port 8000 for production:
 http://localhost:8000/docs
-=======
-```
-curl -k -v -u test:test --max-time 12000 --connect-timeout 60 --keepalive-time 12000 -L -f -s -X GET https://adgs_minarc:4567/dec/arc/requestArchive/*
-```
->>>>>>> 6623a9569214f537de33496dea5ed29ca8c8f2ac

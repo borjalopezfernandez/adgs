@@ -6,7 +6,7 @@ module adgs
 from setuptools import setup, find_packages
 
 setup(name="adgsfe",
-      version="0.0.1",
+      version="0.1.0",
       description="Front-End application for the Auxiliary Data Gathering Sevice (ADGS)",
       author="Daniel Brosnan",
       author_email="daniel.brosnan@deimos-space.com",
@@ -18,8 +18,6 @@ setup(name="adgsfe",
           "Flask-DebugToolbar",
           "flask-security-too",
           "gunicorn",
-          "bleach",
-          "geopy",
           "requests"
       ],
       extras_require={

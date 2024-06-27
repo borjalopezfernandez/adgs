@@ -2,9 +2,11 @@
 {% set earth_observation = True %}
 
 {% block title %}
-<title>ADGSBOA - Bussiness Operation Analysis for ADGS service</title>
+{% include "panel/boa_title.html" %}
 {% endblock %}
-{% block project_version %}ADGSBOA 0.1.0{% endblock %}
+{% block project_version %}
+{% include "panel/boa_version.html" %}
+{% endblock %}
 {% block project_header %}
 {% include "panel/project_header.html" %}
 {% endblock %}

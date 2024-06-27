@@ -1,0 +1,6 @@
+graft adgsvboa/templates
+graft adgsvboa/static
+graft boa_config
+graft boa_cron
+graft boa_schemas
+graft boa_scripts

@@ -1,14 +1,14 @@
 """
-Setup configuration for the naosvboa application
+Setup configuration for the adgsvboa application
 
 Written by DEIMOS Space S.L. (dibb)
 
-module naosboa
+module adgsboa
 """
 from setuptools import setup, find_packages
 
-setup(name="naosboa",
-      version="0.1.5",
+setup(name="adgsboa",
+      version="0.1.0",
       description="Engine and visualization tool for Business Operation Analysis",
       author="Daniel Brosnan",
       author_email="daniel.brosnan@deimos-space.com",

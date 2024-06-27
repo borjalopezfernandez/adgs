@@ -1,3 +1,3 @@
-from naosvboa import create_app
+from adgsvboa import create_app
 
 app = create_app()

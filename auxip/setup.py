@@ -6,7 +6,7 @@ module auxip
 from setuptools import setup, find_packages
 
 setup(name="auxip",
-      version="0.0.1",
+      version="0.1.0",
       description="Auxiliary Data Gathering Service Interface Point",
       author="Borja López Fernández",
       author_email="borja.lopez@deimos-space.com ",

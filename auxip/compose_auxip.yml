@@ -40,6 +40,8 @@ services:
       - AUXIP_LOG_LEVEL=DEBUG
       - MINARC_PLUGIN=ADGS
       - TMPDIR=/tmp
+      - ADGSBOA_HOST=${ADGSBOA_HOST}
+      - ADGSBOA_PORT=${ADGSBOA_PORT}
       restart        : always
       volumes:
          - /data:/data

@@ -3,7 +3,7 @@ services:
 
    adgs_adgsfe:
       image          : app_adgsfe_dev
-      container_name : adgs_adgsfefe_${SERVICE_LABEL}
+      container_name : adgs_adgsfe_${SERVICE_LABEL}
       hostname       : adgs_adgsfe
       environment    :
          - ADGS_DASHBOARD_URL=${ADGS_DASHBOARD_URL}

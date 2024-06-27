@@ -54,6 +54,46 @@ services:
       networks:
          - adgs_network
 
+   adgs_auxip:
+      depends_on:
+         - adgs_db
+      image          : app_adgs_auxip
+      container_name : adgs_auxip_${SERVICE_LABEL}
+      hostname       : adgs_auxip
+      ports:
+         - ${AUXIP_PORT}:8000
+      environment    :
+      - AUXIP_DATABASE_HOST=adgs_db
+      - AUXIP_DATABASE_NAME=adgs_db
+      - AUXIP_DATABASE_USER=adgs
+      - AUXIP_DATABASE_PASSWORD=adg$
+      - AUXIP_LOG_LEVEL=INFO
+      - MINARC_PLUGIN=ADGS
+      - TMPDIR=/tmp
+      - ADGSBOA_HOST=adgsboa
+      - ADGSBOA_PORT=${ADGSBOA_PORT}
+      restart        : always
+      volumes:
+         - /data:/data
+      networks:
+         - adgs_network
+
+   adgs_adgsfe:
+      image          : app_adgsfe
+      container_name : adgs_adgsfe_${SERVICE_LABEL}
+      hostname       : adgs_adgsfe
+      environment    :
+         - ADGS_DASHBOARD_URL=${ADGS_DASHBOARD_URL}
+         - AUXIP_SWAGGER_URL=${AUXIP_SWAGGER_URL}
+         - ADGSBOA_URL=${ADGSBOA_URL}
+         - ADGSBOA_HOST=adgs_boa
+         - ADGSBOA_PORT=${ADGSBOA_PORT}
+      ports:
+         - ${ADGSFE_PORT}:5000
+      restart        : always
+      networks:
+         - adgs_network
+
    adgs_monitoring_db:
       image: mdillon/postgis
       container_name: adgs_monitoring_db_${SERVICE_LABEL}
@@ -73,13 +113,13 @@ services:
       stdin_open: true 
       tty: true
       ports:
-         - ${VBOA_PORT}:5000
+         - ${ADGSBOA_PORT}:5000
       environment:
-         - EBOA_DDBB_HOST=adgs_monitoring_db_${SERVICE_LABEL}
-         - SBOA_DDBB_HOST=adgs_monitoring_db_${SERVICE_LABEL}
-         - UBOA_DDBB_HOST=adgs_monitoring_db_${SERVICE_LABEL}
-         - MINARC_DATABASE_HOST=adgs_monitoring_db_${SERVICE_LABEL}
-         - ORC_DATABASE_HOST=adgs_monitoring_db_${SERVICE_LABEL}
+         - EBOA_DDBB_HOST=adgs_monitoring_db
+         - SBOA_DDBB_HOST=adgs_monitoring_db
+         - UBOA_DDBB_HOST=adgs_monitoring_db
+         - MINARC_DATABASE_HOST=adgs_monitoring_db
+         - ORC_DATABASE_HOST=adgs_monitoring_db
       networks:
          - adgs_network
       volumes:
