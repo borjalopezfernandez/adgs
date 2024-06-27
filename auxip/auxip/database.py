@@ -10,8 +10,13 @@ from .config import Settings
 
 # pg_hba.conf #
 # /etc/postgresql/14/main/pg_hba.conf
+# local   all             postgres                                trust
 
-# postgres$> createdb adgs_db
+# psql -U postgres
+# create user adgs WITH PASSWORD 'adg$';
+# ALTER USER adgs WITH SUPERUSER;
+
+# postgres$> createdb adgs_db -U adgs
 # psql -U postgres
 # alter user adgs WITH PASSWORD 'adg$';
 # postgres=# \connect adgs_db
