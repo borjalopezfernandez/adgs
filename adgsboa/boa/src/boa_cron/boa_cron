@@ -1,6 +1,6 @@
 SHELL=/bin/bash
 BASH_ENV=/resources_path/container.env
 # Ingest into DDBB the health status information every minute
-* * * * * generate_adgs_status_metrics.py -o /metrics_to_publish/adgs_status_metrics.txt
-* * * * * su boa -c "generate_adgsboa_metrics.py -o /metrics_to_publish/adgsboa_metrics.txt"
-* * * * * su boa -c "sleep 20; aggregate_metrics.py -i /metrics_to_publish -o /metrics/metrics_to_publish.txt"
+* * * * * generate_adgs_status_metrics.py -o /metrics_to_publish/adgs_status_metrics.txt &>> /log/crond_1
+* * * * * su boa -c "generate_adgsboa_metrics.py -o /metrics_to_publish/adgsboa_metrics.txt" &>> /log/crond_2
+* * * * * su boa -c "sleep 20; aggregate_metrics.py -i /metrics_to_publish -o /metrics/metrics_to_publish.txt" &>> /log/crond_3

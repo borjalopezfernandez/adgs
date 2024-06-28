@@ -113,13 +113,14 @@ services:
       stdin_open: true 
       tty: true
       ports:
-         - ${ADGSBOA_PORT}:5000
+         - ${ADGSBOA_PORT}:5001
       environment:
          - EBOA_DDBB_HOST=adgs_monitoring_db
          - SBOA_DDBB_HOST=adgs_monitoring_db
          - UBOA_DDBB_HOST=adgs_monitoring_db
          - MINARC_DATABASE_HOST=adgs_monitoring_db
          - ORC_DATABASE_HOST=adgs_monitoring_db
+         - SERVICE_LABEL=${SERVICE_LABEL}
       networks:
          - adgs_network
       volumes:

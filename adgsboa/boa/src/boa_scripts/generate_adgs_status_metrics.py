@@ -21,8 +21,19 @@ import requests
 # Import logging
 from eboa.logging import Log
 
+# Import errors
+import errors
+
 logging = Log(name = __name__, log_name = "eboa_metrics_root_operations.log")
 logger = logging.logger
+
+service_label = None
+if "SERVICE_LABEL" in os.environ:
+    # Get host to access ADGSBOA
+    service_label = os.environ["SERVICE_LABEL"]
+else:
+    raise errors.EnvironmentVariableNotDefined("The environment variable SERVICE_LABEL is not defined")
+# end if
 
 def execute_command(command):
     """
@@ -64,7 +75,7 @@ def execute_generator(metrics_file_path):
         "status": 1,
         "pretty_name": "ADGS archive"
     }
-    check_service_command = f"docker inspect -f '{{{{.State.Running}}}}' {service_name}"
+    check_service_command = f"docker inspect -f '{{{{.State.Running}}}}' {service_name}_{service_label}"
     output, error, return_code = execute_command(check_service_command)
     if return_code != 0:
         services[service_name]["status"] = 0
@@ -73,7 +84,7 @@ def execute_generator(metrics_file_path):
         services[service_name]["status"] = 0
         logger.error(f"The service {service_name} is not running. Checked with the execution of the command: {check_service_command}")
     else:
-        check_service_command = f"docker top {service_name}"
+        check_service_command = f"docker top {service_name}_{service_label}"
         output, error, return_code = execute_command(check_service_command)
         if return_code != 0:
             services[service_name]["status"] = 0
@@ -93,7 +104,7 @@ def execute_generator(metrics_file_path):
         "status": 1,
         "pretty_name": "ADGS circulator"
     }
-    check_service_command = f"docker inspect -f '{{{{.State.Running}}}}' {service_name}"
+    check_service_command = f"docker inspect -f '{{{{.State.Running}}}}' {service_name}_{service_label}"
     output, error, return_code = execute_command(check_service_command)
     if return_code != 0:
         services[service_name]["status"] = 0
@@ -102,7 +113,7 @@ def execute_generator(metrics_file_path):
         services[service_name]["status"] = 0
         logger.error(f"The service {service_name} is not running. Checked with the execution of the command: {check_service_command}")
     else:
-        check_service_command = f"docker top {service_name}"
+        check_service_command = f"docker top {service_name}_{service_label}"
         output, error, return_code = execute_command(check_service_command)
         if return_code != 0:
             services[service_name]["status"] = 0
@@ -122,7 +133,7 @@ def execute_generator(metrics_file_path):
         "status": 1,
         "pretty_name": "ADGS DDBB"
     }
-    check_service_command = f"docker inspect -f '{{{{.State.Running}}}}' {service_name}"
+    check_service_command = f"docker inspect -f '{{{{.State.Running}}}}' {service_name}_{service_label}"
     output, error, return_code = execute_command(check_service_command)
     if return_code != 0:
         services[service_name]["status"] = 0
@@ -131,7 +142,7 @@ def execute_generator(metrics_file_path):
         services[service_name]["status"] = 0
         logger.error(f"The service {service_name} is not running. Checked with the execution of the command: {check_service_command}")
     else:
-        check_service_command = f"docker top {service_name}"
+        check_service_command = f"docker top {service_name}_{service_label}"
         output, error, return_code = execute_command(check_service_command)
         if return_code != 0:
             services[service_name]["status"] = 0
@@ -151,7 +162,7 @@ def execute_generator(metrics_file_path):
         "status": 1,
         "pretty_name": "ADGS monitoring DDBB"
     }
-    check_service_command = f"docker inspect -f '{{{{.State.Running}}}}' {service_name}"
+    check_service_command = f"docker inspect -f '{{{{.State.Running}}}}' {service_name}_{service_label}"
     output, error, return_code = execute_command(check_service_command)
     if return_code != 0:
         services[service_name]["status"] = 0
@@ -160,7 +171,7 @@ def execute_generator(metrics_file_path):
         services[service_name]["status"] = 0
         logger.error(f"The service {service_name} is not running. Checked with the execution of the command: {check_service_command}")
     else:
-        check_service_command = f"docker top {service_name}"
+        check_service_command = f"docker top {service_name}_{service_label}"
         output, error, return_code = execute_command(check_service_command)
         if return_code != 0:
             services[service_name]["status"] = 0
@@ -171,16 +182,16 @@ def execute_generator(metrics_file_path):
         # end if
     # end if
 
-    ########
-    # VBOA #
-    ########
+    ############
+    # ADGS BOA #
+    ############
     service_name = "adgs_boa"
     services[service_name] = {
         "metric_name": f"{service_name}_up",
         "status": 1,
         "pretty_name": "ADGS BOA"
     }
-    check_service_command = f"docker inspect -f '{{{{.State.Running}}}}' {service_name}"
+    check_service_command = f"docker inspect -f '{{{{.State.Running}}}}' {service_name}_{service_label}"
     output, error, return_code = execute_command(check_service_command)
     if return_code != 0:
         services[service_name]["status"] = 0
@@ -189,12 +200,12 @@ def execute_generator(metrics_file_path):
         services[service_name]["status"] = 0
         logger.error(f"The service {service_name} is not running. Checked with the execution of the command: {check_service_command}")
     else:
-        check_service_command = f"docker top {service_name}"
+        check_service_command = f"docker top {service_name}_{service_label}"
         output, error, return_code = execute_command(check_service_command)
         if return_code != 0:
             services[service_name]["status"] = 0
             logger.error(f"The execution of the command {check_service_command} has ended unexpectedly with the following output: {output} but the following error: {error}")
-        elif ("flask" not in output.decode("UTF-8")) and not ("gunicorn" not in output.decode("UTF-8")):
+        elif ("flask" not in output.decode("UTF-8")) and ("gunicorn" not in output.decode("UTF-8")):
             services[service_name]["status"] = 0
             logger.error(f"There are no flask or gunicorn processes running in the container associated to the service {service_name}. Checked with the execution of the command: {check_service_command}")
         # end if
@@ -250,7 +261,7 @@ def execute_generator(metrics_file_path):
         "status": 1,
         "pretty_name": "ADGS Grafana"
     }
-    check_service_command = f"docker inspect -f '{{{{.State.Running}}}}' {service_name}"
+    check_service_command = f"docker inspect -f '{{{{.State.Running}}}}' {service_name}_{service_label}"
     output, error, return_code = execute_command(check_service_command)
     if return_code != 0:
         services[service_name]["status"] = 0
@@ -259,7 +270,7 @@ def execute_generator(metrics_file_path):
         services[service_name]["status"] = 0
         logger.error(f"The service {service_name} is not running. Checked with the execution of the command: {check_service_command}")
     else:
-        check_service_command = f"docker top {service_name}"
+        check_service_command = f"docker top {service_name}_{service_label}"
         output, error, return_code = execute_command(check_service_command)
         if return_code != 0:
             services[service_name]["status"] = 0
@@ -279,7 +290,7 @@ def execute_generator(metrics_file_path):
         "status": 1,
         "pretty_name": "ADGS Prometheus"
     }
-    check_service_command = f"docker inspect -f '{{{{.State.Running}}}}' {service_name}"
+    check_service_command = f"docker inspect -f '{{{{.State.Running}}}}' {service_name}_{service_label}"
     output, error, return_code = execute_command(check_service_command)
     if return_code != 0:
         services[service_name]["status"] = 0
@@ -288,7 +299,7 @@ def execute_generator(metrics_file_path):
         services[service_name]["status"] = 0
         logger.error(f"The service {service_name} is not running. Checked with the execution of the command: {check_service_command}")
     else:
-        check_service_command = f"docker top {service_name}"
+        check_service_command = f"docker top {service_name}_{service_label}"
         output, error, return_code = execute_command(check_service_command)
         if return_code != 0:
             services[service_name]["status"] = 0

@@ -18,3 +18,13 @@ class WrongMetricGeneratorPeriod(Error):
 
     def __init__(self, message):
         self.message = message
+
+class EnvironmentVariableNotDefined(Error):
+    """Exception raised when an environment variable is not defined.
+
+    Attributes:
+        message -- explanation of the error
+    """
+
+    def __init__(self, message):
+        self.message = message
