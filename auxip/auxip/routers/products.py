@@ -121,7 +121,7 @@ async def product_download(id: str, background_tasks: BackgroundTasks, db: Sessi
     app_logger.logger.debug(f"/get product_download {file_path}")
     background_tasks.add_task(my_background_task, file_path)
     try:
-        return FileResponse(file_path, filename = db_product.filename)
+        return FileResponse(file_path, filename = db_product.filename, media_type = 'application/octet-stream')
     except Exception as e:
         app_logger.logger.error(f"Failed get product_download: {e}")
         raise HTTPException(status_code = 500 , detail="The service is unavailable due to a connection error.")
