@@ -144,8 +144,8 @@ async def product_download(id: str, background_tasks: BackgroundTasks, db: Sessi
 async def product_query(background_tasks: BackgroundTasks,
                         request : Request,
                         db      : Session = Depends(get_db),
-                        filter  : str = Query(alias = "$filter",    default = None), 
                         count   : str = Query(alias = "$count",     default = None),
+                        filter  : str = Query(alias = "$filter",    default = None), 
                         top     : str = Query(alias = "$top",       default = None), 
                         skip    : str = Query(alias = "$skip",      default = None),
                         orderby : str = Query(alias = "$orderby",   default = None),
@@ -155,6 +155,8 @@ async def product_query(background_tasks: BackgroundTasks,
     - Query for Product Entity / Attributes: https://<service-root-uri>/odata/v1/Products
     - ?$count=true&$filter=startswith(Name,'S2')
     - ?$filter=startswith(Name,'S1A_AUX_')
+    - ?$filter=PublicationDate gt 2020-05-15T00:00:00.000Z
+    - ?$filter=ContentDate/Start gt 2024-06-01T00:00:00.000Z and ContentDate/End lt 2024-06-16T00:00:00.000Z
     - ?$skip=13&$top=1000&$filter=startswith(Name,'S2')
     - ?$orderby=PublicationDate desc
     - ?$filter=startswith(Name,'S1') and endswith(Name,'.EOF.zip')
@@ -168,7 +170,8 @@ async def product_query(background_tasks: BackgroundTasks,
     app_logger.logger.debug("request.url.path           : {}".format(request.url.path) )
     app_logger.logger.debug("request.url.query_params   : {}".format(request.url) )
     app_logger.logger.debug("request.url.scheme         : {}".format(request.url.scheme) )
-    app_logger.logger.debug(f"$filter : {filter}")
+    app_logger.logger.debug(f"$filter   : {filter}")
+    app_logger.logger.debug(f"$count    : {count}")
 
     try:
         result = odata_product_query.odata_get_product(db = db, count = count, filter = filter, top = top, skip = skip, orderby = orderby)
@@ -202,6 +205,10 @@ async def product_query(background_tasks: BackgroundTasks,
         list_product.append(jsonable_encoder(product))
         
     json_list_product["@odata.context"] = "$metadata#Products"
+    
+    if count != None:
+        json_list_product["count"]      =  str(len(list_product))
+    
     json_list_product["value"]          = list_product
    
     return JSONResponse(content = json_list_product)

@@ -3,6 +3,7 @@ import uvicorn
 
 from fastapi import FastAPI
 from fastapi import Depends, status
+from fastapi.middleware.cors import CORSMiddleware
 
 from sqlalchemy.orm import Session
 
@@ -58,6 +59,14 @@ app.title       = "Auxiliary Data Gathering Service"
 app.summary     = "AUXIP description"
 app.version     = "0.0.4"
 app.description = "Here's a longer description of the custom **ADGS** service"
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 # Router for subscriptions management
