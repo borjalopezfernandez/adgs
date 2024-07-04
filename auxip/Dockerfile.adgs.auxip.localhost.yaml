@@ -40,6 +40,13 @@ RUN addgroup -g 2020 -S adgs && adduser -u 2020 -S adgs -G adgs -s /bin/bash
 RUN mkdir /auxip_packages
 COPY --from=auxip_packages_directory $AUXIP_PACKAGE /auxip_packages
 RUN chown -R adgs:adgs /auxip_packages
+    
+# Create folders for AUXIP
+RUN mkdir /scripts
+RUN mkdir /resources_path
+
+# Change ownership to the boa user
+RUN chown -R adgs /scripts /resources_path
 
 USER adgs
 
@@ -49,4 +56,9 @@ ENV PATH="${PATH}:/home/adgs/.local/bin"
 # Install AUXIP package
 RUN pip3 install /auxip_packages/*
 
-CMD ["/bin/bash", "-c", "uvicorn auxip.main:app --proxy-headers --host 0.0.0.0 --log-level debug"]
+RUN echo "while true; do echo 'Trying to start the web server...'; uvicorn --ssl-certfile /resources_path/certificate.pem --ssl-keyfile /resources_path/key.pem auxip.main:app --proxy-headers --host 0.0.0.0; if [[ $? != 0 ]]; then echo 'Failed to start the web server...'; sleep 1; else echo 'Web server started! :D'; fi; done; sleep infinity" > /scripts/start_uvicorn.sh
+
+RUN chmod u+x /scripts/start_uvicorn.sh
+
+
+CMD ["/bin/bash", "-c", "/scripts/start_uvicorn.sh"]

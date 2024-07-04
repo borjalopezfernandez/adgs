@@ -1,5 +1,6 @@
 from typing import Any
 import uvicorn
+import os
 
 from fastapi import FastAPI
 from fastapi import Depends, status
@@ -54,7 +55,12 @@ tags_metadata = [
     }
 ]
 
-app             = FastAPI(openapi_tags=tags_metadata)
+if "AUXIP_BASE_PATH" in os.environ:
+    app             = FastAPI(openapi_tags=tags_metadata, servers = [{"url": os.environ["AUXIP_BASE_PATH"]}], root_path=os.environ["AUXIP_BASE_PATH"])
+else:
+    app             = FastAPI(openapi_tags=tags_metadata)
+# end if
+
 app.title       = "Auxiliary Data Gathering Service"
 app.summary     = "AUXIP description"
 app.version     = "0.0.4"

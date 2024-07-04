@@ -39,13 +39,17 @@ RUN addgroup -g $GID_HOST_USER -S adgs && adduser -u $UID_HOST_USER -S adgs -G a
 
 # Create directory where the auxip repository is going to be attached for development
 RUN mkdir /auxip
-RUN chown adgs:adgs /auxip
+RUN mkdir /scripts
+RUN mkdir /resources_path
+RUN chown adgs:adgs /auxip /scripts /resources_path
 
 USER adgs
+
+RUN openssl req -x509 -newkey rsa:4096 -nodes -out /resources_path/certificate.pem -keyout /resources_path/key.pem -subj "/emailAddress=daniel.brosnan@elecnor.es/C=SP/ST=Madrid/L=Tres Cantos/O=Elecnor Deimos/OU=Ground Segment/CN=AUXIP"
 
 # Add path to the scripts installed by pip in the home of the adgs user to PATH
 ENV PATH="${PATH}:/home/adgs/.local/bin"
 
 WORKDIR /auxip
 
-CMD ["/bin/bash", "-c", "pip3 install -e '/auxip[tests]'; uvicorn auxip.main:app --proxy-headers --host 0.0.0.0 --log-level debug --reload"]
+CMD ["/bin/bash", "-c", "pip3 install -e '/auxip[tests]'; uvicorn auxip.main:app --ssl-certfile /resources_path/certificate.pem --ssl-keyfile /resources_path/key.pem --proxy-headers --host 0.0.0.0 --log-level debug --reload"]
