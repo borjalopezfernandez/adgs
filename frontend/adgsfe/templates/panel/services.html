@@ -18,43 +18,52 @@
       <div class="col-lg-4 mb-5 mb-lg-0">
         <a href="{{ metadata.adgs_dashboard_url }}" style="text-decoration: none; color: #000000;">
           <div style="text-align:left; width: calc(99% / 3); display: inline-block">
-            <img width="50px" height="50px" src="/adgsfe_static_images/Grafana_icon.svg"/>
+            <img width="50px" height="50px" src="{{ url_for('adgsfe_static_images', filename='Grafana_icon.svg') }}"/>
           </div>
           <h2 class="h4 fw-bolder">ADGS Dashboard</h2>
-          <p>ADGS Dashboard ...</p>
+          <p>ADGS Dashboard is the microservice in charge of providing visual panels of the relevant metrics and business operations analysis</p>
         </a>
       </div>
       <div class="col-lg-4 mb-5 mb-lg-0">
         <a href="{{ metadata.auxip_swagger_url }}" style="text-decoration: none; color: #000000;">
           <div style="text-align:left; width: calc(99% / 3); display: inline-block">
-            <img width="50px" height="50px" src="/adgsfe_static_images/swagger_icon.svg"/>
+            <img width="50px" height="50px" src="{{ url_for('adgsfe_static_images', filename='swagger_icon.svg') }}"/>
           </div>
           <h2 class="h4 fw-bolder">AUXIP Swagger UI</h2>
-          <p>AUXIP Swagger UI ...</p>
+          <p>AUXIP Swagger UI is the microservice in charge of providing the documention of the ADGS API</p>
         </a>
       </div>
       <div class="col-lg-4 mb-5 mb-lg-0">
-        <a href="/baseline-management" style="text-decoration: none; color: #000000;">
+        <a href="{{ url_for('baseline_management.show_services') }}" style="text-decoration: none; color: #000000;">
           <div style="text-align:left; width: calc(99% / 3); display: inline-block">
-            <img width="50px" height="50px" src="/adgsfe_static_images/baseline_management_icon.svg"/>
+            <img width="50px" height="50px" src="{{ url_for('adgsfe_static_images', filename='baseline_management_icon.svg') }}"/>
           </div>
           <h2 class="h4 fw-bolder">AUXIP baseline management</h2>
-          <p>AUXIP baseline management ...</p>
+          <p>AUXIP baseline management is the microservice in charge of providing a query interface to retrieve the applicable auxiliary data baseline for processing and reprocessing activities</p>
         </a>
       </div>
     </div>
   </div>
   <div class="container px-5 my-5">
     <div class="row gx-5">
+      <div class="col-lg-2 mb-5 mb-lg-0">
+      </div>
       <div class="col-lg-4 mb-5 mb-lg-0">
+        <a href="{{ metadata.adgs_metrics_manager_url }}" style="text-decoration: none; color: #000000;">
+          <div style="text-align:left; width: calc(99% / 3); display: inline-block">
+            <img width="50px" height="50px" src="{{ url_for('adgsfe_static_images', filename='Prometheus_software_logo.png') }}"/>
+          </div>
+          <h2 class="h4 fw-bolder">ADGS Metrics manager</h2>
+          <p>ADGS Metrics manager is the microservice in charge of retrieving metrics from all the other microservices and provide them to the ADGS Dashboard</p>
+        </a>
       </div>
       <div class="col-lg-4 mb-5 mb-lg-0">
         <a href="{{ metadata.adgsboa_url }}" style="text-decoration: none; color: #000000;">
           <div style="text-align:left; width: calc(99% / 3); display: inline-block">
-            <img width="70px" height="90px" src="/adgsfe_static_images/boa_icon.svg"/>
+            <img width="38px" height="50px" src="{{ url_for('adgsfe_static_images', filename='boa_icon.svg') }}"/>
           </div>
           <h2 class="h4 fw-bolder">ADGS Business Operations Analysis</h2>
-          <p>ADGS Dashboard ...</p>
+          <p>ADGS Business Operations Analysis is the microservices in charge of building up all the necessary metrics and business operations analysis to the ADGS metrics manager</p>
         </a>
       </div>
     </div>

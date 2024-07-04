@@ -309,7 +309,7 @@
               "offset": 0
           }
 
-          adgsfe.request_info_json("/baseline-management/query-baseline", update_dashboard, query_filters, true);
+          adgsfe.request_info_json("{{ url_for('baseline_management.query_baseline') }}", update_dashboard, query_filters, true);
           
       }
   }
@@ -457,7 +457,7 @@
               "offset": 0
           }
 
-          adgsfe.request_info_json("/baseline-management/query-baseline", update_dashboard, query_filters, true);
+          adgsfe.request_info_json("{{ url_for('baseline_management.query_baseline') }}", update_dashboard, query_filters, true);
           
       }
 
@@ -699,7 +699,7 @@
                       "offset": parseFloat(query_result_to_json["metadata"]["offset"]) - parseFloat(query_result_to_json["metadata"]["limit"])
                   }
                   
-                  adgsfe.request_info_json("/baseline-management/query-baseline", update_dashboard, query_filters, true);
+                  adgsfe.request_info_json("{{ url_for('baseline_management.query_baseline') }}", update_dashboard, query_filters, true);
                   
               }, false);
 
@@ -722,7 +722,7 @@
                       "offset": parseFloat(query_result_to_json["metadata"]["offset"]) + parseFloat(query_result_to_json["metadata"]["limit"])
                   }
                   
-                  adgsfe.request_info_json("/baseline-management/query-baseline", update_dashboard, query_filters, true);
+                  adgsfe.request_info_json("{{ url_for('baseline_management.query_baseline') }}", update_dashboard, query_filters, true);
                   
               }, false);
           }

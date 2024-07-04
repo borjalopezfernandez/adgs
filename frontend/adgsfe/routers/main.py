@@ -38,6 +38,14 @@ else:
     raise errors.EnvironmentVariableNotDefined("The environment variable ADGSBOA_URL is not defined")
 # end if
 
+adgs_metrics_manager_url = None
+if "ADGS_METRICS_MANAGER_URL" in os.environ:
+    # Get url to access ADGS Prometheus
+    adgs_metrics_manager_url = os.environ["ADGS_METRICS_MANAGER_URL"]
+else:
+    raise errors.EnvironmentVariableNotDefined("The environment variable ADGS_METRICS_MANAGER_URL is not defined")
+# end if
+
 @bp.route("/services", methods=["GET"])
 @bp.route("/", methods=["GET"])
 def show_services():
@@ -48,7 +56,8 @@ def show_services():
     metadata = {
         "adgs_dashboard_url": adgs_dashboard_url,
         "auxip_swagger_url": auxip_swagger_url,
-        "adgsboa_url": adgsboa_url
+        "adgsboa_url": adgsboa_url,
+        "adgs_metrics_manager_url": adgs_metrics_manager_url
     }
     
     return render_template("panel/services.html", metadata=metadata)

@@ -66,4 +66,8 @@ ENV PATH="${PATH}:/home/adgs/.local/bin"
 # expose port
 EXPOSE 5000
 
-CMD ["/bin/bash", "-c", "gunicorn --worker-tmp-dir /dev/shm -b 0.0.0.0:5000 -w 12 $FLASK_APP.wsgi:app --log-file /log/web_server -t 3600; sleep infinity"]
+RUN echo "while true; do echo 'Trying to start the web server...'; gunicorn --certfile /resources_path/certificate.pem --keyfile /resources_path/key.pem --worker-tmp-dir /dev/shm -b 0.0.0.0:5000 -w 12 $FLASK_APP.wsgi:app --log-file /log/web_server -t 3600; if [[ $? != 0 ]]; then echo 'Failed to start the web server...'; sleep 1; else echo 'Web server started! :D'; fi; done; sleep infinity" > /scripts/start_gunicorn.sh
+
+RUN chmod u+x /scripts/start_gunicorn.sh
+
+CMD ["/bin/bash", "-c", "/scripts/start_gunicorn.sh"]
