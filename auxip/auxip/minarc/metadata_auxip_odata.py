@@ -1,5 +1,7 @@
 import re
 
+from ..models import products as models
+
 '''
 ESA-EOPG-EOPGC-SP-2 1.8 11/04/2023
 
@@ -15,9 +17,13 @@ def sentinels_odata_attribute_to_minarc(attribute : str , param : str):
         return f"{param[0]}{param[-1]}"
     raise(f"{attribute} not supported in sentinels_odata_attribute_to_minarc")
 
-sentinels_auxip_odata_entity_minarc = {
-    "Name"          :       "filename",
-    "ContentDate"   :       ["validity_start", "validity_stop"],
+
+sentinels_auxip_odata_entity_product_minarc_field = {
+    "Name"                  :       models.Product.filename,
+    "ContentDate/Start"     :       models.Product.validity_start,
+    "ContentDate/End"       :       models.Product.validity_stop,
+    "ContentDate"           :       ["validity_start", "validity_stop"],
+    "PublicationDate"       :       models.Product.archive_date
 }
 
 
