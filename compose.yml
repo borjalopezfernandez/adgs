@@ -72,11 +72,19 @@ services:
       - TMPDIR=/tmp
       - ADGSBOA_HOST=adgsboa
       - ADGSBOA_PORT=${ADGSBOA_PORT}
+      - AUXIP_BASE_PATH=${AUXIP_BASE_PATH}
       restart        : always
       volumes:
          - /data:/data
       networks:
          - adgs_network
+      secrets:
+         - source: certificate
+           target: /resources_path/certificate.pem
+         - source: key
+           target: /resources_path/key.pem
+         - source: web-server-key
+           target: /resources_path/web_server_secret_key.txt
 
    adgs_adgsfe:
       image          : app_adgsfe
@@ -86,13 +94,22 @@ services:
          - ADGS_DASHBOARD_URL=${ADGS_DASHBOARD_URL}
          - AUXIP_SWAGGER_URL=${AUXIP_SWAGGER_URL}
          - ADGSBOA_URL=${ADGSBOA_URL}
+         - ADGS_METRICS_MANAGER_URL=${ADGS_METRICS_MANAGER_URL}
          - ADGSBOA_HOST=adgs_boa
          - ADGSBOA_PORT=${ADGSBOA_PORT}
+         - SCRIPT_NAME=/adgsfe
       ports:
          - ${ADGSFE_PORT}:5000
       restart        : always
       networks:
          - adgs_network
+      secrets:
+         - source: certificate
+           target: /resources_path/certificate.pem
+         - source: key
+           target: /resources_path/key.pem
+         - source: web-server-key
+           target: /resources_path/web_server_secret_key.txt
 
    adgs_monitoring_db:
       image: mdillon/postgis
@@ -121,6 +138,8 @@ services:
          - MINARC_DATABASE_HOST=adgs_monitoring_db
          - ORC_DATABASE_HOST=adgs_monitoring_db
          - SERVICE_LABEL=${SERVICE_LABEL}
+         - VBOA_TEST=${VBOA_TEST}
+         - SCRIPT_NAME=/adgsboa
       networks:
          - adgs_network
       volumes:
@@ -130,9 +149,9 @@ services:
          - ${PATH_TO_LOG_FOLDER}:/log
          - /var/run/docker.sock:/var/run/docker.sock
       secrets:
-         - source: boa-certificate
+         - source: certificate
            target: /resources_path/boa_certificate.pem
-         - source: boa-key
+         - source: key
            target: /resources_path/boa_key.pem
          - source: web-server-key
            target: /resources_path/web_server_secret_key.txt
@@ -146,11 +165,18 @@ services:
       command:
          - "--config.file=/etc/prometheus/prometheus.yml"
          - "--storage.tsdb.path=/prometheus"
+         - "--web.external-url=https://localhost:8080/adgs-metrics-manager/"
+         - "--web.config.file=/etc/prometheus/prometheus_web_config.yml"
       ports:
          - ${PROMETHEUS_PORT}:9090
       user: ${ADGS_USER_UID}:${ADGS_USER_GID}
       networks:
          - adgs_network
+      secrets:
+         - source: certificate
+           target: /etc/prometheus/prometheus.crt
+         - source: key
+           target: /etc/prometheus/prometheus.key
    
    adgs_grafana:
       image: grafana/grafana
@@ -167,8 +193,14 @@ services:
          - GF_AUTH_BASIC_ENABLED=false
          - GF_FEATURE_TOGGLES_ENABLE=alertingSimplifiedRouting
       volumes:
-         - ${PATH_TO_GRAFANA_PROVISIONING}:/etc/grafana/provisioning
+         - ${PATH_TO_GRAFANA_PROVISIONING}/provisioning:/etc/grafana/provisioning
+         - ${PATH_TO_GRAFANA_PROVISIONING}/grafana.ini:/etc/grafana/grafana.ini
       user: ${ADGS_USER_UID}:${ADGS_USER_GID}
+      secrets:
+         - source: certificate
+           target: /etc/grafana/grafana.crt
+         - source: key
+           target: /etc/grafana/grafana.key
    
    # monitoring linux host metrics
    adgs_node_exporter:
@@ -198,12 +230,12 @@ services:
          - adgs_network
 
 secrets:
-   boa-certificate:
-      file: ${PATH_TO_BOA_CERTIFICATES_AND_SECRET_KEY}/boa_certificate.pem
-   boa-key:
-      file: ${PATH_TO_BOA_CERTIFICATES_AND_SECRET_KEY}/boa_key.pem
+   certificate:
+      file: ${PATH_TO_CERTIFICATES_AND_SECRET_KEY}/certificate.pem
+   key:
+      file: ${PATH_TO_CERTIFICATES_AND_SECRET_KEY}/key.pem
    web-server-key:
-      file: ${PATH_TO_BOA_CERTIFICATES_AND_SECRET_KEY}/web_server_secret_key.txt
+      file: ${PATH_TO_CERTIFICATES_AND_SECRET_KEY}/web_server_secret_key.txt
 
 networks:
    adgs_network:

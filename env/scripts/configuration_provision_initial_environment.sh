@@ -62,9 +62,9 @@ folders_order+=( "$FOLDER" )
 folders[$FOLDER]="${folders['ADGS_MONITORING']}/intray_boa"
 folders_ownership[$FOLDER]=${users["ADGS_USER"]}
 
-FOLDER="BOA_CERTIFICATES"
+FOLDER="CERTIFICATES"
 folders_order+=( "$FOLDER" )
-folders[$FOLDER]="${folders['ADGS_MONITORING']}/boa_certificates_and_secret_key"
+folders[$FOLDER]="${folders['ADGS']}/adgs_certificates_and_secret_key"
 folders_ownership[$FOLDER]=${users["ADGS_USER"]}
 
 FOLDER="RBOA_ARCHIVE"

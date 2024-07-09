@@ -1,0 +1,76 @@
+volumes:
+  db:
+services:
+  adgs_keycloak:
+    image          : app_adgs_keycloak
+    container_name : adgs_keycloak_${SERVICE_LABEL}
+    hostname       : adgs_keycloak
+    ports:
+      - "8443:8443"
+    environment:
+      - KC_DB=${KC_DB}
+      - KC_DB_URL=${KC_DB_URL}
+      - KC_DB_USERNAME=${KC_DB_USERNAME}
+      - KC_DB_PASSWORD=${KC_DB_PASSWORD}
+      - KC_HEALTH_ENABLED=${KC_HEALTH_ENABLED}
+      - KC_METRICS_ENABLED=${KC_METRICS_ENABLED}
+      - KEYCLOAK_ADMIN=${KEYCLOAK_ADMIN}
+      - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD}
+      - KC_PROXY=${KC_PROXY}
+      - KC_HOSTNAME_STRICT=${KC_HOSTNAME_STRICT}
+      - PROXY_ADDRESS_FORWARDING=${PROXY_ADDRESS_FORWARDING}
+      - KC_FEATURES=${KC_FEATURES}
+    entrypoint: /opt/keycloak/bin/kc.sh start --optimized --https-certificate-file=/etc/ssl/adgs.crt --https-certificate-key-file=/etc/ssl/adgs.key --spi-login-protocol-openid-connect-legacy-logout-redirect-uri=true
+    secrets:
+      - source: certificate
+        target: /etc/ssl/adgs.crt
+      - source: key
+        target: /etc/ssl/adgs.key
+    restart: on-failure
+    networks:
+      - adgs_security_network
+
+  adgs_security_db:
+    image: postgres:16.3
+    container_name : adgs_security_db_${SERVICE_LABEL}
+    hostname       : adgs_security_db
+    volumes:
+      - db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - PGPASSWORD=${PGPASSWORD}
+      - ALLOW_IP_RANGE=${ALLOW_IP_RANGE}
+      - FORCE_SSL=${FORCE_SSL}
+      - TIMESCALEDB_TELEMETRY=${TIMESCALEDB_TELEMETRY}
+      - PGDATA=${PGDATA}
+    restart: on-failure
+    networks:
+      - adgs_security_network
+
+  adgs_nginx:
+    image          : app_adgs_nginx
+    container_name : adgs_nginx_${SERVICE_LABEL}
+    hostname       : adgs_nginx
+    secrets:
+        - source: certificate
+          target: /etc/ssl/adgs.crt
+        - source: key
+          target: /etc/ssl/adgs.key
+    ports:
+        - 443:443
+    networks:
+      - adgs_security_network
+
+secrets:
+   certificate:
+      file: ${PATH_TO_CERTIFICATES_AND_SECRET_KEY}/certificate.pem
+   key:
+      file: ${PATH_TO_CERTIFICATES_AND_SECRET_KEY}/key.pem
+   web-server-key:
+      file: ${PATH_TO_CERTIFICATES_AND_SECRET_KEY}/web_server_secret_key.txt
+
+networks:
+    adgs_security_network:
+        name: adgs_security_network_${SERVICE_LABEL}

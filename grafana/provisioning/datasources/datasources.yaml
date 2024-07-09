@@ -5,10 +5,12 @@ datasources:
     type: prometheus
     access: proxy
     orgId: 1
-    url: http://adgs_prometheus:9090
+    url: https://adgs_prometheus:9090/adgs-metrics-manager
     basicAuth: false
     isDefault: true
     editable: true
+    jsonData:
+      tlsSkipVerify: true
   - name: ADGS-BOA-DDBB
     type: grafana-postgresql-datasource
     access: proxy

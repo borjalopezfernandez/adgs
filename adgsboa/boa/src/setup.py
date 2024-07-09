@@ -17,7 +17,6 @@ setup(name="adgsboa",
       python_requires='>=3',
       install_requires=[
           "eboa",
-          "vboa",
-          "massedit"
+          "vboa"
       ],
       test_suite='nose.collector')

@@ -4,6 +4,10 @@ global:
 scrape_configs:
   - job_name: "prometheus"
     scrape_interval: 1m
+    scheme: https
+    metrics_path: "/adgs-metrics-manager/metrics"
+    tls_config:
+      insecure_skip_verify: true
     static_configs:    
       - targets: ["localhost:9090"]
   - job_name: "node_exporter"
