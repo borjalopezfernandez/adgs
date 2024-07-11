@@ -46,8 +46,6 @@
   </div>
   <div class="container px-5 my-5">
     <div class="row gx-5">
-      <div class="col-lg-2 mb-5 mb-lg-0">
-      </div>
       <div class="col-lg-4 mb-5 mb-lg-0">
         <a href="{{ metadata.adgs_metrics_manager_url }}" style="text-decoration: none; color: #000000;">
           <div style="text-align:left; width: calc(99% / 3); display: inline-block">
@@ -63,7 +61,16 @@
             <img width="38px" height="50px" src="{{ url_for('adgsfe_static_images', filename='boa_icon.svg') }}"/>
           </div>
           <h2 class="h4 fw-bolder">ADGS Business Operations Analysis</h2>
-          <p>ADGS Business Operations Analysis is the microservices in charge of building up all the necessary metrics and business operations analysis to the ADGS metrics manager</p>
+          <p>ADGS Business Operations Analysis is the microservice in charge of building up all the necessary metrics and business operations analysis to the ADGS metrics manager</p>
+        </a>
+      </div>
+      <div class="col-lg-4 mb-5 mb-lg-0">
+        <a href="{{ metadata.adgsdoc_url }}" style="text-decoration: none; color: #000000;">
+          <div style="text-align:left; width: calc(99% / 3); display: inline-block">
+            <img width="50px" height="50px" src="{{ url_for('adgsfe_static_images', filename='nextcloud_logo.png') }}"/>
+          </div>
+          <h2 class="h4 fw-bolder">ADGS Documentation repository</h2>
+          <p>ADGS Documentation repository is the microservice in charge of providing the complete contractual and technical project documentation and all the different reports and minutes of meetings</p>
         </a>
       </div>
     </div>

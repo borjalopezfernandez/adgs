@@ -1,12 +1,4 @@
 
-volumes:
-   volume_adgs:
-      driver: local
-      driver_opts:
-         type: none
-         o: bind
-         device: /data
-
 services:
 
    adgs_db:
@@ -16,8 +8,8 @@ services:
       restart: always
       environment:
          POSTGRES_DB                : adgs_db
-         POSTGRES_USER              : adgs
-         POSTGRES_PASSWORD          : adg$
+         POSTGRES_USER              : ${ADGS_DB_USER}
+         POSTGRES_PASSWORD          : ${ADGS_DB_PASSWORD}
          POSTGRES_HOST_AUTH_METHOD  : trust
       volumes:
          - /data/adgs/adgs_db:/var/lib/postgresql/data
@@ -65,8 +57,8 @@ services:
       environment    :
       - AUXIP_DATABASE_HOST=adgs_db
       - AUXIP_DATABASE_NAME=adgs_db
-      - AUXIP_DATABASE_USER=adgs
-      - AUXIP_DATABASE_PASSWORD=adg$
+      - AUXIP_DATABASE_USER=${ADGS_DB_USER}
+      - AUXIP_DATABASE_PASSWORD=${ADGS_DB_PASSWORD}
       - AUXIP_LOG_LEVEL=INFO
       - MINARC_PLUGIN=ADGS
       - TMPDIR=/tmp
@@ -95,6 +87,7 @@ services:
          - AUXIP_SWAGGER_URL=${AUXIP_SWAGGER_URL}
          - ADGSBOA_URL=${ADGSBOA_URL}
          - ADGS_METRICS_MANAGER_URL=${ADGS_METRICS_MANAGER_URL}
+         - ADGSDOC_URL=${ADGSDOC_URL}
          - ADGSBOA_HOST=adgs_boa
          - ADGSBOA_PORT=${ADGSBOA_PORT}
          - SCRIPT_NAME=/adgsfe
@@ -159,6 +152,7 @@ services:
    adgs_prometheus:
       image: prom/prometheus
       container_name: adgs_prometheus_${SERVICE_LABEL}
+      restart: always
       volumes:
          - ${PATH_TO_PROMETHEUS_CONFIGURATION}:/etc/prometheus/
          - ${PATH_TO_PROMETHEUS_DDBB}:/prometheus/
@@ -181,6 +175,7 @@ services:
    adgs_grafana:
       image: grafana/grafana
       container_name: adgs_grafana_${SERVICE_LABEL}
+      restart: always
       ports:
          - ${GRAFANA_PORT}:3000
       networks:
@@ -228,6 +223,18 @@ services:
          - /dev/disk/:/dev/disk:ro
       networks:
          - adgs_network
+
+   adgs_adgsdoc:
+     image: app_adgsdoc
+     container_name: adgs_adgsdoc_${SERVICE_LABEL}
+     restart: always
+     ports:
+       - "9443:9443"
+     volumes:
+         - "/data/adgs/adgs_certificates_and_secret_key/certificate.pem:/etc/ssl/nextcloud/cert.pem"
+         - "/data/adgs/adgs_certificates_and_secret_key/key.pem:/etc/ssl/nextcloud/key.pem"
+     networks:
+       - adgs_network
 
 secrets:
    certificate:

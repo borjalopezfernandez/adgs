@@ -26,7 +26,7 @@ services:
         target: /etc/ssl/adgs.crt
       - source: key
         target: /etc/ssl/adgs.key
-    restart: on-failure
+    restart: always
     networks:
       - adgs_security_network
 
@@ -37,15 +37,15 @@ services:
     volumes:
       - db:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - PGPASSWORD=${PGPASSWORD}
+      - POSTGRES_DB=${ADGS_SECURITY_DB}
+      - POSTGRES_USER=${ADGS_SECURITY_DB_USER}
+      - POSTGRES_PASSWORD=${ADGS_SECURITY_DB_PASSWORD}
+      - PGPASSWORD=${ADGS_SECURITY_DB_PGPASSWORD}
       - ALLOW_IP_RANGE=${ALLOW_IP_RANGE}
       - FORCE_SSL=${FORCE_SSL}
       - TIMESCALEDB_TELEMETRY=${TIMESCALEDB_TELEMETRY}
       - PGDATA=${PGDATA}
-    restart: on-failure
+    restart: always
     networks:
       - adgs_security_network
 
@@ -58,6 +58,7 @@ services:
           target: /etc/ssl/adgs.crt
         - source: key
           target: /etc/ssl/adgs.key
+    restart: always
     ports:
         - 443:443
     networks:

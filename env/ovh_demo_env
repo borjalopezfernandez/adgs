@@ -1,15 +1,32 @@
+# Environment variable to allow the possibility of having more than one deployment in the same machine
 SERVICE_LABEL=demo1
+
+# Envirnoment variable to point to certificates and keys
+PATH_TO_CERTIFICATES_AND_SECRET_KEY=/data/adgs/adgs_certificates_and_secret_key
+
+# Envirnoment variables for AUXIP
+AUXIP_BASE_PATH=/auxip
+
+# Envirnoment variables for ADGSBOA
 PATH_TO_BOA_DDBB=/data/adgs/adgs_monitoring/boa_ddbb
 PATH_TO_BOA_INPUTS=/data/adgs/adgs_monitoring/intray_boa
 PATH_TO_RBOA_ARCHIVE=/data/adgs/adgs_monitoring/rboa_archive
 PATH_TO_MINARC_ARCHIVE=/data/adgs/adgs_monitoring/minarc_archive
 PATH_TO_LOG_FOLDER=/data/adgs/adgs_monitoring/log
-PATH_TO_CERTIFICATES_AND_SECRET_KEY=/data/adgs/adgs_certificates_and_secret_key
+VBOA_TEST=TRUE
+
+# Envirnoment variables for Grafana
 PATH_TO_GRAFANA_PROVISIONING=./grafana
+
+# Envirnoment variables for Prometheus
 PATH_TO_PROMETHEUS_CONFIGURATION=./prometheus
 PATH_TO_PROMETHEUS_DDBB=/data/adgs/adgs_monitoring/prometheus_ddbb
+
+# Envirnoment variables to allow compatibility with the host user (adgs)
 ADGS_USER_UID=2020
 ADGS_USER_GID=2020
+
+# Envirnoment variables to define the ports of the different microservices
 ADGSBOA_PORT=5000
 AUXIP_PORT=8000
 ADGSFE_PORT=5200
@@ -17,9 +34,15 @@ PROMETHEUS_PORT=9090
 GRAFANA_PORT=3000
 NODE_EXPORTER_PORT=9100
 CADVISOR_PORT=8080
+ADGSDOC_PORT=5400
+
+# Envirnoment variables to define the URLs of the different microservices
 ADGS_DASHBOARD_URL=https://162.19.92.91/adgs-dashboard
 AUXIP_SWAGGER_URL=https://162.19.92.91/auxip/docs
 ADGSBOA_URL=https://162.19.92.91/adgsboa
 ADGS_METRICS_MANAGER_URL=https://162.19.92.91/adgs-metrics-manager
-VBOA_TEST=TRUE
-AUXIP_BASE_PATH=/auxip
+ADGSDOC_URL=https://162.19.92.91/
+
+# Environment variables for passwords
+ADGS_DB_USER=#ADGS_DB_USER#
+ADGS_DB_PASSWORD=#ADGS_DB_PASSWORD#

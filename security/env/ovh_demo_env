@@ -1,26 +1,30 @@
+# Environment variable to allow the possibility of having more than one deployment in the same machine
 SERVICE_LABEL=demo1
 
+# Environment variables for Keycloak
 KC_DB=postgres
 KC_DB_URL=jdbc:postgresql://adgs_security_db/keycloak
-KC_DB_USERNAME=postgres
-KC_DB_PASSWORD=postgres
+KC_DB_USERNAME=#ADGS_SECURITY_DB_USER#
+KC_DB_PASSWORD=#ADGS_SECURITY_DB_PASSWORD#
 KC_HEALTH_ENABLED=true
 KC_METRICS_ENABLED=true
-KEYCLOAK_ADMIN=admin
-KEYCLOAK_ADMIN_PASSWORD=DoWNGencHiNA
+KEYCLOAK_ADMIN=#KEYCLOAK_ADMIN#
+KEYCLOAK_ADMIN_PASSWORD=#KEYCLOAK_ADMIN_PASSWORD#
 KC_PROXY=edge
 KC_HOSTNAME_STRICT=false
 PROXY_ADDRESS_FORWARDING=true
 KC_FEATURES=admin-fine-grained-authz,recovery-codes,scripts,persistent-user-sessions,hostname:v2
 
-POSTGRES_DB=keycloak
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=postgres
+# Environment variables for security DDBB
+ADGS_SECURITY_DB=keycloak
+ADGS_SECURITY_DB_USER=#ADGS_SECURITY_DB_USER#
+ADGS_SECURITY_DB_PASSWORD=#ADGS_SECURITY_DB_PASSWORD#
 POSTGRES_PORT=5432
-PGPASSWORD=123
+ADGS_SECURITY_DB_PGPASSWORD=#ADGS_SECURITY_DB_PGPASSWORD#
 ALLOW_IP_RANGE=0.0.0.0/0
 FORCE_SSL=TRUE
 TIMESCALEDB_TELEMETRY=off
 PGDATA=/var/lib/postgresql/data/keycloak
 
+# Envirnoment variable to point to certificates and keys
 PATH_TO_CERTIFICATES_AND_SECRET_KEY=/data/adgs/adgs_certificates_and_secret_key
