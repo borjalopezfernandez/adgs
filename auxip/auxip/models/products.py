@@ -16,6 +16,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import declarative_base, relationship
 from sqlalchemy.types import Uuid
 from sqlalchemy_guid import GUID
+from sqlalchemy.dialects.postgresql import JSONB
 
 from .. database import Base
 
@@ -37,3 +38,4 @@ class Product(Base):
     validity_stop       = Column(DateTime,      nullable = True)
     access_counter      = Column(Integer,       nullable = True)
     info                = Column(String)
+    json_metadata       = Column(JSONB,         nullable = True)
