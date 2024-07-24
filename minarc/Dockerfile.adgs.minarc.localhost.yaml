@@ -27,6 +27,7 @@ RUN apk --no-cache add libxml2 libxml2-utils
 RUN apk --no-cache add p7zip
 RUN apk --no-cache add postgresql-client
 RUN apk --no-cache add postgresql-dev
+RUN apk --no-cache add zip
 
 # change default shell from ash to bash
 RUN sed -i -e "s/bin\/ash/bin\/bash/" /etc/passwd
