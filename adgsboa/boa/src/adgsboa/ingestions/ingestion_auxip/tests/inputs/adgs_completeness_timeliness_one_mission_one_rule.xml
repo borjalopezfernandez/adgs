@@ -1,0 +1,10 @@
+<completeness_rules>
+  <mission name="S1" shortname="S1" longname="Sentinel-1">
+    <rule>
+      <type>AUX_WND</type>
+      <timeliness units="min">10</timeliness>
+      <frequency>daily</frequency>
+      <number_of_files>182</number_of_files>
+    </rule>
+  </mission>
+</completeness_rules>

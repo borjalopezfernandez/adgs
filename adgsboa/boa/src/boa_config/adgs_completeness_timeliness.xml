@@ -1,0 +1,318 @@
+<completeness_rules>
+  <mission name="S1" shortname="S1" longname="Sentinel-1">
+    <rule>
+      <type>AUX_WND</type>
+      <timeliness units="min">10</timeliness>
+      <frequency>daily</frequency>
+      <number_of_files>182</number_of_files>
+    </rule>
+    <rule per_satellite="true">
+      <type>AUX_WAV</type>
+      <timeliness units="min">30</timeliness>
+      <frequency>daily</frequency>
+      <number_of_files>54</number_of_files>
+    </rule>
+    <rule>
+      <type>AUX_ICE</type>
+      <timeliness units="min">30</timeliness>
+      <frequency>daily</frequency>
+      <number_of_files>1</number_of_files>
+    </rule>
+    <rule>
+      <type>AUX_TRO</type>
+      <timeliness units="min">30</timeliness>
+      <frequency>daily</frequency>
+      <number_of_files>2</number_of_files>
+    </rule>
+    <rule>
+      <type>MPL_MANPRE</type>
+      <timeliness units="min">30</timeliness>
+      <frequency>weekly</frequency>
+      <number_of_files>1</number_of_files>
+    </rule>
+    <rule>
+      <type>MPL_ORBPRE</type>
+      <timeliness units="min">30</timeliness>
+      <frequency>daily</frequency>
+      <number_of_files>1</number_of_files>
+    </rule>
+    <rule>
+      <type>MPL_ORBRES</type>
+      <timeliness units="min">30</timeliness>
+      <frequency>daily</frequency>
+      <number_of_files>1</number_of_files>
+    </rule>
+    <rule>
+      <type>MPL_TLEPRE</type>
+      <timeliness units="min">30</timeliness>
+      <frequency>daily</frequency>
+      <number_of_files>1</number_of_files>
+    </rule>
+    <rule>
+      <type>TLM__REQ_B</type>
+      <timeliness units="min">30</timeliness>
+      <frequency>daily</frequency>
+      <number_of_files>1</number_of_files>
+    </rule>
+    <rule>
+      <type>TLM__REQ_C</type>
+      <timeliness units="min">30</timeliness>
+      <frequency>daily</frequency>
+      <number_of_files>1</number_of_files>
+    </rule>
+    <rule>
+      <type>TLM__REQ_D</type>
+      <timeliness units="min">30</timeliness>
+      <frequency>daily</frequency>
+      <number_of_files>1</number_of_files>
+    </rule>
+    <rule>
+      <type>TLM__REQ_E</type>
+      <timeliness units="min">30</timeliness>
+      <frequency>daily</frequency>
+      <number_of_files>1</number_of_files>
+    </rule>
+    <rule>
+      <type>TLM__REQ_F</type>
+      <timeliness units="min">30</timeliness>
+      <frequency>daily</frequency>
+      <number_of_files>1</number_of_files>
+    </rule>
+    <rule>
+      <!-- Frequency: one per orbit
+           Period of the orbit (https://sentiwiki.copernicus.eu/web/s1-mission):
+           98.6
+           Number of expected files: 14.6
+      -->
+      <type>AUX_PREORB</type>
+      <timeliness units="min">10</timeliness>
+      <frequency>daily</frequency>
+      <number_of_files>14</number_of_files>
+    </rule>
+    <rule>
+      <!-- Frequency: one per orbit
+           Period of the orbit (https://sentiwiki.copernicus.eu/web/s1-mission):
+           98.6
+           Number of expected files: 14.6
+      -->
+      <type>AUX_RESORB</type>
+      <timeliness units="min">10</timeliness>
+      <frequency>daily</frequency>
+      <number_of_files>14</number_of_files>
+    </rule>
+    <rule>
+      <type>AUX_POEORB</type>
+      <timeliness units="min">10</timeliness>
+      <frequency>daily</frequency>
+      <number_of_files>1</number_of_files>
+    </rule>
+    <rule>
+      <type>REP__MACP_</type>
+      <timeliness units="min">30</timeliness>
+      <frequency>weekly</frequency>
+      <number_of_files>1</number_of_files>
+    </rule>
+  </mission>
+  <mission name="S2" shortname="S2" longname="Sentinel-2">
+    <rule>
+      <type>AUX_ECMWFD</type>
+      <timeliness units="min">10</timeliness>
+      <frequency>daily</frequency>
+      <number_of_files>2</number_of_files>
+    </rule>
+    <rule>
+      <type>AUX_CAMSFO</type>
+      <timeliness units="min">30</timeliness>
+      <frequency>daily</frequency>
+      <number_of_files>2</number_of_files>
+    </rule>
+    <rule>
+      <type>AUX_UT1UTC</type>
+      <timeliness units="min">30</timeliness>
+      <frequency>weekly</frequency>
+      <number_of_files>1</number_of_files>
+    </rule>
+    <rule>
+      <type>TLM__REQ_X</type>
+      <timeliness units="min">30</timeliness>
+      <frequency>daily</frequency>
+      <number_of_files>1</number_of_files>
+    </rule>
+    <rule>
+      <type>REP__CHF__</type>
+      <timeliness units="min">30</timeliness>
+      <frequency>weekly</frequency>
+      <number_of_files>1</number_of_files>
+    </rule>
+    <rule>
+      <type>REP__FCHF__</type>
+      <timeliness units="min">30</timeliness>
+      <frequency>weekly</frequency>
+      <number_of_files>1</number_of_files>
+    </rule>
+    <rule>
+      <type>MPL_ORBPRE</type>
+      <timeliness units="min">30</timeliness>
+      <frequency>daily</frequency>
+      <number_of_files>1</number_of_files>
+    </rule>
+    <rule>
+      <type>MPL_ORBRES</type>
+      <timeliness units="min">30</timeliness>
+      <frequency>daily</frequency>
+      <number_of_files>1</number_of_files>
+    </rule>
+  </mission>
+  <mission name="S3" shortname="S3" longname="Sentinel-3">
+    <rule>
+      <type>AX___MF1_AX</type>
+      <timeliness units="min">10</timeliness>
+      <frequency>daily</frequency>
+      <number_of_files>8</number_of_files>
+    </rule>
+    <rule>
+      <type>AX___MFA_AX</type>
+      <timeliness units="min">10</timeliness>
+      <frequency>daily</frequency>
+      <number_of_files>4</number_of_files>
+    </rule>
+    <rule>
+      <type>AX___MA1_AX</type>
+      <timeliness units="min">10</timeliness>
+      <frequency>daily</frequency>
+      <number_of_files>4</number_of_files>
+    </rule>
+    <rule>
+      <type>AX___MF2_AX</type>
+      <timeliness units="min">10</timeliness>
+      <frequency>daily</frequency>
+      <number_of_files>8</number_of_files>
+    </rule>
+    <rule>
+      <type>AX___MA2_AX</type>
+      <timeliness units="min">10</timeliness>
+      <frequency>daily</frequency>
+      <number_of_files>4</number_of_files>
+    </rule>
+    <rule per_satellite="true">
+      <type>SR___MDO_AX</type>
+      <timeliness units="min">10</timeliness>
+      <frequency>daily</frequency>
+      <number_of_files>1</number_of_files>
+    </rule>
+    <rule per_satellite="true">
+      <type>SR_2_PMPSAX</type>
+      <timeliness units="min">30</timeliness>
+      <frequency>daily</frequency>
+      <number_of_files>1</number_of_files>
+    </rule>
+    <rule>
+      <type>SR_2_RMO_AX</type>
+      <timeliness units="min">10</timeliness>
+      <frequency>daily</frequency>
+      <number_of_files>4</number_of_files>
+    </rule>
+    <rule>
+      <type>SR_2_PMO_AX</type>
+      <timeliness units="min">10</timeliness>
+      <frequency>daily</frequency>
+      <number_of_files>4</number_of_files>
+    </rule>
+    <rule>
+      <type>SR_2_POL_AX</type>
+      <timeliness units="min">30</timeliness>
+      <frequency>daily</frequency>
+      <number_of_files>1</number_of_files>
+    </rule>
+    <rule per_satellite="true">
+      <type>SR_2_PGI_AX</type>
+      <timeliness units="min">30</timeliness>
+      <frequency>daily</frequency>
+      <number_of_files>1</number_of_files>
+    </rule>
+    <rule per_satellite="true">
+      <type>SR_2_RGI_AX</type>
+      <timeliness units="min">30</timeliness>
+      <frequency>daily</frequency>
+      <number_of_files>1</number_of_files>
+    </rule>
+    <rule per_satellite="true">
+      <type>SR_1_USO_AX</type>
+      <timeliness units="min">30</timeliness>
+      <frequency>daily</frequency>
+      <number_of_files>1</number_of_files>
+    </rule>
+    <rule per_satellite="true">
+      <type>SR___MGNSAX</type>
+      <timeliness units="min">30</timeliness>
+      <frequency>daily</frequency>
+      <number_of_files>1</number_of_files>
+    </rule>
+    <rule>
+      <type>SL_2_SSTAAX</type>
+      <timeliness units="min">30</timeliness>
+      <frequency>daily</frequency>
+      <number_of_files>1</number_of_files>
+    </rule>
+    <rule>
+      <type>SL_2_DIMSAX</type>
+      <timeliness units="min">30</timeliness>
+      <frequency>daily</frequency>
+      <number_of_files>1</number_of_files>
+    </rule>
+    <rule per_satellite="true">
+      <type>AX___FPO_AX</type>
+      <timeliness units="min">30</timeliness>
+      <frequency>daily</frequency>
+      <number_of_files>1</number_of_files>
+    </rule>
+    <rule per_satellite="true">
+      <type>AX___FRO_AX</type>
+      <timeliness units="min">30</timeliness>
+      <frequency>daily</frequency>
+      <number_of_files>1</number_of_files>
+    </rule>
+    <rule per_satellite="true">
+      <type>AUX_POEORB</type>
+      <timeliness units="min">30</timeliness>
+      <frequency>daily</frequency>
+      <number_of_files>1</number_of_files>
+    </rule>
+    <rule per_satellite="true">
+      <type>SR_2_PCPPAX</type>
+      <timeliness units="min">30</timeliness>
+      <frequency>daily</frequency>
+      <number_of_files>1</number_of_files>
+    </rule>
+    <rule per_satellite="true">
+      <type>SR_2_PMPPAX</type>
+      <timeliness units="min">30</timeliness>
+      <frequency>daily</frequency>
+      <number_of_files>1</number_of_files>
+    </rule>
+    <rule per_satellite="true">
+      <type>SR___MGNPAX</type>
+      <timeliness units="min">30</timeliness>
+      <frequency>daily</frequency>
+      <number_of_files>1</number_of_files>
+    </rule>
+    <rule per_satellite="true">
+      <type>SR___POEPAX</type>
+      <timeliness units="min">30</timeliness>
+      <frequency>daily</frequency>
+      <number_of_files>1</number_of_files>
+    </rule>
+    <rule>
+      <type>SR_2_SIFNAX</type>
+      <timeliness units="min">30</timeliness>
+      <frequency>daily</frequency>
+      <number_of_files>1</number_of_files>
+    </rule>
+    <rule>
+      <type>SR_2_SIFSAX</type>
+      <timeliness units="min">30</timeliness>
+      <frequency>daily</frequency>
+      <number_of_files>1</number_of_files>
+    </rule>
+  </mission>
+</completeness_rules>

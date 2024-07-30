@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:simpleType name="FrequencyType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="daily" /> 
+      <xs:enumeration value="weekly" /> 
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:element name="completeness_rules">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="mission" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="rule" minOccurs="1" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="type" type="xs:string" minOccurs="1" maxOccurs="1">
+                    </xs:element>
+                    <xs:element name="timeliness" minOccurs="1" maxOccurs="1">
+                      <xs:complexType>
+                        <xs:simpleContent>
+                          <xs:extension base="xs:integer">
+                            <xs:attribute name="units" type="xs:string" use="required"/>
+                          </xs:extension>
+                        </xs:simpleContent>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="frequency" type="FrequencyType" minOccurs="1" maxOccurs="1">
+                    </xs:element>
+                    <xs:element name="number_of_files" type="xs:integer" minOccurs="1" maxOccurs="1">
+                    </xs:element>
+                  </xs:sequence>
+                  <xs:attribute name="per_satellite" type="xs:boolean" use="optional" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="name" type="xs:string" use="required" />
+            <xs:attribute name="shortname" type="xs:string" use="required" />
+            <xs:attribute name="longname" type="xs:string" use="required" />
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

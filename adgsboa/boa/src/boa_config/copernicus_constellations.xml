@@ -1,0 +1,19 @@
+<constellations>
+  <mission name="S1" shortname="S1" longname="Sentinel-1">
+    <satellites>
+      <satellite name="S1A" shortname="S1A" longname="Sentinel-1A"/>
+    </satellites>
+  </mission>
+  <mission name="S2" shortname="S2" longname="Sentinel-2">
+    <satellites>
+      <satellite name="S2A" shortname="S2A" longname="Sentinel-2A"/>
+      <satellite name="S2B" shortname="S2B" longname="Sentinel-2B"/>
+    </satellites>
+  </mission>
+  <mission name="S3" shortname="S3" longname="Sentinel-3">
+    <satellites>
+      <satellite name="S3A" shortname="S3A" longname="Sentinel-3A"/>
+      <satellite name="S3B" shortname="S3B" longname="Sentinel-3B"/>
+    </satellites>
+  </mission>
+</constellations>
