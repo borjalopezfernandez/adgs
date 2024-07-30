@@ -78,8 +78,8 @@ class TestAuxipDownloadReport(unittest.TestCase):
         assert len(sources) == 1
 
         # Check sources inserted
-        sources = self.query_eboa.get_sources(validity_start_filters = [{"date": "2024-05-24T08:46:34.438128", "op": "=="}],
-                                              validity_stop_filters = [{"date": "2024-05-24T08:46:34.454000", "op": "=="}],
+        sources = self.query_eboa.get_sources(validity_start_filters = [{"date": "0001-01-01T00:00:00", "op": "=="}],
+                                              validity_stop_filters = [{"date": "9999-12-31T23:59:59.999999", "op": "=="}],
                                               reported_validity_start_filters = [{"date": "2024-05-24T10:46:34.466000", "op": "=="}],
                                               reported_validity_stop_filters = [{"date": "2024-05-24T10:46:34.466000", "op": "=="}],
                                               processors = {"filter": "ingestion_auxip_download_report.py", "op": "=="},
@@ -128,120 +128,101 @@ class TestAuxipDownloadReport(unittest.TestCase):
              "value": "66066214403.6969"}
         ]
 
-        # Check volume counter events
-        gauges = [
-            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION_CLIENT_PER_DAY_2024-05-24T00:00:00_2024-05-25T00:00:00", "S2_#test"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION_CLIENT_PER_MONTH_2024-05-01T00:00:00_2024-06-01T00:00:00", "S2_#test"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION_CLIENT_PER_YEAR_2024-01-01T00:00:00_2025-01-01T00:00:00", "S2_#test"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION_CLIENT", "S2_#test"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_CLIENT_PER_DAY_2024-05-24T00:00:00_2024-05-25T00:00:00", "test"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_CLIENT_PER_MONTH_2024-05-01T00:00:00_2024-06-01T00:00:00", "test"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_CLIENT_PER_YEAR_2024-01-01T00:00:00_2025-01-01T00:00:00", "test"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_CLIENT", "test"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION_PER_DAY_2024-05-24T00:00:00_2024-05-25T00:00:00", "S2_"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION_PER_MONTH_2024-05-01T00:00:00_2024-06-01T00:00:00", "S2_"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION_PER_YEAR_2024-01-01T00:00:00_2025-01-01T00:00:00", "S2_"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION", "S2_"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION_PRODUCT_TYPE_PER_DAY_2024-05-24T00:00:00_2024-05-25T00:00:00", "S2_#AUX_UT1UTC"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION_PRODUCT_TYPE_PER_MONTH_2024-05-01T00:00:00_2024-06-01T00:00:00", "S2_#AUX_UT1UTC"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION_PRODUCT_TYPE_PER_YEAR_2024-01-01T00:00:00_2025-01-01T00:00:00", "S2_#AUX_UT1UTC"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION_PRODUCT_TYPE", "S2_#AUX_UT1UTC"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_PRODUCT_TYPE_PER_DAY_2024-05-24T00:00:00_2024-05-25T00:00:00", "AUX_UT1UTC"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_PRODUCT_TYPE_PER_MONTH_2024-05-01T00:00:00_2024-06-01T00:00:00", "AUX_UT1UTC"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_PRODUCT_TYPE_PER_YEAR_2024-01-01T00:00:00_2025-01-01T00:00:00", "AUX_UT1UTC"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_PRODUCT_TYPE", "AUX_UT1UTC"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME_PER_DAY_2024-05-24T00:00:00_2024-05-25T00:00:00", "GLOBAL"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME_PER_MONTH_2024-05-01T00:00:00_2024-06-01T00:00:00", "GLOBAL"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME_PER_YEAR_2024-01-01T00:00:00_2025-01-01T00:00:00", "GLOBAL"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME", "GLOBAL"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION_PRODUCT_TYPE_CLIENT", "S2_#AUX_UT1UTC#test"]
+        gauge_periods = [
+            ["2024-05-24T00:00:00", "2024-05-25T00:00:00"],
+            ["2024-05-01T00:00:00", "2024-06-01T00:00:00"],
+            ["2024-01-01T00:00:00", "2025-01-01T00:00:00"],
+            ["0001-01-01T00:00:00", "9999-12-31T23:59:59.999999"]
         ]
 
-        assert len(gauges) == 25
+        # Check volume counter events
+        gauges = [
+            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION_CLIENT", "S2_#test", gauge_periods],
+            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_CLIENT", "test", gauge_periods],
+            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION", "S2_", gauge_periods],
+            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION_PRODUCT_TYPE", "S2_#AUX_UT1UTC", gauge_periods],
+            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_PRODUCT_TYPE", "AUX_UT1UTC", gauge_periods],
+            ["CUMULATIVE_DOWNLOADED_VOLUME", "GLOBAL", gauge_periods],
+            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION_PRODUCT_TYPE_CLIENT", "S2_#AUX_UT1UTC#test", [gauge_periods[3]]]
+        ]
+        
+        assert len(gauges) == 7
 
         registered_events = {}
         
         for gauge in gauges:
             gauge_name = gauge[0]
             gauge_system = gauge[1]
+            periods = gauge[2]
+            for period in periods:
+                start = period[0]
+                stop = period[1]
 
-            events = self.query_eboa.get_events(gauge_names = {"filter": gauge_name, "op": "=="},
-                                                gauge_systems = {"filter": gauge_system, "op": "=="},
-                                                start_filters = [{"date": "2024-05-24T08:46:34.438128", "op": "=="}],
-                                                stop_filters = [{"date": "2024-05-24T08:46:34.454000", "op": "=="}])
+                events = self.query_eboa.get_events(gauge_names = {"filter": gauge_name, "op": "=="},
+                                                    gauge_systems = {"filter": gauge_system, "op": "=="},
+                                                    start_filters = [{"date": start, "op": "=="}],
+                                                    stop_filters = [{"date": stop, "op": "=="}])
 
-            assert len(events) == 1
-        
-            assert events[0].get_structured_values() == [
-                {"name": "value",
-                 "type": "double",
-                 "value": "1048576000.0"}
-            ]
+                assert len(events) == 1
 
-            assert events[0].event_uuid not in registered_events
+                assert events[0].get_structured_values() == [
+                    {"name": "value",
+                     "type": "double",
+                     "value": "1048576000.0"}
+                ]
 
-            registered_events[events[0].event_uuid] = None
+                assert events[0].event_uuid not in registered_events
+
+                registered_events[events[0].event_uuid] = None
+            # end for
         # end for
 
         # Check number counter events
         gauges = [
-            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_MISSION_CLIENT_PER_DAY_2024-05-24T00:00:00_2024-05-25T00:00:00", "S2_#test"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_MISSION_CLIENT_PER_MONTH_2024-05-01T00:00:00_2024-06-01T00:00:00", "S2_#test"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_MISSION_CLIENT_PER_YEAR_2024-01-01T00:00:00_2025-01-01T00:00:00", "S2_#test"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_MISSION_CLIENT", "S2_#test"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_CLIENT_PER_DAY_2024-05-24T00:00:00_2024-05-25T00:00:00", "test"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_CLIENT_PER_MONTH_2024-05-01T00:00:00_2024-06-01T00:00:00", "test"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_CLIENT_PER_YEAR_2024-01-01T00:00:00_2025-01-01T00:00:00", "test"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_CLIENT", "test"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_MISSION_PER_DAY_2024-05-24T00:00:00_2024-05-25T00:00:00", "S2_"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_MISSION_PER_MONTH_2024-05-01T00:00:00_2024-06-01T00:00:00", "S2_"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_MISSION_PER_YEAR_2024-01-01T00:00:00_2025-01-01T00:00:00", "S2_"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_MISSION", "S2_"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_MISSION_PRODUCT_TYPE_PER_DAY_2024-05-24T00:00:00_2024-05-25T00:00:00", "S2_#AUX_UT1UTC"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_MISSION_PRODUCT_TYPE_PER_MONTH_2024-05-01T00:00:00_2024-06-01T00:00:00", "S2_#AUX_UT1UTC"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_MISSION_PRODUCT_TYPE_PER_YEAR_2024-01-01T00:00:00_2025-01-01T00:00:00", "S2_#AUX_UT1UTC"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_MISSION_PRODUCT_TYPE", "S2_#AUX_UT1UTC"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_PRODUCT_TYPE_PER_DAY_2024-05-24T00:00:00_2024-05-25T00:00:00", "AUX_UT1UTC"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_PRODUCT_TYPE_PER_MONTH_2024-05-01T00:00:00_2024-06-01T00:00:00", "AUX_UT1UTC"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_PRODUCT_TYPE_PER_YEAR_2024-01-01T00:00:00_2025-01-01T00:00:00", "AUX_UT1UTC"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_PRODUCT_TYPE", "AUX_UT1UTC"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER_PER_DAY_2024-05-24T00:00:00_2024-05-25T00:00:00", "GLOBAL"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER_PER_MONTH_2024-05-01T00:00:00_2024-06-01T00:00:00", "GLOBAL"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER_PER_YEAR_2024-01-01T00:00:00_2025-01-01T00:00:00", "GLOBAL"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER", "GLOBAL"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_MISSION_PRODUCT_TYPE_CLIENT", "S2_#AUX_UT1UTC#test"]
+            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_MISSION_CLIENT", "S2_#test", gauge_periods],
+            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_CLIENT", "test", gauge_periods],
+            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_MISSION", "S2_", gauge_periods],
+            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_MISSION_PRODUCT_TYPE", "S2_#AUX_UT1UTC", gauge_periods],
+            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_PRODUCT_TYPE", "AUX_UT1UTC", gauge_periods],
+            ["CUMULATIVE_DOWNLOADED_NUMBER", "GLOBAL", gauge_periods],
+            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_MISSION_PRODUCT_TYPE_CLIENT", "S2_#AUX_UT1UTC#test", [gauge_periods[3]]]
         ]
 
-        assert len(gauges) == 25
+        assert len(gauges) == 7
 
         registered_events = {}
         
         for gauge in gauges:
             gauge_name = gauge[0]
             gauge_system = gauge[1]
+            periods = gauge[2]
+            for period in periods:
+                start = period[0]
+                stop = period[1]
 
-            events = self.query_eboa.get_events(gauge_names = {"filter": gauge_name, "op": "=="},
-                                                gauge_systems = {"filter": gauge_system, "op": "=="},
-                                                start_filters = [{"date": "2024-05-24T08:46:34.438128", "op": "=="}],
-                                                stop_filters = [{"date": "2024-05-24T08:46:34.454000", "op": "=="}])
+                events = self.query_eboa.get_events(gauge_names = {"filter": gauge_name, "op": "=="},
+                                                    gauge_systems = {"filter": gauge_system, "op": "=="},
+                                                    start_filters = [{"date": start, "op": "=="}],
+                                                    stop_filters = [{"date": stop, "op": "=="}])
 
-            assert len(events) == 1
-        
-            assert events[0].get_structured_values() == [
-                {"name": "value",
-                 "type": "double",
-                 "value": "1.0"}
-            ]
+                assert len(events) == 1
 
-            assert events[0].event_uuid not in registered_events
+                assert events[0].get_structured_values() == [
+                    {"name": "value",
+                     "type": "double",
+                     "value": "1.0"}
+                ]
 
-            registered_events[events[0].event_uuid] = None
+                assert events[0].event_uuid not in registered_events
+
+                registered_events[events[0].event_uuid] = None
+            # end for
         # end for
 
         events = self.query_eboa.get_events(gauge_names = {"filter": "CUMULATIVE_DOWNLOAD_TIME", "op": "=="},
                                             gauge_systems = {"filter": "GLOBAL", "op": "=="},
-                                            start_filters = [{"date": "2024-05-24T08:46:34.438128", "op": "=="}],
-                                            stop_filters = [{"date": "2024-05-24T08:46:34.454000", "op": "=="}])
+                                            start_filters = [{"date": "0001-01-01T00:00:00", "op": "=="}],
+                                            stop_filters = [{"date": "9999-12-31T23:59:59.999999", "op": "=="}])
 
         assert len(events) == 1
 
@@ -253,8 +234,8 @@ class TestAuxipDownloadReport(unittest.TestCase):
 
         events = self.query_eboa.get_events(gauge_names = {"filter": "CUMULATIVE_DOWNLOAD_SPEED", "op": "=="},
                                             gauge_systems = {"filter": "GLOBAL", "op": "=="},
-                                            start_filters = [{"date": "2024-05-24T08:46:34.438128", "op": "=="}],
-                                            stop_filters = [{"date": "2024-05-24T08:46:34.454000", "op": "=="}])
+                                            start_filters = [{"date": "0001-01-01T00:00:00", "op": "=="}],
+                                            stop_filters = [{"date": "9999-12-31T23:59:59.999999", "op": "=="}])
 
         assert len(events) == 1
 
@@ -289,8 +270,8 @@ class TestAuxipDownloadReport(unittest.TestCase):
         assert len(sources) == 2
 
         # Check sources inserted
-        sources = self.query_eboa.get_sources(validity_start_filters = [{"date": "2024-05-24T08:46:34.438128", "op": "=="}],
-                                              validity_stop_filters = [{"date": "2024-05-24T08:46:34.454000", "op": "=="}],
+        sources = self.query_eboa.get_sources(validity_start_filters = [{"date": "0001-01-01T00:00:00", "op": "=="}],
+                                              validity_stop_filters = [{"date": "9999-12-31T23:59:59.999999", "op": "=="}],
                                               reported_validity_start_filters = [{"date": "2024-05-24T10:46:34.466000", "op": "=="}],
                                               reported_validity_stop_filters = [{"date": "2024-05-24T10:46:34.466000", "op": "=="}],
                                               processors = {"filter": "ingestion_auxip_download_report.py", "op": "=="},
@@ -301,8 +282,8 @@ class TestAuxipDownloadReport(unittest.TestCase):
         assert len(sources) == 1
 
         # Check sources inserted
-        sources = self.query_eboa.get_sources(validity_start_filters = [{"date": "2024-05-25T08:46:34.438128", "op": "=="}],
-                                              validity_stop_filters = [{"date": "2024-05-25T08:46:34.454000", "op": "=="}],
+        sources = self.query_eboa.get_sources(validity_start_filters = [{"date": "0001-01-01T00:00:00", "op": "=="}],
+                                              validity_stop_filters = [{"date": "9999-12-31T23:59:59.999999", "op": "=="}],
                                               reported_validity_start_filters = [{"date": "2024-05-25T10:46:34.466000", "op": "=="}],
                                               reported_validity_stop_filters = [{"date": "2024-05-25T10:46:34.466000", "op": "=="}],
                                               processors = {"filter": "ingestion_auxip_download_report.py", "op": "=="},
@@ -339,13 +320,17 @@ class TestAuxipDownloadReport(unittest.TestCase):
 
         # Check volume counter events
         # Check counters for day X
+        gauge_periods = [
+            ["2024-05-24T00:00:00", "2024-05-25T00:00:00"],
+        ]
+
         gauges = [
-            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION_CLIENT_PER_DAY_2024-05-24T00:00:00_2024-05-25T00:00:00", "S2_#test"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_CLIENT_PER_DAY_2024-05-24T00:00:00_2024-05-25T00:00:00", "test"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION_PER_DAY_2024-05-24T00:00:00_2024-05-25T00:00:00", "S2_"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION_PRODUCT_TYPE_PER_DAY_2024-05-24T00:00:00_2024-05-25T00:00:00", "S2_#AUX_UT1UTC"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_PRODUCT_TYPE_PER_DAY_2024-05-24T00:00:00_2024-05-25T00:00:00", "AUX_UT1UTC"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME_PER_DAY_2024-05-24T00:00:00_2024-05-25T00:00:00", "GLOBAL"]
+            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION_CLIENT", "S2_#test", gauge_periods],
+            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_CLIENT", "test", gauge_periods],
+            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION", "S2_", gauge_periods],
+            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION_PRODUCT_TYPE", "S2_#AUX_UT1UTC", gauge_periods],
+            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_PRODUCT_TYPE", "AUX_UT1UTC", gauge_periods],
+            ["CUMULATIVE_DOWNLOADED_VOLUME", "GLOBAL", gauge_periods]
         ]
 
         assert len(gauges) == 6
@@ -355,33 +340,42 @@ class TestAuxipDownloadReport(unittest.TestCase):
         for gauge in gauges:
             gauge_name = gauge[0]
             gauge_system = gauge[1]
+            periods = gauge[2]
+            for period in periods:
+                start = period[0]
+                stop = period[1]
 
-            events = self.query_eboa.get_events(gauge_names = {"filter": gauge_name, "op": "=="},
-                                                gauge_systems = {"filter": gauge_system, "op": "=="},
-                                                start_filters = [{"date": "2024-05-24T08:46:34.438128", "op": "=="}],
-                                                stop_filters = [{"date": "2024-05-24T08:46:34.454000", "op": "=="}])
+                events = self.query_eboa.get_events(gauge_names = {"filter": gauge_name, "op": "=="},
+                                                    gauge_systems = {"filter": gauge_system, "op": "=="},
+                                                    start_filters = [{"date": start, "op": "=="}],
+                                                    stop_filters = [{"date": stop, "op": "=="}])
 
-            assert len(events) == 1
-        
-            assert events[0].get_structured_values() == [
-                {"name": "value",
-                 "type": "double",
-                 "value": "1048576000.0"}
-            ]
+                assert len(events) == 1
 
-            assert events[0].event_uuid not in registered_events
+                assert events[0].get_structured_values() == [
+                    {"name": "value",
+                     "type": "double",
+                     "value": "1048576000.0"}
+                ]
 
-            registered_events[events[0].event_uuid] = None
+                assert events[0].event_uuid not in registered_events
+
+                registered_events[events[0].event_uuid] = None
+            # end for
         # end for
 
         # Check counters for day Y
+        gauge_periods = [
+            ["2024-05-25T00:00:00", "2024-05-26T00:00:00"],
+        ]
+
         gauges = [
-            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION_CLIENT_PER_DAY_2024-05-25T00:00:00_2024-05-26T00:00:00", "S2_#test"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_CLIENT_PER_DAY_2024-05-25T00:00:00_2024-05-26T00:00:00", "test"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION_PER_DAY_2024-05-25T00:00:00_2024-05-26T00:00:00", "S2_"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION_PRODUCT_TYPE_PER_DAY_2024-05-25T00:00:00_2024-05-26T00:00:00", "S2_#AUX_UT1UTC"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_PRODUCT_TYPE_PER_DAY_2024-05-25T00:00:00_2024-05-26T00:00:00", "AUX_UT1UTC"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME_PER_DAY_2024-05-25T00:00:00_2024-05-26T00:00:00", "GLOBAL"]
+            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION_CLIENT", "S2_#test", gauge_periods],
+            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_CLIENT", "test", gauge_periods],
+            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION", "S2_", gauge_periods],
+            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION_PRODUCT_TYPE", "S2_#AUX_UT1UTC", gauge_periods],
+            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_PRODUCT_TYPE", "AUX_UT1UTC", gauge_periods],
+            ["CUMULATIVE_DOWNLOADED_VOLUME", "GLOBAL", gauge_periods]
         ]
 
         assert len(gauges) == 6
@@ -391,83 +385,91 @@ class TestAuxipDownloadReport(unittest.TestCase):
         for gauge in gauges:
             gauge_name = gauge[0]
             gauge_system = gauge[1]
+            periods = gauge[2]
+            for period in periods:
+                start = period[0]
+                stop = period[1]
 
-            events = self.query_eboa.get_events(gauge_names = {"filter": gauge_name, "op": "=="},
-                                                gauge_systems = {"filter": gauge_system, "op": "=="},
-                                                start_filters = [{"date": "2024-05-25T08:46:34.438128", "op": "=="}],
-                                                stop_filters = [{"date": "2024-05-25T08:46:34.454000", "op": "=="}])
+                events = self.query_eboa.get_events(gauge_names = {"filter": gauge_name, "op": "=="},
+                                                    gauge_systems = {"filter": gauge_system, "op": "=="},
+                                                    start_filters = [{"date": start, "op": "=="}],
+                                                    stop_filters = [{"date": stop, "op": "=="}])
 
-            assert len(events) == 1
-        
-            assert events[0].get_structured_values() == [
-                {"name": "value",
-                 "type": "double",
-                 "value": "1048576000.0"}
-            ]
+                assert len(events) == 1
 
-            assert events[0].event_uuid not in registered_events
+                assert events[0].get_structured_values() == [
+                    {"name": "value",
+                     "type": "double",
+                     "value": "1048576000.0"}
+                ]
 
-            registered_events[events[0].event_uuid] = None
+                assert events[0].event_uuid not in registered_events
+
+                registered_events[events[0].event_uuid] = None
+            # end for
         # end for
 
         # Check global counters
-        gauges = [
-            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION_CLIENT_PER_MONTH_2024-05-01T00:00:00_2024-06-01T00:00:00", "S2_#test"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION_CLIENT_PER_YEAR_2024-01-01T00:00:00_2025-01-01T00:00:00", "S2_#test"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION_CLIENT", "S2_#test"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_CLIENT_PER_MONTH_2024-05-01T00:00:00_2024-06-01T00:00:00", "test"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_CLIENT_PER_YEAR_2024-01-01T00:00:00_2025-01-01T00:00:00", "test"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_CLIENT", "test"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION_PER_MONTH_2024-05-01T00:00:00_2024-06-01T00:00:00", "S2_"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION_PER_YEAR_2024-01-01T00:00:00_2025-01-01T00:00:00", "S2_"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION", "S2_"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION_PRODUCT_TYPE_PER_MONTH_2024-05-01T00:00:00_2024-06-01T00:00:00", "S2_#AUX_UT1UTC"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION_PRODUCT_TYPE_PER_YEAR_2024-01-01T00:00:00_2025-01-01T00:00:00", "S2_#AUX_UT1UTC"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION_PRODUCT_TYPE", "S2_#AUX_UT1UTC"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_PRODUCT_TYPE_PER_MONTH_2024-05-01T00:00:00_2024-06-01T00:00:00", "AUX_UT1UTC"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_PRODUCT_TYPE_PER_YEAR_2024-01-01T00:00:00_2025-01-01T00:00:00", "AUX_UT1UTC"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_PRODUCT_TYPE", "AUX_UT1UTC"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME_PER_MONTH_2024-05-01T00:00:00_2024-06-01T00:00:00", "GLOBAL"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME_PER_YEAR_2024-01-01T00:00:00_2025-01-01T00:00:00", "GLOBAL"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME", "GLOBAL"],
-            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION_PRODUCT_TYPE_CLIENT", "S2_#AUX_UT1UTC#test"]
+        gauge_periods = [
+            ["2024-05-01T00:00:00", "2024-06-01T00:00:00"],
+            ["2024-01-01T00:00:00", "2025-01-01T00:00:00"],
+            ["0001-01-01T00:00:00", "9999-12-31T23:59:59.999999"]
         ]
 
-        assert len(gauges) == 19
+        gauges = [
+            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION_CLIENT", "S2_#test", gauge_periods],
+            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_CLIENT", "test", gauge_periods],
+            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION", "S2_", gauge_periods],
+            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION_PRODUCT_TYPE", "S2_#AUX_UT1UTC", gauge_periods],
+            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_PRODUCT_TYPE", "AUX_UT1UTC", gauge_periods],
+            ["CUMULATIVE_DOWNLOADED_VOLUME", "GLOBAL", gauge_periods],
+            ["CUMULATIVE_DOWNLOADED_VOLUME_BY_MISSION_PRODUCT_TYPE_CLIENT", "S2_#AUX_UT1UTC#test", [gauge_periods[2]]]
+        ]
+
+        assert len(gauges) == 7
 
         registered_events = {}
         
         for gauge in gauges:
             gauge_name = gauge[0]
             gauge_system = gauge[1]
+            periods = gauge[2]
+            for period in periods:
+                start = period[0]
+                stop = period[1]
 
-            events = self.query_eboa.get_events(gauge_names = {"filter": gauge_name, "op": "=="},
-                                                gauge_systems = {"filter": gauge_system, "op": "=="},
-                                                start_filters = [{"date": "2024-05-24T08:46:34.438128", "op": "=="}],
-                                                stop_filters = [{"date": "2024-05-25T08:46:34.454000", "op": "=="}])
+                events = self.query_eboa.get_events(gauge_names = {"filter": gauge_name, "op": "=="},
+                                                    gauge_systems = {"filter": gauge_system, "op": "=="},
+                                                    start_filters = [{"date": start, "op": "=="}],
+                                                    stop_filters = [{"date": stop, "op": "=="}])
 
-            assert len(events) == 1
-        
-            assert events[0].get_structured_values() == [
-                {"name": "value",
-                 "type": "double",
-                 "value": "2097152000.0"}
-            ]
+                assert len(events) == 1
 
-            assert events[0].event_uuid not in registered_events
+                assert events[0].get_structured_values() == [
+                    {"name": "value",
+                     "type": "double",
+                     "value": "2097152000.0"}
+                ]
 
-            registered_events[events[0].event_uuid] = None
+                assert events[0].event_uuid not in registered_events
+
+                registered_events[events[0].event_uuid] = None
+            # end for
         # end for
 
         # Check number counter events
         # Check counters for day X
+        gauge_periods = [
+            ["2024-05-24T00:00:00", "2024-05-25T00:00:00"],
+        ]
+
         gauges = [
-            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_MISSION_CLIENT_PER_DAY_2024-05-24T00:00:00_2024-05-25T00:00:00", "S2_#test"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_CLIENT_PER_DAY_2024-05-24T00:00:00_2024-05-25T00:00:00", "test"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_MISSION_PER_DAY_2024-05-24T00:00:00_2024-05-25T00:00:00", "S2_"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_MISSION_PRODUCT_TYPE_PER_DAY_2024-05-24T00:00:00_2024-05-25T00:00:00", "S2_#AUX_UT1UTC"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_PRODUCT_TYPE_PER_DAY_2024-05-24T00:00:00_2024-05-25T00:00:00", "AUX_UT1UTC"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER_PER_DAY_2024-05-24T00:00:00_2024-05-25T00:00:00", "GLOBAL"]
+            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_MISSION_CLIENT", "S2_#test", gauge_periods],
+            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_CLIENT", "test", gauge_periods],
+            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_MISSION", "S2_", gauge_periods],
+            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_MISSION_PRODUCT_TYPE", "S2_#AUX_UT1UTC", gauge_periods],
+            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_PRODUCT_TYPE", "AUX_UT1UTC", gauge_periods],
+            ["CUMULATIVE_DOWNLOADED_NUMBER", "GLOBAL", gauge_periods]
         ]
 
         assert len(gauges) == 6
@@ -477,33 +479,42 @@ class TestAuxipDownloadReport(unittest.TestCase):
         for gauge in gauges:
             gauge_name = gauge[0]
             gauge_system = gauge[1]
+            periods = gauge[2]
+            for period in periods:
+                start = period[0]
+                stop = period[1]
 
-            events = self.query_eboa.get_events(gauge_names = {"filter": gauge_name, "op": "=="},
-                                                gauge_systems = {"filter": gauge_system, "op": "=="},
-                                                start_filters = [{"date": "2024-05-24T08:46:34.438128", "op": "=="}],
-                                                stop_filters = [{"date": "2024-05-24T08:46:34.454000", "op": "=="}])
+                events = self.query_eboa.get_events(gauge_names = {"filter": gauge_name, "op": "=="},
+                                                    gauge_systems = {"filter": gauge_system, "op": "=="},
+                                                    start_filters = [{"date": start, "op": "=="}],
+                                                    stop_filters = [{"date": stop, "op": "=="}])
 
-            assert len(events) == 1
-        
-            assert events[0].get_structured_values() == [
-                {"name": "value",
-                 "type": "double",
-                 "value": "1.0"}
-            ]
+                assert len(events) == 1
 
-            assert events[0].event_uuid not in registered_events
+                assert events[0].get_structured_values() == [
+                    {"name": "value",
+                     "type": "double",
+                     "value": "1.0"}
+                ]
 
-            registered_events[events[0].event_uuid] = None
+                assert events[0].event_uuid not in registered_events
+
+                registered_events[events[0].event_uuid] = None
+            # end for
         # end for
 
         # Check counters for day Y
+        gauge_periods = [
+            ["2024-05-25T00:00:00", "2024-05-26T00:00:00"],
+        ]
+
         gauges = [
-            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_MISSION_CLIENT_PER_DAY_2024-05-25T00:00:00_2024-05-26T00:00:00", "S2_#test"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_CLIENT_PER_DAY_2024-05-25T00:00:00_2024-05-26T00:00:00", "test"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_MISSION_PER_DAY_2024-05-25T00:00:00_2024-05-26T00:00:00", "S2_"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_MISSION_PRODUCT_TYPE_PER_DAY_2024-05-25T00:00:00_2024-05-26T00:00:00", "S2_#AUX_UT1UTC"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_PRODUCT_TYPE_PER_DAY_2024-05-25T00:00:00_2024-05-26T00:00:00", "AUX_UT1UTC"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER_PER_DAY_2024-05-25T00:00:00_2024-05-26T00:00:00", "GLOBAL"]
+            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_MISSION_CLIENT", "S2_#test", gauge_periods],
+            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_CLIENT", "test", gauge_periods],
+            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_MISSION", "S2_", gauge_periods],
+            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_MISSION_PRODUCT_TYPE", "S2_#AUX_UT1UTC", gauge_periods],
+            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_PRODUCT_TYPE", "AUX_UT1UTC", gauge_periods],
+            ["CUMULATIVE_DOWNLOADED_NUMBER", "GLOBAL", gauge_periods]
         ]
 
         assert len(gauges) == 6
@@ -513,78 +524,82 @@ class TestAuxipDownloadReport(unittest.TestCase):
         for gauge in gauges:
             gauge_name = gauge[0]
             gauge_system = gauge[1]
+            periods = gauge[2]
+            for period in periods:
+                start = period[0]
+                stop = period[1]
 
-            events = self.query_eboa.get_events(gauge_names = {"filter": gauge_name, "op": "=="},
-                                                gauge_systems = {"filter": gauge_system, "op": "=="},
-                                                start_filters = [{"date": "2024-05-25T08:46:34.438128", "op": "=="}],
-                                                stop_filters = [{"date": "2024-05-25T08:46:34.454000", "op": "=="}])
+                events = self.query_eboa.get_events(gauge_names = {"filter": gauge_name, "op": "=="},
+                                                    gauge_systems = {"filter": gauge_system, "op": "=="},
+                                                    start_filters = [{"date": start, "op": "=="}],
+                                                    stop_filters = [{"date": stop, "op": "=="}])
 
-            assert len(events) == 1
-        
-            assert events[0].get_structured_values() == [
-                {"name": "value",
-                 "type": "double",
-                 "value": "1.0"}
-            ]
+                assert len(events) == 1
 
-            assert events[0].event_uuid not in registered_events
+                assert events[0].get_structured_values() == [
+                    {"name": "value",
+                     "type": "double",
+                     "value": "1.0"}
+                ]
 
-            registered_events[events[0].event_uuid] = None
+                assert events[0].event_uuid not in registered_events
+
+                registered_events[events[0].event_uuid] = None
+            # end for
         # end for
 
         # Check global counters
+        gauge_periods = [
+            ["2024-05-01T00:00:00", "2024-06-01T00:00:00"],
+            ["2024-01-01T00:00:00", "2025-01-01T00:00:00"],
+            ["0001-01-01T00:00:00", "9999-12-31T23:59:59.999999"]
+        ]
+        
         gauges = [
-            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_MISSION_CLIENT_PER_MONTH_2024-05-01T00:00:00_2024-06-01T00:00:00", "S2_#test"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_MISSION_CLIENT_PER_YEAR_2024-01-01T00:00:00_2025-01-01T00:00:00", "S2_#test"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_MISSION_CLIENT", "S2_#test"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_CLIENT_PER_MONTH_2024-05-01T00:00:00_2024-06-01T00:00:00", "test"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_CLIENT_PER_YEAR_2024-01-01T00:00:00_2025-01-01T00:00:00", "test"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_CLIENT", "test"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_MISSION_PER_MONTH_2024-05-01T00:00:00_2024-06-01T00:00:00", "S2_"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_MISSION_PER_YEAR_2024-01-01T00:00:00_2025-01-01T00:00:00", "S2_"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_MISSION", "S2_"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_MISSION_PRODUCT_TYPE_PER_MONTH_2024-05-01T00:00:00_2024-06-01T00:00:00", "S2_#AUX_UT1UTC"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_MISSION_PRODUCT_TYPE_PER_YEAR_2024-01-01T00:00:00_2025-01-01T00:00:00", "S2_#AUX_UT1UTC"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_MISSION_PRODUCT_TYPE", "S2_#AUX_UT1UTC"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_PRODUCT_TYPE_PER_MONTH_2024-05-01T00:00:00_2024-06-01T00:00:00", "AUX_UT1UTC"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_PRODUCT_TYPE_PER_YEAR_2024-01-01T00:00:00_2025-01-01T00:00:00", "AUX_UT1UTC"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_PRODUCT_TYPE", "AUX_UT1UTC"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER_PER_MONTH_2024-05-01T00:00:00_2024-06-01T00:00:00", "GLOBAL"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER_PER_YEAR_2024-01-01T00:00:00_2025-01-01T00:00:00", "GLOBAL"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER", "GLOBAL"],
-            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_MISSION_PRODUCT_TYPE_CLIENT", "S2_#AUX_UT1UTC#test"]
+            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_MISSION_CLIENT", "S2_#test", gauge_periods],
+            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_CLIENT", "test", gauge_periods],
+            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_MISSION", "S2_", gauge_periods],
+            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_MISSION_PRODUCT_TYPE", "S2_#AUX_UT1UTC", gauge_periods],
+            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_PRODUCT_TYPE", "AUX_UT1UTC", gauge_periods],
+            ["CUMULATIVE_DOWNLOADED_NUMBER", "GLOBAL", gauge_periods],
+            ["CUMULATIVE_DOWNLOADED_NUMBER_BY_MISSION_PRODUCT_TYPE_CLIENT", "S2_#AUX_UT1UTC#test", [gauge_periods[2]]]
         ]
 
-        assert len(gauges) == 19
+        assert len(gauges) == 7
 
         registered_events = {}
         
         for gauge in gauges:
             gauge_name = gauge[0]
             gauge_system = gauge[1]
+            periods = gauge[2]
+            for period in periods:
+                start = period[0]
+                stop = period[1]
 
-            events = self.query_eboa.get_events(gauge_names = {"filter": gauge_name, "op": "=="},
-                                                gauge_systems = {"filter": gauge_system, "op": "=="},
-                                                start_filters = [{"date": "2024-05-24T08:46:34.438128", "op": "=="}],
-                                                stop_filters = [{"date": "2024-05-25T08:46:34.454000", "op": "=="}])
+                events = self.query_eboa.get_events(gauge_names = {"filter": gauge_name, "op": "=="},
+                                                    gauge_systems = {"filter": gauge_system, "op": "=="},
+                                                    start_filters = [{"date": start, "op": "=="}],
+                                                    stop_filters = [{"date": stop, "op": "=="}])
 
-            assert len(events) == 1
-        
-            assert events[0].get_structured_values() == [
-                {"name": "value",
-                 "type": "double",
-                 "value": "2.0"}
-            ]
+                assert len(events) == 1
 
-            assert events[0].event_uuid not in registered_events
+                assert events[0].get_structured_values() == [
+                    {"name": "value",
+                     "type": "double",
+                     "value": "2.0"}
+                ]
 
-            registered_events[events[0].event_uuid] = None
+                assert events[0].event_uuid not in registered_events
+
+                registered_events[events[0].event_uuid] = None
+            # end for
         # end for
 
         events = self.query_eboa.get_events(gauge_names = {"filter": "CUMULATIVE_DOWNLOAD_TIME", "op": "=="},
                                             gauge_systems = {"filter": "GLOBAL", "op": "=="},
-                                            start_filters = [{"date": "2024-05-24T08:46:34.438128", "op": "=="}],
-                                            stop_filters = [{"date": "2024-05-25T08:46:34.454000", "op": "=="}])
+                                            start_filters = [{"date": "0001-01-01T00:00:00", "op": "=="}],
+                                            stop_filters = [{"date": "9999-12-31T23:59:59.999999", "op": "=="}])
 
         assert len(events) == 1
 
@@ -596,8 +611,8 @@ class TestAuxipDownloadReport(unittest.TestCase):
 
         events = self.query_eboa.get_events(gauge_names = {"filter": "CUMULATIVE_DOWNLOAD_SPEED", "op": "=="},
                                             gauge_systems = {"filter": "GLOBAL", "op": "=="},
-                                            start_filters = [{"date": "2024-05-24T08:46:34.438128", "op": "=="}],
-                                            stop_filters = [{"date": "2024-05-25T08:46:34.454000", "op": "=="}])
+                                            start_filters = [{"date": "0001-01-01T00:00:00", "op": "=="}],
+                                            stop_filters = [{"date": "9999-12-31T23:59:59.999999", "op": "=="}])
 
         assert len(events) == 1
 

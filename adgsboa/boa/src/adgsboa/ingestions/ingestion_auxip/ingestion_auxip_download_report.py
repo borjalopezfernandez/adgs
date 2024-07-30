@@ -143,15 +143,15 @@ def process_file(file_path, engine, query, reception_time):
     # Day
     start_date = parser.parse(auxip_download_report_data["download_date"][0:10]).isoformat()
     stop_date = (parser.parse(auxip_download_report_data["download_date"][0:10]) + datetime.timedelta(days=1)).isoformat()
-    coverage_dates.append([start_date, stop_date, "PER_DAY"])
+    coverage_dates.append([start_date, stop_date])
     # Month
     start_date = parser.parse(auxip_download_report_data["download_date"][0:7] + "-01").isoformat()
     stop_date = (parser.parse(auxip_download_report_data["download_date"][0:7] + "-01") + relativedelta.relativedelta(months=1)).isoformat()
-    coverage_dates.append([start_date, stop_date, "PER_MONTH"])
+    coverage_dates.append([start_date, stop_date])
     # Year
     start_date = parser.parse(auxip_download_report_data["download_date"][0:4] + "-01-01").isoformat()
     stop_date = (parser.parse(auxip_download_report_data["download_date"][0:4] + "-01-01") + relativedelta.relativedelta(years=1)).isoformat()
-    coverage_dates.append([start_date, stop_date, "PER_YEAR"])
+    coverage_dates.append([start_date, stop_date])
 
     # Cumulative downloaded volume
     downloaded_volume_gauges = [
@@ -171,16 +171,15 @@ def process_file(file_path, engine, query, reception_time):
         for dates in coverage_dates:
             start_date = dates[0]
             stop_date = dates[1]
-            suffix = dates[2]
 
             auxip_download_counters.append({
                 "gauge": {
                     "insertion_type": "UPDATE_COUNTER",
-                    "name": f"{gauge_name}_{suffix}_{start_date}_{stop_date}",
+                    "name": gauge_name,
                     "system": gauge_system
                 },
-                "start": download_start_date,
-                "stop": download_stop_date,
+                "start": start_date,
+                "stop": stop_date,
                 "values": [{"name": "value",
                             "type": "double",
                             "value": file_size}]
@@ -193,8 +192,8 @@ def process_file(file_path, engine, query, reception_time):
                 "name": gauge_name,
                 "system": gauge_system
             },
-            "start": download_start_date,
-            "stop": download_stop_date,
+            "start": "0001-01-01T00:00:00",
+            "stop": "9999-12-31T23:59:59.999999",
             "values": [{"name": "value",
                         "type": "double",
                         "value": file_size}]
@@ -221,16 +220,15 @@ def process_file(file_path, engine, query, reception_time):
         for dates in coverage_dates:
             start_date = dates[0]
             stop_date = dates[1]
-            suffix = dates[2]
 
             auxip_download_counters.append({
                 "gauge": {
                     "insertion_type": "UPDATE_COUNTER",
-                    "name": f"{gauge_name}_{suffix}_{start_date}_{stop_date}",
+                    "name": gauge_name,
                     "system": gauge_system
                 },
-                "start": download_start_date,
-                "stop": download_stop_date,
+                "start": start_date,
+                "stop": stop_date,
                 "values": [{"name": "value",
                             "type": "double",
                             "value": 1}]
@@ -243,8 +241,8 @@ def process_file(file_path, engine, query, reception_time):
                 "name": gauge_name,
                 "system": gauge_system
             },
-            "start": download_start_date,
-            "stop": download_stop_date,
+            "start": "0001-01-01T00:00:00",
+            "stop": "9999-12-31T23:59:59.999999",
             "values": [{"name": "value",
                         "type": "double",
                         "value": 1}]
@@ -260,8 +258,8 @@ def process_file(file_path, engine, query, reception_time):
             "name": "CUMULATIVE_DOWNLOAD_TIME",
             "system": "GLOBAL"
         },
-        "start": download_start_date,
-        "stop": download_stop_date,
+        "start": "0001-01-01T00:00:00",
+        "stop": "9999-12-31T23:59:59.999999",
         "values": [{"name": "value",
                     "type": "double",
                     "value": download_elapsed_time}]
@@ -276,8 +274,8 @@ def process_file(file_path, engine, query, reception_time):
             "name": "CUMULATIVE_DOWNLOAD_SPEED",
             "system": "GLOBAL"
         },
-        "start": download_start_date,
-        "stop": download_stop_date,
+        "start": "0001-01-01T00:00:00",
+        "stop": "9999-12-31T23:59:59.999999",
         "values": [{"name": "value",
                     "type": "double",
                     "value": download_speed}]
@@ -300,8 +298,8 @@ def process_file(file_path, engine, query, reception_time):
             "name": file_name,
             "reception_time": reception_time,
             "generation_time": generation_time,
-            "validity_start": download_start_date,
-            "validity_stop": download_stop_date,
+            "validity_start": "0001-01-01T00:00:00",
+            "validity_stop": "9999-12-31T23:59:59.999999",
             "reported_validity_start": reported_validity_start,
             "reported_validity_stop": reported_validity_stop,
         },
