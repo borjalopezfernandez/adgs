@@ -60,7 +60,7 @@ class TestCompletenessExpectationReport(unittest.TestCase):
                                               reported_validity_start_filters = [{"date": "2024-07-29T00:00:00", "op": "=="}],
                                               reported_validity_stop_filters = [{"date": "2024-08-05T00:00:00", "op": "=="}],
                                               processors = {"filter": "ingestion_completeness_expectation_report.py", "op": "=="},
-                                              dim_signatures = {"filter": "EXPECTED_AUXILIARY_FILES", "op": "=="},
+                                              dim_signatures = {"filter": "PENDING_AUXILIARY_FILES", "op": "=="},
                                               names = {"filter": "adgs_completeness_timeliness_one_mission_one_rule.xml", "op": "=="},
                                               ingestion_completeness = True)
 
@@ -70,12 +70,12 @@ class TestCompletenessExpectationReport(unittest.TestCase):
 
         assert len(events) == 1
 
-        # Check EXPECTED_AUXILIARY_FILES events
-        events = self.query_eboa.get_events(gauge_names = {"filter": "EXPECTED_AUXILIARY_FILES%", "op": "like"})
+        # Check PENDING_AUXILIARY_FILES events
+        events = self.query_eboa.get_events(gauge_names = {"filter": "PENDING_AUXILIARY_FILES%", "op": "like"})
 
         assert len(events) == 1
 
-        events = self.query_eboa.get_events(gauge_names = {"filter": "EXPECTED_AUXILIARY_FILES_AUX_WND", "op": "=="},
+        events = self.query_eboa.get_events(gauge_names = {"filter": "PENDING_AUXILIARY_FILES_AUX_WND", "op": "=="},
                                             gauge_systems = {"filter": "S1", "op": "=="},
                                                 start_filters = [{"date": "2024-07-29T00:00:00", "op": "=="}],
                                                 stop_filters = [{"date": "2024-07-30T00:00:00", "op": "=="}])
@@ -111,7 +111,7 @@ class TestCompletenessExpectationReport(unittest.TestCase):
                                               reported_validity_start_filters = [{"date": "2024-07-29T00:00:00", "op": "=="}],
                                               reported_validity_stop_filters = [{"date": "2024-08-05T00:00:00", "op": "=="}],
                                               processors = {"filter": "ingestion_completeness_expectation_report.py", "op": "=="},
-                                              dim_signatures = {"filter": "EXPECTED_AUXILIARY_FILES", "op": "=="},
+                                              dim_signatures = {"filter": "PENDING_AUXILIARY_FILES", "op": "=="},
                                               names = {"filter": "adgs_completeness_timeliness.xml", "op": "=="},
                                               ingestion_completeness = True)
 
@@ -121,8 +121,8 @@ class TestCompletenessExpectationReport(unittest.TestCase):
 
         assert len(events) == 63
 
-        # Check EXPECTED_AUXILIARY_FILES events
-        events = self.query_eboa.get_events(gauge_names = {"filter": "EXPECTED_AUXILIARY_FILES%", "op": "like"})
+        # Check PENDING_AUXILIARY_FILES events
+        events = self.query_eboa.get_events(gauge_names = {"filter": "PENDING_AUXILIARY_FILES%", "op": "like"})
 
         assert len(events) == 63
 
@@ -150,7 +150,7 @@ class TestCompletenessExpectationReport(unittest.TestCase):
                 if frequency == "weekly":
                     event_stop = "2024-08-05T00:00:00"
                 # end if
-                events = self.query_eboa.get_events(gauge_names = {"filter": f"EXPECTED_AUXILIARY_FILES_{auxiliary_type}", "op": "=="},
+                events = self.query_eboa.get_events(gauge_names = {"filter": f"PENDING_AUXILIARY_FILES_{auxiliary_type}", "op": "=="},
                                                     gauge_systems = {"filter": str(satellite), "op": "=="},
                                                     start_filters = [{"date": "2024-07-29T00:00:00", "op": "=="}],
                                                     stop_filters = [{"date": event_stop, "op": "=="}],

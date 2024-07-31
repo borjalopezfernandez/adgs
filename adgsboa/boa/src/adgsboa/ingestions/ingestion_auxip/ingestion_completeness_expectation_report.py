@@ -88,7 +88,7 @@ def process_file(file_path, engine, query, reception_time):
             completeness_events.append({
                 "gauge": {
                     "insertion_type": "SET_COUNTER",
-                    "name": f"EXPECTED_AUXILIARY_FILES_{auxiliary_type}",
+                    "name": f"PENDING_AUXILIARY_FILES_{auxiliary_type}",
                     "system": f"{satellite}"
                 },
                 "start": next_day_start.isoformat(),
@@ -118,7 +118,7 @@ def process_file(file_path, engine, query, reception_time):
                 completeness_events.append({
                     "gauge": {
                         "insertion_type": "SET_COUNTER",
-                        "name": f"EXPECTED_AUXILIARY_FILES_{auxiliary_type}",
+                        "name": f"PENDING_AUXILIARY_FILES_{auxiliary_type}",
                         "system": f"{satellite}"
                     },
                     "start": next_week_start.isoformat(),
@@ -152,7 +152,7 @@ def process_file(file_path, engine, query, reception_time):
     operations.append({
         "mode": "insert",
         "dim_signature": {
-            "name": "EXPECTED_AUXILIARY_FILES",
+            "name": "PENDING_AUXILIARY_FILES",
             "exec": os.path.basename(__file__),
             "version": version
         },

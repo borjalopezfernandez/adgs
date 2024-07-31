@@ -448,6 +448,41 @@ class TestListProductsCsv(unittest.TestCase):
         exit_status = ingestion.command_process_file("adgsboa.ingestions.ingestion_products_csv.ingestion_products_csv", file_path, "2018-01-01T00:00:00")
 
         assert len([item for item in exit_status if item["status"] != eboa_engine.exit_codes["OK"]["status"]]) == 0
+
+        filename = "list_products_S3MWR.csv"
+        file_path = os.path.dirname(os.path.abspath(__file__)) + "/inputs/" + filename
+
+        exit_status = ingestion.command_process_file("adgsboa.ingestions.ingestion_products_csv.ingestion_products_csv", file_path, "2018-01-01T00:00:00")
+
+        assert len([item for item in exit_status if item["status"] != eboa_engine.exit_codes["OK"]["status"]]) == 0
+
+        filename = "list_products_S3OLCI.csv"
+        file_path = os.path.dirname(os.path.abspath(__file__)) + "/inputs/" + filename
+
+        exit_status = ingestion.command_process_file("adgsboa.ingestions.ingestion_products_csv.ingestion_products_csv", file_path, "2018-01-01T00:00:00")
+
+        assert len([item for item in exit_status if item["status"] != eboa_engine.exit_codes["OK"]["status"]]) == 0
+
+        filename = "list_products_S3SLSTR.csv"
+        file_path = os.path.dirname(os.path.abspath(__file__)) + "/inputs/" + filename
+
+        exit_status = ingestion.command_process_file("adgsboa.ingestions.ingestion_products_csv.ingestion_products_csv", file_path, "2018-01-01T00:00:00")
+
+        assert len([item for item in exit_status if item["status"] != eboa_engine.exit_codes["OK"]["status"]]) == 0
+
+        filename = "list_products_S3SRAL.csv"
+        file_path = os.path.dirname(os.path.abspath(__file__)) + "/inputs/" + filename
+
+        exit_status = ingestion.command_process_file("adgsboa.ingestions.ingestion_products_csv.ingestion_products_csv", file_path, "2018-01-01T00:00:00")
+
+        assert len([item for item in exit_status if item["status"] != eboa_engine.exit_codes["OK"]["status"]]) == 0
+
+        filename = "list_products_S3SYN.csv"
+        file_path = os.path.dirname(os.path.abspath(__file__)) + "/inputs/" + filename
+
+        exit_status = ingestion.command_process_file("adgsboa.ingestions.ingestion_products_csv.ingestion_products_csv", file_path, "2018-01-01T00:00:00")
+
+        assert len([item for item in exit_status if item["status"] != eboa_engine.exit_codes["OK"]["status"]]) == 0
         
         filename = "list_products_nominal_S1SAR.csv"
         file_path = os.path.dirname(os.path.abspath(__file__)) + "/inputs/" + filename
