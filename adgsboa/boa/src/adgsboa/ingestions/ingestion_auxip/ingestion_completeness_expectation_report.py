@@ -157,7 +157,7 @@ def process_file(file_path, engine, query, reception_time):
             "version": version
         },
         "source": {
-            "name": file_name,
+            "name": file_name + "_" + reception_time,
             "reception_time": reception_time,
             "generation_time": reception_time,
             "validity_start": next_week_start.isoformat(),

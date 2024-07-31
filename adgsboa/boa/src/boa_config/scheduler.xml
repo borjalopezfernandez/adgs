@@ -1,0 +1,19 @@
+<rules>
+  <rule name="DAILY_AUXIP_COMPLETENESS_EXPECTATION">
+    <!-- periodicity is set to 1 day -->
+    <periodicity>1</periodicity>
+    <!-- window_delay is set to 0 hours -->
+    <window_delay>0</window_delay>
+    <!-- window_size is set to 0 hours -->
+    <window_size>0</window_size>
+    <date>
+      <time>08:00:00</time>
+      <weekday>wednesday</weekday>
+    </date>
+    <tasks>
+      <task name="CREATE_AUXIP_COMPLETENESS_EXPECTATION">
+        <command>eboa_scheduler_ingestion.py -p adgsboa.ingestions.ingestion_auxip.ingestion_completeness_expectation_report -f /resources_path/adgs_completeness_timeliness.xml -s /schemas/adgs_completeness_timeliness_schema.xsd </command>
+      </task>
+    </tasks>
+  </rule>
+</rules>
